@@ -18,22 +18,30 @@ ScribeSmith takes advantage of several PWA features including mobile-first desig
 
 ## Wireframes
 
-### Mobile Wireframes
-
+### Wireframe set 1
 ![](Wireframes/mobile_wireframes_1.png)
-
-![](Wireframes/mobile_wireframes_2.png)
-
-![](Wireframes/mobile_wireframes_3.png)
-
-![](Wireframes/mobile_wireframes_4.png)
-
-### Desktop Wireframes
-
 ![](Wireframes/desktop_wireframes_1.png)
+Wireframe set 1 shows the flow of a log in, which takes the user to the **My Campaigns** home page. From there the user can navigate to a **Campaign**, which will have a slightly different display depending on whether that player is the GM. The GM can access the **Campaign Settings** page. 
 
+### Wireframe set 2
+![](Wireframes/mobile_wireframes_2.png)
 ![](Wireframes/desktop_wireframes_2.png)
+Wireframe set 2 shows the flow of a user joining or creating a campaign. To join a campaign they enter a code. To create a campaign they enter a name, system, and description. Then a campaign code is generated which can be used by other users to join the campaign. After either of these actions are completed, the campaign can be viewed.
 
+### Wireframe set 3
+![](Wireframes/mobile_wireframes_3.png)
 ![](Wireframes/desktop_wireframes_3.png)
+Wireframe set 3 shows a player viewing the **My Notes** page, which contains all of the notes they are able to edit. The page can be searched by keyword or filtered by multiple tags. Clicking on a note opens the **Note View** from which the user can click the edit button, to edit the note. From the **My Notes** page, the user can also click the plus button to begin editing a new note. While editing a note, the user can expand the tags and sharing menu from the bottom of the screen. 
 
+### Wireframe set 4
+![](Wireframes/mobile_wireframes_4.png)
 ![](Wireframes/desktop_wireframes_4.png)
+Wireframe set 4 shows the user viewing the **Shared Notes** page, which contains all the notes not created by them, which they are unable to edit. They can still search by keyword, filter by tags, and view notes. They can also click on a user profile to view all of the notes created by that user, in a similar note feed view.
+
+
+## Contributions
+
+All work was done in person, with input from all team members. Lucien and Declan focused on the writeup, while Sam took lead on the wireframes. We intend to complete the screencast together in person, right after we push this to GitHub.
+
+
+
