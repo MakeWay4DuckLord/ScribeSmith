@@ -3,12 +3,11 @@ FROM node:lts
 WORKDIR /app
 
 # install node modules
-COPY ./scribe-smith/package*.json .
+COPY package*.json .
 RUN npm install
 
 # Copy all files from current directory to working dir in image
 COPY . .
-WORKDIR /app/scribe-smith
 RUN npm run build
 
 ENV PORT 80
