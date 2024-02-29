@@ -2,12 +2,12 @@ import { Form, Link } from "react-router-dom";
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaUser } from "react-icons/fa";
-import "./SignUp.css"
+import "./signup.css"
 
 //TODO: Add form functionality and error checking
 export default function SignUp() {
     return (
-        <>
+        <div className="sign-up-page">
             <Form method="post">
                 <div className="sign-up-container">
                     <label htmlFor="name">Full Name</label>
@@ -38,6 +38,6 @@ export default function SignUp() {
                     <p>Already have an account? <Link to="/login">Login</Link></p>
                 </div>
             </Form>
-        </>
+        </div>
     );
 }

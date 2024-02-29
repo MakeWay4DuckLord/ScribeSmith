@@ -1,5 +1,5 @@
 import { Form, Link } from "react-router-dom";
-import "./Login.css"
+import "./login.css"
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 
@@ -7,7 +7,7 @@ import { RiLockPasswordFill } from "react-icons/ri";
 //TODO: Need functionality for logging in, right now its just styling
 export default function Login() {
     return (
-        <>
+        <div className="login-page">
             <Form method="post">
                 <div className="login-container">
                     <p className="alert">Incorrect username or password.</p>
@@ -26,6 +26,6 @@ export default function Login() {
                     <p>Need an account? <Link to="/sign-up">Register</Link></p>
                 </div>
             </Form>
-        </>
+        </div>
     );
 }

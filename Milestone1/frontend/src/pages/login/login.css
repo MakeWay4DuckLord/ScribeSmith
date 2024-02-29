@@ -1,24 +1,24 @@
-body {
-    place-items: center;
-}
-
 .alert {
     display: none;
     color: red;
+}
+
+.login-page {
+    height: 100%;
 }
 
 .login-container {
     display: flex;
     flex-direction: column;
     width: 40%;
-    margin: auto;
     padding: 30px;
 }
 
-form {
+.login-page form {
     height: calc(100% - 60px);
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 .input-container {
@@ -30,35 +30,41 @@ form {
     margin-bottom: 15px;
 }
 
-input {
+.login-page input {
     width: 100%;
     background-color: #494251;
 }
 
-input[type="submit"] {
+.login-page input[type="submit"] {
     width: 50%;
     align-self: center;
     margin-top: 10px;
     background-color: rgb(155, 111, 203);
 }
 
-input[type="submit"]:hover {
+.login-page input[type="submit"]:hover {
     background-color: rgb(124, 89, 162);
 }
 
-label, p {
+.login-page label{
     margin-bottom: 3px;
     padding: 0;
     color: rgb(170, 170, 170);
     font-size: 13px;
 }
 
-a {
+.login-page p {
+    margin-top: 13px;
+    color: white;
+    font-size: 13px;
+}
+
+.login-page a {
     color: rgb(145, 255, 222);
     text-decoration: none;
 }
 
-.icon {
+.login-page .icon {
     font-size: 25px;
 }
 

@@ -1,0 +1,66 @@
+.campaign-page .container {
+    display: flex;
+    place-items: center;
+    flex-direction: column;
+    margin: auto;
+}
+
+.campaign-page {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.campaign-page .content {
+    margin: 20px 40px;
+    width: 80%;
+}
+
+.campaign-page .buttons {
+    margin-bottom: 15px;
+    margin-right: 15px;
+}
+
+.campaign-page h1 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: rgb(255, 216, 97);
+}
+
+.campaign-page button {
+    background-color: rgb(155, 111, 203);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    margin: 5px;
+    font-size: 20px;
+}
+
+.campaign-page button:hover {
+    background-color: rgb(124, 89, 162);
+}
+
+.campaign-container {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    align-items: center;
+    grid-gap: 15px;
+}
+
+@media (max-width: 550px) {
+    .campaign-page .content {
+        margin: 15px 0;
+    }
+    .campaign-page button {
+        font-size: 15px;
+    }
+
+    .campaign-container {
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        gap: 15px;
+        width: 100%;
+    }
+}

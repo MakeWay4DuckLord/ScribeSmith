@@ -4,9 +4,13 @@ import Header from './components/Header/Header.jsx';
 import Home from './pages/home/Home.jsx';
 import Login from './pages/login/Login.jsx';
 import SignUp from './pages/sign-up/SignUp.jsx';
+import Campaigns from './pages/campaigns/Campaigns.jsx';
+import JoinCampaign from './pages/join-campaign/JoinCampaign.jsx';
 import '../index.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 
+
+//TO DO: Secure routes only when logged in
 const router = createBrowserRouter([
   {
     path: "/",
@@ -23,6 +27,14 @@ const router = createBrowserRouter([
       {
         path: "sign-up",
         element: <SignUp />
+      },
+      {
+        path: "my-campaigns",
+        element: <Campaigns />
+      },
+      {
+        path: "join-campaign",
+        element: <JoinCampaign />
       }
     ]
   },  

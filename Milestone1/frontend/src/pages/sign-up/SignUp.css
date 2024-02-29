@@ -7,6 +7,10 @@ body {
     color: red;
 }
 
+.sign-up-page {
+    height: 100%;
+}
+
 .sign-up-container {
     display: flex;
     flex-direction: column;
@@ -15,13 +19,13 @@ body {
     padding: 30px;
 }
 
-form {
+.sign-up-page form {
     height: calc(100% - 60px);
     display: flex;
     justify-content: center;
 }
 
-.input-container {
+.sign-up-page .input-container {
     display: flex;
     align-items: center;
     background-color: #494251;
@@ -30,35 +34,35 @@ form {
     margin-bottom: 15px;
 }
 
-input {
+.sign-up-page input {
     width: 100%;
     background-color: #494251;
 }
 
-input[type="submit"] {
+.sign-up-page input[type="submit"] {
     width: 50%;
     align-self: center;
     margin-top: 10px;
     background-color: rgb(155, 111, 203);
 }
 
-input[type="submit"]:hover {
+.sign-up-page input[type="submit"]:hover {
     background-color: rgb(124, 89, 162);
 }
 
-label, p {
+.sign-up-page label, p {
     margin-bottom: 3px;
     padding: 0;
     color: rgb(170, 170, 170);
     font-size: 13px;
 }
 
-a {
+.sign-up-page a {
     color: rgb(145, 255, 222);
     text-decoration: none;
 }
 
-.icon {
+.sign-up-page .icon {
     font-size: 25px;
 }
 
