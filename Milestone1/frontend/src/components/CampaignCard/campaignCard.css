@@ -1,0 +1,29 @@
+.campaign-card {
+    background-color: #494251;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+.campaign-card:hover {
+    background-color: #3e3746;
+}
+
+.campaign-card h2, h4, p {
+    color: white;
+    margin: 1px
+}
+
+.campaign-card h4 {
+    color: rgb(145, 255, 222);
+}
+
+.campaign-card p {
+    margin-top: 5px;
+    font-size: 15px;
+}
+
+@media (max-width: 550px) {
+    .card {
+        width: 100%;
+    }
+}

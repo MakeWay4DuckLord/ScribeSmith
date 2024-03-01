@@ -1,0 +1,80 @@
+header {
+    padding: 10px 30px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background-color: #19181c;
+}
+
+.back-button {
+    display: none;
+    color: white;
+}
+
+header button {
+    background-color: inherit;
+}
+
+header nav {
+    margin-left: auto;
+}
+
+
+header h1 {
+    margin: 0;
+    color: rgb(145, 255, 222);
+}
+
+header a {
+    text-decoration: none;
+}
+
+header button {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    margin: 5px;
+}
+
+header .login {
+    background-color: rgb(103, 96, 108);
+}
+
+header .login:hover {
+    background-color: rgb(63, 63, 63);
+}
+
+header .sign-up {
+    background-color: rgb(155, 111, 203);
+}
+
+header .sign-up:hover {
+    background-color: rgb(124, 89, 162);
+}
+
+@media (max-width: 768px) {
+    header .back-button {
+        display: inline-block;
+        margin-right: 10px;
+        font-size: 30px;
+    }
+}
+
+@media (max-width:450px)  { 
+    header {
+        padding: 5px;
+    }
+    header h1 {
+        font-size: 25px;
+    }
+
+}
+
+@media (max-width:345px)  { 
+    header button {
+        font-size: 13px;
+        padding: 6px;
+    }
+
+}
