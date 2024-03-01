@@ -2,7 +2,7 @@ import { Form, Link } from "react-router-dom";
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaUser } from "react-icons/fa";
-import "./signup.css"
+import "./signUp.css"
 
 //TODO: Add form functionality and error checking
 export default function SignUp() {
