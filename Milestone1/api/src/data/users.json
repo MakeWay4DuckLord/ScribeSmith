@@ -1,0 +1,38 @@
+{
+    "1": {
+      "userId": 1,
+      "name": "Stu Dent",
+      "email": "student@school.com",
+      "password": "password1",
+      "icon": "https://robohash.org/veniamdoloresenim.png?size=64x64&set=set1",
+      "tags": {
+        "1": ["session1", "my art", "thoughts"],
+        "4": ["npc", "session5", "character art", "ideas"],
+        "2": ["loot", "character sheet", "fanart"]
+      }
+    },
+    "2": {
+        "userId": 2,
+        "name": "Gra Duate",
+        "email": "graduate@school.com",
+        "password": "password2",
+        "icon": "https://robohash.org/nullaautemin.png?size=64x64&set=set1",
+        "tags": {
+            "5": ["session4", "relationships", "theories"],
+            "3": ["locations", "session2", "my character", "ideas"],
+            "1": ["loot", "maps", "magic"]
+        }
+      },
+      "3": {
+        "userId": 3,
+        "name": "Mariam Tweede",
+        "email": "mariam@school.com",
+        "password": "password3",
+        "icon": "https://robohash.org/illoeamolestiae.png?size=64x64&set=set1",
+        "tags": {
+            "1": ["session3", "weapons", "skills"],
+            "2": ["forest", "session1", "spells", "loot"],
+            "3": ["puzzles", "build plans", "magic"]
+        }
+      }
+}
