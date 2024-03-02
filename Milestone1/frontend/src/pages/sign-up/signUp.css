@@ -40,10 +40,10 @@ body {
 }
 
 .sign-up-page input[type="submit"] {
-    width: 50%;
     align-self: center;
     margin-top: 10px;
     background-color: rgb(155, 111, 203);
+    margin-bottom: 13px;
 }
 
 .sign-up-page input[type="submit"]:hover {

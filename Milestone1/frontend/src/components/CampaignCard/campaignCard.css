@@ -2,6 +2,7 @@
     background-color: #494251;
     border-radius: 15px;
     padding: 15px;
+    height: calc(100% - 30px);
 }
 
 .campaign-card:hover {
