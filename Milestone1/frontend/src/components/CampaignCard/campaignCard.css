@@ -2,6 +2,7 @@
     background-color: #494251;
     border-radius: 15px;
     padding: 15px;
+    height: calc(100% - 30px);
 }
 
 .campaign-card:hover {
@@ -14,6 +15,11 @@
 }
 
 .campaign-card h4 {
+    display: flex;
+    gap: 1ch;
+}
+
+.campaign-card .owner {
     color: rgb(145, 255, 222);
 }
 

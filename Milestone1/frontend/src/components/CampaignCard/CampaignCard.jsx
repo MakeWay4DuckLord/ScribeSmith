@@ -6,7 +6,7 @@ export default function CampaignCard({name, owner, description}) {
         <>
             <div className="campaign-card">
                 <h2>{name}</h2>
-                <h4>GM: {owner}</h4>
+                <h4>GM: <div className="owner">{owner}</div></h4>
                 <p>{description}</p>
             </div>
         </>
