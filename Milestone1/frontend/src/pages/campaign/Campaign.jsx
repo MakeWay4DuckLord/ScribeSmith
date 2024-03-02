@@ -11,20 +11,28 @@ import './campaign.css';
 export default function Campaign() {
     const [campaign, setCampaign] = useState({});
     const [owner, setOwner] = useState("");
+    const [error, setError] = useState(null);
     const { id } = useParams();
 
     
     useEffect(() => {
         api.getCampaign(id).then(campaign => {
             setCampaign(campaign);
-            
+
             if (campaign.ownerId !== undefined) {
                 api.getUser(campaign.ownerId).then(user => {
                     setOwner(user.name);
                 });
             }
         })
+        .catch(err => {
+            setError(true);
+        })
     }, [id]);
+
+    if(error === true) {
+        return <h2>Error loading campaign data</h2>
+    }
 
     return (
         <div className="campaign-page">

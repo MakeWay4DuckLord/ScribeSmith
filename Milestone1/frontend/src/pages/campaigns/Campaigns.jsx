@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 export default function Campaigns() {
     const [userCampaigns, setUserCampaigns] = useState([]);
     const [ownerNames, setOwnerNames] = useState({});
+    const [error, setError] = useState(null);
 
     //TODO: Change  getUserCampaigns() for the param to be the current user logged in
     useEffect(() => {
@@ -14,7 +15,7 @@ export default function Campaigns() {
             setUserCampaigns(campaigns);
 
             if (campaigns.length !== 0) {
-                Promise.all(
+                Promise.all( //wait for all the promises from the api calls to resolve
                     campaigns.map(campaign =>
                       api.getUser(campaign.ownerId).then(user => ({
                         ownerId: campaign.ownerId,
@@ -27,10 +28,18 @@ export default function Campaigns() {
                         newOwnerNames[owner.ownerId] = owner.ownerName;
                     });
                     setOwnerNames(newOwnerNames);
+                }).catch(err => {
+                    setError(true);
                 });
             }
+        }).catch(err => {
+            setError(true);
         });
     }, []);
+
+    if(error === true) {
+        return <h1>Error loading campaigns.</h1>
+    }
 
     return (
         <>

@@ -15,6 +15,11 @@
 }
 
 .campaign-card h4 {
+    display: flex;
+    gap: 1ch;
+}
+
+.campaign-card .owner {
     color: rgb(145, 255, 222);
 }
 
