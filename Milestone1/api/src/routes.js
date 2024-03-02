@@ -18,7 +18,15 @@ router.post('/authenticate', (req, res) => {
 
 //Add a user
 router.post('/users', (req, res) => {
-
+    // mock data implementation
+    const userId = req.body.userId;
+    const user = users[userId];
+    if (user) {
+        res.status(400).json({ "error": "User already exists" });
+    } else {
+        users[userId] = req.body;
+        res.status(200).json({"message": "success"}); // TODO: change him?????
+    }
 });
 
 //retrieve a user by id
@@ -49,9 +57,29 @@ router.get('/users/:userId/campaigns', (req, res) => {
 //Join a user to a campaign
 router.post('/users/:userId/campaigns', (req, res) => {
     const userId = parseInt(req.params.userId);
+    const user = users[userId];
+    if (!user) {
+        res.status(401).json({ "error": "User not found" });
+        return;
+    }
+    // TODO: make sure this prevents the rest from running if error
+
     // get campaign join code from request body
+    const joinCode = req.body.joinCode;
+    const result = Object.values(campaigns).find(campaign => campaign.joinCode == joinCode);
+    if (!result) {
+        res.status(401).json({ "error": "Campaign not found" });
+        return;
+    }
+
+    // add userid to campaign list of userIds
+    (campaigns[result.id]).userIds.push(userId);
+
+    // update user's list of used tags to have a spot for this one
+    (users[userId]).tags[result.id] = [];
+
     // return success or failure response
-    // TODO: apiclient method?
+    res.status(200).json({"message": "success"});
 });
 
 //create a campaign
