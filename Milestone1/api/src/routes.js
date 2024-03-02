@@ -49,7 +49,7 @@ router.get('/users/:userId/campaigns', (req, res) => {
 //Join a user to a campaign
 router.post('/users/:userId/campaigns', (req, res) => {
     const userId = parseInt(req.params.userId);
-    // get campaign id from request body
+    // get campaign join code from request body
     // return success or failure response
     // TODO: apiclient method?
 });
