@@ -62,7 +62,6 @@ router.post('/users/:userId/campaigns', (req, res) => {
         res.status(401).json({ "error": "User not found" });
         return;
     }
-    // TODO: make sure this prevents the rest from running if error
 
     // get campaign join code from request body
     const joinCode = req.body.joinCode;
@@ -120,6 +119,21 @@ router.get('/campaigns/:campaignId', (req, res) => {
 
 //remove a player from a campaign
 router.delete('/campaigns/:campaignId/users/:userId', (req, res) => {
+    const campaignId = parseInt(req.params.campaignId);
+    const campaign = campaigns[campaignId];
+    if (!campaign) {
+        res.status(401).json({ "error": "Campaign not found" });
+        return;
+    }
+    const userId = parseInt(req.params.userId);
+    const index = campaign.userIds.indexOf(userId);
+    if (index == -1) {
+        res.status(401).json({ "error": "User not found" });
+        return;
+    }
+    campaign.userIds.splice(index, 1);
+
+    res.status(200).json({"message": "success"});
 
 });
 
