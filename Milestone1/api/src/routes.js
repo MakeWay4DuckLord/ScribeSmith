@@ -84,7 +84,27 @@ router.post('/users/:userId/campaigns', (req, res) => {
 
 //create a campaign
 router.post('/campaigns', (req, res) => {
+    // request body should include name, description, banner
+    // id and join code are generated
+    // owner is the current auth'd user? but req body for NOW
+    // userIds and tags are empty at the start
+    const newCampaign = {};
+    newCampaign.id = Math.max(...Object.keys(campaigns)) + 1;
+    newCampaign.joinCode = makeJoinCode(5);
+    while (Object.values(campaigns).find(campaign => campaign.joinCode == newCampaign.joinCode) != undefined) {
+        newCampaign.joinCode = makeJoinCode(5);
+    }
+    newCampaign.ownerId = req.body.ownerId;
+    newCampaign.name = req.body.name;
+    newCampaign.description = req.body.description;
+    newCampaign.banner = req.body.banner;
+    newCampaign.userIds = [];
+    newCampaign.tags = [];
 
+    campaigns[newCampaign.id] = newCampaign;
+
+    // return success or failure response
+    res.status(200).json({"message": "success"});
 });
 
 //Retrieve a campaign by id
@@ -143,3 +163,15 @@ router.post('/campaign/:campaignId/notes/users/:userId', (req, res) => {
 });
 
 module.exports = router;
+
+// helpers and stuff
+
+function makeJoinCode(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const amtCharacters = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * amtCharacters));
+    }
+    return result;
+}
