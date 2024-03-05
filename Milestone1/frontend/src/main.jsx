@@ -44,7 +44,7 @@ const router = createBrowserRouter([
         element: <Campaign />,
       },
       {
-        path: "my-notes",
+        path: "my-notes/:id",
         element: <MyNotes />
       }
     ]

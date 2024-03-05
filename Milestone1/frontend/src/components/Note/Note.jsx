@@ -3,11 +3,7 @@ import { useEffect, useState } from "react";
 
 
 export default function Note({id, title, content, tags}) {
-    const [noteTags, setTags] = useState([]);
-
-    useEffect(() => {
-        setTags(JSON.parse(tags));
-    })
+    const [noteTags, setTags] = useState(tags);
 
     return (
         <>
