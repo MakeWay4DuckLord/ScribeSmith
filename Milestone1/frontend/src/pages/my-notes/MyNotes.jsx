@@ -18,7 +18,6 @@ export default function MyNotes() {
 
         api.getCampaignNotesByUser(id, "1").then(notes => { //TODO unhardcode user id this once we know how
             setNotes(notes);
-            console.log(notes);
         }).catch(err => {
             setError(true);
         });
