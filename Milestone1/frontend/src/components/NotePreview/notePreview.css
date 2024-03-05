@@ -32,3 +32,8 @@
 .notePreviewComponent .tagContainer {
     display: flex;
 }
+
+.notePreviewComponent .tagContainer .tag-component {
+    max-height: 12px;
+    /* don't like hard coding size, but it looked bad, TODO make better */
+}

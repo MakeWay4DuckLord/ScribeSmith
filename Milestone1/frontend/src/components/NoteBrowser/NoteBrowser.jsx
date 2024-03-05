@@ -30,7 +30,7 @@ export default function NoteBrowser({title, notes}) {
 
                 <div className='note-container'>
                     {notes.map(note => (
-                        <Note key={note.id} id={note.id} title={note.title} content={note.content} tags={note.tags}/>
+                        <NotePreview key={note.id} id={note.id} title={note.title} content={note.content} tags={note.tags}/>
                     ))}
 
                     {/* hard coded notes for testing and such */}
@@ -39,6 +39,7 @@ export default function NoteBrowser({title, notes}) {
 
                 </div>
                 <main>
+                    <Note />
                 </main>
             </aside>
         </div>
