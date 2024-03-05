@@ -5,7 +5,7 @@ import NotePreview from "../../components/NotePreview/NotePreview";
 import Note from "../../components/Note/Note";
 import Tag from "../../components/Tag/Tag";
 import api from "../../client/APIClient";
-
+import TextEditor from '../TextEditor/TextEditor';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -38,10 +38,11 @@ export default function NoteBrowser({title, notes}) {
                     <Note id="2" title="Note Title" content="In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy." tags={["session2", "tag3"]}/> */}
 
                 </div>
-                <main>
-                    <Note />
-                </main>
             </aside>
+            <main>
+                <Note />
+                {/* <TextEditor content="<p> example data </p>"/> */}
+            </main>
         </div>
     );
 }

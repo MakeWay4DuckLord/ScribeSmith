@@ -1,6 +1,8 @@
 // import './myNotes.css'
 
 import NoteBrowser from "../../components/NoteBrowser/NoteBrowser";
+
+
 import api from "../../client/APIClient";
 
 import { useEffect, useState } from 'react';
@@ -26,8 +28,9 @@ export default function MyNotes() {
 
 
     return(
-        // <div className='myNotes'>
+        <div className='myNotes'>
         <NoteBrowser title='My Notes' notes={myNotes}></NoteBrowser>
-        // </div>
+
+        </div>
     );
 }

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import './textEditor.css';
+
 
 const SKINS_PATH = './src/components/TextEditor/scribesmith-dark/skins/';
 
@@ -11,7 +11,7 @@ const SKINS_PATH = './src/components/TextEditor/scribesmith-dark/skins/';
  * - sorting out file uploads
  */
 
-export default function TextEditor() {
+export default function TextEditor({content}) {
 
     const editorRef = useRef(null);
     const log = () => {
@@ -24,7 +24,7 @@ export default function TextEditor() {
             <Editor
                 apiKey='knfnarhktdvw0v5q8muzms71g5lgmhn6rkdv8bxytr7qhcl8'
                 onInit={(evt, editor) => editorRef.current = editor}
-                initialValue="<p>This is the initial content of the editor.</p>"
+                initialValue={content}
                 init={{
                     height: 500,
                     menubar: false,
@@ -42,8 +42,8 @@ export default function TextEditor() {
                     automatic_uploads: true,
                     
                     //created a TinyMCE skin at http://skin.tiny.cloud/t5/
-                    content_css: SKINS_PATH + 'content/scribesmith-dark/content.css',
-                    skin_url: SKINS_PATH + 'ui/scribesmith-dark',
+                    content_css: SKINS_PATH + 'content/scribesmith-dark/content.css', //css for the rich text content of the editor
+                    skin_url: SKINS_PATH + 'ui/scribesmith-dark', //directory of css for the ui of the editor
 
 
                 /**
