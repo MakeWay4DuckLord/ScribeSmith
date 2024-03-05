@@ -24,16 +24,18 @@ export default function MyNotes() {
                 </div>
 
                 <div className='note-container'>
+                    {/* <NotePreview />
                     <NotePreview />
                     <NotePreview />
                     <NotePreview />
                     <NotePreview />
-                    <NotePreview />
-                    <NotePreview />
+                    <NotePreview /> */}
+
+                    <Note id="1" title="Note Title" content="In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy." tags='["session1", "tag2"]'/>
+                    <Note id="2" title="Note Title" content="In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy." tags='["session2", "tag3"]'/>
 
                 </div>
                 <main>
-                    <Note />
                 </main>
             </aside>
         </div>
