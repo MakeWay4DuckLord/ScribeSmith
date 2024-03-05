@@ -65,4 +65,5 @@ export default {
     getUserCampaigns,
     getCampaign,
     getUser,
+    getCampaignNotesByUser,
 }
