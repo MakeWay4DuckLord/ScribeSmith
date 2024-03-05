@@ -1,4 +1,4 @@
-header {
+.header-component {
     padding: 10px 30px;
     display: flex;
     align-items: center;
@@ -7,54 +7,54 @@ header {
     background-color: #19181c;
 }
 
-.back-button {
+.header-component .back-button {
     display: none;
     color: white;
 }
 
-header button {
+.header-component button {
     background-color: inherit;
 }
 
-header nav {
+.header-component nav {
     margin-left: auto;
 }
 
 
-header h1 {
+.header-component h1 {
     margin: 0;
     color: rgb(145, 255, 222);
 }
 
-header a {
+.header-component a {
     text-decoration: none;
 }
 
-header button {
+.header-component button {
     padding: 10px;
     border-radius: 5px;
     border: none;
     margin: 5px;
 }
 
-header .login {
+.header-component .login {
     background-color: rgb(103, 96, 108);
 }
 
-header .login:hover {
+.header-component .login:hover {
     background-color: rgb(63, 63, 63);
 }
 
-header .sign-up {
+.header-component .sign-up {
     background-color: rgb(155, 111, 203);
 }
 
-header .sign-up:hover {
+.header-component .sign-up:hover {
     background-color: rgb(124, 89, 162);
 }
 
 @media (max-width: 768px) {
-    header .back-button {
+    .header-component .back-button {
         display: inline-block;
         margin-right: 10px;
         font-size: 30px;
@@ -62,17 +62,17 @@ header .sign-up:hover {
 }
 
 @media (max-width:450px)  { 
-    header {
+    .header-component {
         padding: 5px;
     }
-    header h1 {
+    .header-component h1 {
         font-size: 25px;
     }
 
 }
 
 @media (max-width:345px)  { 
-    header button {
+    .header-component button {
         font-size: 13px;
         padding: 6px;
     }

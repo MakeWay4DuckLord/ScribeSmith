@@ -1,0 +1,39 @@
+.notePreviewComponent {
+    margin-top: 20px;
+    background-color: #494251;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.notePreviewComponent h2 {
+    color: rgb(255, 216, 97);
+}
+
+.notePreviewComponent header {
+    display: flex;
+    align-items: center;
+}
+
+.notePreviewComponent img {
+    border-radius: 50%;
+    background-color: white;
+    margin-right: 10px;
+}
+
+.notePreviewComponent time {
+    margin-left: auto;
+    color: rgb(145, 255, 222);
+}
+
+.notePreviewComponent p {
+    margin: 15px 0 15px 0;
+}
+
+.notePreviewComponent .tagContainer {
+    display: flex;
+}
+
+.notePreviewComponent .tagContainer .tag-component {
+    max-height: 12px;
+    /* don't like hard coding size, but it looked bad, TODO make better */
+}

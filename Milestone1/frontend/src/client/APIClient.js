@@ -48,8 +48,22 @@ const getUser = (userId) => {
         .catch(handleError);
 }
 
+const getCampaignNotesByUser = (campaignId, userId) => {
+    // /campaigns/:campaignId/notes/users/:userId
+    return fetch(API_BASE + `/campaigns/${campaignId}/notes/users/${userId}`)
+        .then(checkResponse)
+        .then(res => {
+            return res.json();
+        })
+        .then(notes => {
+            return notes;
+        })
+        .catch(handleError);
+}
+
 export default {
     getUserCampaigns,
     getCampaign,
     getUser,
+    getCampaignNotesByUser,
 }

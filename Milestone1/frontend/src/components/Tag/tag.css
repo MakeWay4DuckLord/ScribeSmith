@@ -1,0 +1,23 @@
+.tag-component {
+    background-color: rgb(155, 111, 203);
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+}
+
+.tag-component:hover {
+    background-color: rgb(124, 89, 162);
+}
+
+.tag-component .icon {
+    font-size: 12px;
+}
+
+.tag-component p {
+    font-size: 15px;
+    margin: 0;
+}

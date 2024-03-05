@@ -13,7 +13,7 @@ export default function Header() {
     //TODO: Make conditional route, where if logged in, clicking on the logo brings to user campaigns page
     return ( 
         <>
-            <header>
+            <header className='header-component'>
                 <button className='back-button' onClick={() => {navigate(-1);}}>
                     <FiChevronLeft />
                 </button>
