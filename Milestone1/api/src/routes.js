@@ -45,6 +45,7 @@ router.get('/users/:userId', (req, res) => {
 router.get('/users/:userId/campaigns', (req, res) => {
     const userId = parseInt(req.params.userId);
     console.log(campaigns[1].userIds);
+    // TODO: remove the !userId from the filtering, it shouldnt be necessary
     const results = Object.values(campaigns).filter(campaign => !userId || campaign.userIds.includes(userId));
 
     let campaignArray = [];
@@ -190,6 +191,26 @@ router.patch('/campaigns/:campaignId/banner', (req, res) => {
 router.get('/campaigns/:campaignId/notes/users/:userId', (req, res) => {
     // note - this request will always need to filter out non-viewable notes
     // based on authentication
+    const campaignId = parseInt(req.params.campaignId);
+    const campaign = campaigns[campaignId];
+    if (!campaign) {
+        res.status(401).json({ "error": "Campaign not found" });
+        return;
+    }
+    // user id check - unclear if necessary.
+    // will probably get changed out when we add authentication anyway so w/e
+    const userId = parseInt(req.params.userId);
+    const user = users[userId];
+    if (!user) {
+        res.status(401).json({ "error": "User not found" });
+        return;
+    }
+
+
+    const results = Object.values(notes).filter(note => (note.campaignId == campaignId) && (note.userId == userId));
+
+    res.json(results);
+
 });
 
 //get notes by creator and campaign and tags
@@ -198,6 +219,9 @@ router.get('/campaigns/:campaignId/notes/users/:userId/tags/:tagString', (req, r
     // tags as a url parameter then it has to go in the body
     // which is supposed to be empty
     // soooooooooooooooo
+
+    // NOT DOING THIS ONE currently bc declan has pitched
+    // that we filter by tags in frontend instead
 });
 
 //get all tags a user has used in a campaign
