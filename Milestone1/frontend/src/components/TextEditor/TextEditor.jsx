@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 
 
-const SKINS_PATH = './src/components/TextEditor/scribesmith-dark/skins/';
+const SKINS_PATH = '/src/components/TextEditor/scribesmith-dark/skins/';
 
 /** TODO
  * - tags
@@ -11,7 +11,7 @@ const SKINS_PATH = './src/components/TextEditor/scribesmith-dark/skins/';
  * - sorting out file uploads
  */
 
-export default function TextEditor({content}) {
+export default function TextEditor({content, saveCallback}) {
 
     const editorRef = useRef(null);
     const log = () => {
@@ -31,9 +31,9 @@ export default function TextEditor({content}) {
                     plugins: [
                         'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                         'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount', 'save'
                     ],
-                    toolbar: 'undo redo | blocks | ' +
+                    toolbar: 'save | undo redo | blocks | ' +
                         'bold italic forecolor | alignleft aligncenter ' +
                         'alignright alignjustify | bullist numlist outdent indent | ' +
                         'removeformat | image | help',
@@ -81,8 +81,6 @@ export default function TextEditor({content}) {
                 },
                 }}
             />
-            <button onClick={log}>Log editor content</button> 
-
         </>
     );
 }

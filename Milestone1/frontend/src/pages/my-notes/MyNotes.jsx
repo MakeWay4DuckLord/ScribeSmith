@@ -29,7 +29,7 @@ export default function MyNotes() {
 
     return(
         <div className='myNotes'>
-        <NoteBrowser title='My Notes' notes={myNotes}></NoteBrowser>
+        <NoteBrowser title='My Notes' notes={myNotes}/>
 
         </div>
     );

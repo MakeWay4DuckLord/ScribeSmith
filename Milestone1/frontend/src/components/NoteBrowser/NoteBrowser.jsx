@@ -10,6 +10,14 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 export default function NoteBrowser({title, notes}) {
+    const[openNote, setOpenNote] = useState();;
+    useEffect(() => {
+        if(notes.length !== 0) {
+            setOpenNote(notes[0]);
+        } else {
+            setOpenNote({title: "New Note", content: "", tags: []});
+        }
+    });
 
     return(
         <div className='noteBrowser'>
@@ -20,7 +28,6 @@ export default function NoteBrowser({title, notes}) {
                     <IoIosSearch className='searchIcon' />
 
                 </search>
-
                 <div className='tagList'>
                     <Tag content={"session1"}/>
                     <Tag content={"session2"}/>
@@ -40,8 +47,7 @@ export default function NoteBrowser({title, notes}) {
                 </div>
             </aside>
             <main>
-                <Note />
-                {/* <TextEditor content="<p> example data </p>"/> */}
+                <Note note={openNote} />
             </main>
         </div>
     );
