@@ -1,6 +1,6 @@
 import Tag from "../Tag/Tag";
 import TextEditor from "../TextEditor/TextEditor";
-import { useEffect, useState } from "react";
+import { useEffect, useState} from "react";
 
 //save function to pass to TextEditor
 function save(formData) {
@@ -26,7 +26,8 @@ export default function Note({note}) {
         if(note) {
             setOpenNote(note);
         }
-    }, []);
+        console.log("Note useEffect");
+    },[note]);
  
     return (
         <form className='note' action={save}>
@@ -37,8 +38,8 @@ export default function Note({note}) {
             </header>
             <TextEditor name="content" content={openNote.content} saveCallback={save}/>
             <div name="tags" className="tagContainer">
-                {openNote.tags.map(tag => (
-                    <Tag content={tag}/>
+                {openNote.tags.map((tag, index) => (
+                    <Tag content={tag} key={index}/>
                 ))}
             </div>
         </form>

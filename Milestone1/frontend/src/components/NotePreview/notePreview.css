@@ -5,6 +5,10 @@
     padding: 20px;
 }
 
+.notePreviewComponent:hover {
+    background-color: black; 
+    /* this is ugly, might wanna change this */
+}
 .notePreviewComponent h2 {
     color: rgb(255, 216, 97);
 }

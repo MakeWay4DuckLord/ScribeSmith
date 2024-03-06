@@ -20,7 +20,7 @@ export default function MyNotes() {
         }).catch(err => {
             setError(true);
         });
-    }, []);
+    }, [id]);
 
     if(error === true) {
         return <h1>Error loading notes.</h1>

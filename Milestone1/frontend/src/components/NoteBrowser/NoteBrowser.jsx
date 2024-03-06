@@ -9,15 +9,23 @@ import TextEditor from '../TextEditor/TextEditor';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+
+
 export default function NoteBrowser({title, notes}) {
-    const[openNote, setOpenNote] = useState();;
+    const[openNote, setOpenNote] = useState({title: "New Note", content: "", tags: []});
+    
+    function updateNote(note) {
+        setOpenNote(note);
+    }
+
     useEffect(() => {
         if(notes.length !== 0) {
             setOpenNote(notes[0]);
         } else {
             setOpenNote({title: "New Note", content: "", tags: []});
         }
-    });
+    }, [notes]);
+
 
     return(
         <div className='noteBrowser'>
@@ -37,7 +45,9 @@ export default function NoteBrowser({title, notes}) {
 
                 <div className='note-container'>
                     {notes.map(note => (
-                        <NotePreview key={note.id} id={note.id} title={note.title} content={note.content} tags={note.tags}/>
+                        <button onClick={()=>{updateNote(note)}} key={note.id}>
+                            <NotePreview  id={note.id} title={note.title} content={note.content} tags={note.tags}/>
+                        </button>
                     ))}
 
                     {/* hard coded notes for testing and such */}
