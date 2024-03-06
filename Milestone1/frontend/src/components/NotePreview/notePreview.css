@@ -6,8 +6,7 @@
 }
 
 .notePreviewComponent:hover {
-    background-color: black; 
-    /* this is ugly, might wanna change this */
+    background-color: #19181c; 
 }
 .notePreviewComponent h2 {
     color: rgb(255, 216, 97);

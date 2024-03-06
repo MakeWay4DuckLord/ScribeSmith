@@ -45,9 +45,9 @@ export default function NoteBrowser({title, notes}) {
 
                 <div className='note-container'>
                     {notes.map(note => (
-                        <button onClick={()=>{updateNote(note)}} key={note.id}>
+                        <div onClick={()=>{updateNote(note)}} key={note.id}>
                             <NotePreview  id={note.id} title={note.title} content={note.content} tags={note.tags}/>
-                        </button>
+                        </div>
                     ))}
 
                     {/* hard coded notes for testing and such */}
