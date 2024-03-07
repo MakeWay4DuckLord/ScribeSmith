@@ -13,7 +13,7 @@ export default function CreateCampaign() {
                         <input type="text" id="name" name="name" />
                         
                         <label htmlFor="description">Description:</label>
-                        <input type="textarea" name="description" required />
+                        <textarea name="description" rows="5" required></textarea>
 
                         <label htmlFor="banner">Banner:</label>
                         <input type="file" name="img-upload" id="img-upload-input" required />
