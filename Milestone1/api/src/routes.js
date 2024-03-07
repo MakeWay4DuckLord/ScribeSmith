@@ -56,7 +56,7 @@ router.get('/users/:userId/campaigns', (req, res) => {
 });
 
 //Join a user to a campaign
-router.post('/users/:userId/campaigns', (req, res) => {
+router.put('/users/:userId/campaigns', (req, res) => {
     const userId = parseInt(req.params.userId);
     const user = users[userId];
     if (!user) {

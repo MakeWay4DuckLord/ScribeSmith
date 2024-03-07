@@ -46,6 +46,10 @@
     margin: 0;
 }
 
+.join-campaign .error {
+    color: rgb(255, 85, 85);
+}
+
 @media (max-width: 770px) {
     .join-box {
         width: 60%;

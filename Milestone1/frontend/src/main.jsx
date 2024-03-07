@@ -9,6 +9,7 @@ import JoinCampaign from './pages/join-campaign/JoinCampaign.jsx';
 import Campaign from './pages/campaign/Campaign.jsx';
 import MyNotes from './pages/my-notes/MyNotes.jsx';
 import Note from './components/Note/Note.jsx';
+import { joinCampaignAction } from './pages/join-campaign/formAction.js';
 
 import '../index.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
@@ -38,7 +39,8 @@ const router = createBrowserRouter([
       },
       {
         path: "join-campaign",
-        element: <JoinCampaign />
+        element: <JoinCampaign />,
+        action: joinCampaignAction
       },
       {
         path: "campaign/:id",
