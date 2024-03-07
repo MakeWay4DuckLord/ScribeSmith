@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import api from "../../client/APIClient"
 import { useEffect, useState } from "react";
@@ -44,22 +45,21 @@ export default function Campaign() {
                 </div>
 
                 <div>
-                    <div className="nav-container">
+                    <Link className="nav-container" to={`/my-notes/${campaign.id}`}>
                         <FaUserCircle className="icon" />
                         <h3>My Notes</h3>
-                    </div>
+                    </Link>
 
-                    <div className="nav-container">
+                    <Link to={`/shared-notes/${campaign.id}`} className="nav-container"> 
                         <MdSupervisedUserCircle className="icon" />
                         <h3>Shared Notes</h3>
+                    </Link>
 
-                    </div>
-
-                    <div className="nav-container">
+                    <Link to={`/campaign-settings/${campaign.id}`} className="nav-container">
                         <IoMdSettings  className="icon" />
                         <h3>Settings</h3>
 
-                    </div>
+                    </Link>
                 </div>
             </main>
         </div>
