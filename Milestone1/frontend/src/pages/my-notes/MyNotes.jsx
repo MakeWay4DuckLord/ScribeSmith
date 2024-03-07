@@ -1,6 +1,8 @@
 // import './myNotes.css'
 
 import NoteBrowser from "../../components/NoteBrowser/NoteBrowser";
+
+
 import api from "../../client/APIClient";
 
 import { useEffect, useState } from 'react';
@@ -18,7 +20,7 @@ export default function MyNotes() {
         }).catch(err => {
             setError(true);
         });
-    }, []);
+    }, [id]);
 
     if(error === true) {
         return <h1>Error loading notes.</h1>
@@ -26,8 +28,9 @@ export default function MyNotes() {
 
 
     return(
-        // <div className='myNotes'>
-        <NoteBrowser title='My Notes' notes={myNotes}></NoteBrowser>
-        // </div>
+        <div className='myNotes'>
+        <NoteBrowser title='My Notes' notes={myNotes}/>
+
+        </div>
     );
 }

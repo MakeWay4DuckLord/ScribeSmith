@@ -5,6 +5,9 @@
     padding: 20px;
 }
 
+.notePreviewComponent:hover {
+    background-color: #19181c; 
+}
 .notePreviewComponent h2 {
     color: rgb(255, 216, 97);
 }

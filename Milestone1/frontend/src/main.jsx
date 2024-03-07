@@ -8,6 +8,7 @@ import Campaigns from './pages/campaigns/Campaigns.jsx';
 import JoinCampaign from './pages/join-campaign/JoinCampaign.jsx';
 import Campaign from './pages/campaign/Campaign.jsx';
 import MyNotes from './pages/my-notes/MyNotes.jsx';
+import Note from './components/Note/Note.jsx';
 
 import '../index.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: "my-notes/:id",
         element: <MyNotes />
+      },
+      {
+        path: "note-debug",
+        element: <Note />
       }
     ]
   },  

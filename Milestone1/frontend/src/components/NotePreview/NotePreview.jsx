@@ -17,8 +17,8 @@ export default function NotePreview({id, title, content, tags}) {
             
             <p>{content}</p>
             <div className="tagContainer">
-                {noteTags.map(tag => (
-                    <Tag content={tag}/>
+                {noteTags.map((tag, index) => (
+                    <Tag key={index} content={tag}/>
                 ))}
             </div>
         </div>
