@@ -6,6 +6,7 @@ import Login from './pages/login/Login.jsx';
 import SignUp from './pages/sign-up/SignUp.jsx';
 import Campaigns from './pages/campaigns/Campaigns.jsx';
 import JoinCampaign from './pages/join-campaign/JoinCampaign.jsx';
+import CreateCampaign from './pages/create-campaign/CreateCampaign.jsx';
 import Campaign from './pages/campaign/Campaign.jsx';
 import MyNotes from './pages/my-notes/MyNotes.jsx';
 import Note from './components/Note/Note.jsx';
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: "join-campaign",
         element: <JoinCampaign />
+      },
+      {
+        path: "create-campaign",
+        element: <CreateCampaign />
       },
       {
         path: "campaign/:id",
