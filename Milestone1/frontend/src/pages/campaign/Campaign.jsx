@@ -55,7 +55,7 @@ export default function Campaign() {
                         <h3>Shared Notes</h3>
                     </Link>
 
-                    <Link to={`/campaign-settings/${campaign.id}`} className="nav-container">
+                    <Link to={`/campaigns/${campaign.id}/settings`} className="nav-container">
                         <IoMdSettings  className="icon" />
                         <h3>Settings</h3>
 

@@ -54,7 +54,7 @@ export default function Campaigns() {
 
                     <div className="campaign-container">
                         {userCampaigns.map(campaign => (
-                            <Link to={`/campaign/${campaign.id}`} key={campaign.id}>
+                            <Link to={`/campaigns/${campaign.id}`} key={campaign.id}>
                                 <CampaignCard name={campaign.name} owner={ownerNames[campaign.ownerId]} description={campaign.description} />
                             </Link>
                         ))}
