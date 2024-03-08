@@ -48,7 +48,7 @@
 | Login Page         | ✅             | 0%                                |                                                                                                                                           |
 | Create Account     | ✅             | 0%                                |                                                                                                                                           |
 | My Campaigns       | ✅             | ✅                                 |                                                                                                                                           |
-| Join Campaign      | ✅             | ✅<br><br>\|   \|<br>\|---\|<br>\| |                                                                                                                                           |
+| Join Campaign      | ✅             | ✅ | |
 | Create Campaign    | 90%           | 0%                                | [wireframe](https://github.ncsu.edu/engr-csc342/csc342-2024Spring-GroupI/blob/main/Proposal/Wireframes/desktop_wireframes_2.png)          |
 | Campaign Page      | ✅             | ✅                                 |                                                                                                                                           |
 | My Notes           | 60%           | 50%                               | [wireframe](https://github.ncsu.edu/engr-csc342/csc342-2024Spring-GroupI/blob/main/Proposal/Wireframes/desktop_wireframes_3.png?raw=true) |
