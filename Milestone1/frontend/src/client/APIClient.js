@@ -2,7 +2,9 @@ const API_BASE = '/api';
 
 function checkResponse(res) {
     if(!res.ok) {
-      throw new Error("There was an error in fetch");
+        return res.json().then(error => {
+            throw error.error;
+        })
     }
     return res;
   }
@@ -61,9 +63,26 @@ const getCampaignNotesByUser = (campaignId, userId) => {
         .catch(handleError);
 }
 
+const joinCampaign = (userId, joinCode) => {
+    return fetch(API_BASE + `/users/${userId}/campaigns`, {
+            method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({userId: userId,
+                              joinCode: joinCode})
+    })
+    .then(checkResponse)
+    .then(res => {
+        return res.json();
+    })
+    .catch(handleError);
+}
+
 export default {
     getUserCampaigns,
     getCampaign,
     getUser,
     getCampaignNotesByUser,
+    joinCampaign,
 }

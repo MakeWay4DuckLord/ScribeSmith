@@ -47,7 +47,7 @@ export default function Campaigns() {
                 <div className="content">
                     <div className="buttons">
                         <Link to="/join-campaign"><button>Join Campaign</button></Link>
-                        <Link><button to="/create-campaign">Create Campaign</button></Link>
+                        <Link to="/create-campaign"><button>Create Campaign</button></Link>
                     </div>
 
                     <h1>MY CAMPAIGNS</h1>

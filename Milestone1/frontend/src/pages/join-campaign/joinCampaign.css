@@ -21,6 +21,7 @@
 .join-campaign input {
     background-color: #38323e;
     font-size: 20px;
+    color: white;
 }
 
 .join-campaign form {
@@ -44,6 +45,10 @@
     top: 30%;
     left: 28%;
     margin: 0;
+}
+
+.join-campaign .error {
+    color: rgb(255, 85, 85);
 }
 
 @media (max-width: 770px) {

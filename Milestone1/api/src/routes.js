@@ -56,7 +56,7 @@ router.get('/users/:userId/campaigns', (req, res) => {
 });
 
 //Join a user to a campaign
-router.post('/users/:userId/campaigns', (req, res) => {
+router.put('/users/:userId/campaigns', (req, res) => {
     const userId = parseInt(req.params.userId);
     const user = users[userId];
     if (!user) {
@@ -66,17 +66,23 @@ router.post('/users/:userId/campaigns', (req, res) => {
 
     // get campaign join code from request body
     const joinCode = req.body.joinCode;
-    const result = Object.values(campaigns).find(campaign => campaign.joinCode == joinCode);
-    if (!result) {
+    const campaign = Object.values(campaigns).find(campaign => campaign.joinCode == joinCode);
+    if (!campaign) {
         res.status(401).json({ "error": "Campaign not found" });
+        return;
+    }
+    //check if a user is already in a campaign
+    console.log(campaign["userIds"]);
+    if(campaign["userIds"].includes(userId)) {
+        res.status(409).json({"error": "You have already joined this campaign."});
         return;
     }
 
     // add userid to campaign list of userIds
-    (campaigns[result.id]).userIds.push(userId);
+    (campaigns[campaign.id]).userIds.push(userId);
 
     // update user's list of used tags to have a spot for this one
-    (users[userId]).tags[result.id] = [];
+    (users[userId]).tags[campaign.id] = [];
 
     // return success or failure response
     res.status(200).json({"message": "success"});
