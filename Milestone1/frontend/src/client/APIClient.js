@@ -2,7 +2,9 @@ const API_BASE = '/api';
 
 function checkResponse(res) {
     if(!res.ok) {
-      throw new Error("There was an error in fetch");
+        return res.json().then(error => {
+            throw error.error;
+        })
     }
     return res;
   }

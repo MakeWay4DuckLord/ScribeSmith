@@ -6,13 +6,15 @@ export const joinCampaignAction = async ({request}) => {
     const campaignCode = data.get("code");
     console.log(campaignCode);
 
-    if(!campaignCode || campaignCode.length < 5) {
+    if(!campaignCode || campaignCode.length != 5) {
         return {error: "Campaign code must be 5 characters long."};
     } else {
-        api.joinCampaign(1, campaignCode).then(res => {
+        try {
+            await api.joinCampaign(1, campaignCode);
             return redirect('/my-campaigns');
-        }).catch(err => {
+        } catch(err) {
+            console.log(err);
             return {error: err};
-        });
+        }
     }   
 }
