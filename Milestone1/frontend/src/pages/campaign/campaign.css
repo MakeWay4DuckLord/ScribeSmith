@@ -54,6 +54,8 @@
     border-radius: 15px;
     margin: 10px 10px 15px 10px;
     background-color: rgb(155, 111, 203);
+    text-decoration: none;
+    color: white;
 }
 
 .campaign-page .nav-container:hover {

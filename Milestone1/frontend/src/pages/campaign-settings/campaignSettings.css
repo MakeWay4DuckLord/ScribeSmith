@@ -1,5 +1,5 @@
 
-.create-campaign {
+.campaign-settings {
     display: flex;
     flex-direction: column;
     height: 90%;
@@ -7,7 +7,7 @@
     justify-content: center;
 }
 
-.create-box {
+.settings-box {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -17,14 +17,14 @@
     width: 60%;
 }
 
-.create-campaign input {
+.campaign-settings input {
     background-color: #38323e;
     font-size: 20px;
     color: white;
     width: 100%;
 }
 
-.create-campaign textarea {
+.campaign-settings textarea {
     background-color: #38323e;
     font-size: 20px;
     border: none;
@@ -39,27 +39,27 @@
     width: 100%;
 }
 
-.create-campaign form {
+.campaign-settings form {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 70%;
 }
 
-.create-campaign label {
+.campaign-settings label {
     align-self: flex-start;
 }
 
-.create-campaign input[type="file"] {
+.campaign-settings input[type="file"] {
     font-size: 20px;
 }
 
-.create-campaign input[type="submit"] {
+.campaign-settings input[type="submit"] {
     margin-top: 15px;
     background-color: rgb(155, 111, 203);
 }
 
-.create-campaign h1 {
+.campaign-settings h1 {
     color: rgb(255, 216, 97);
     /* position: absolute;
     top: 30%;
@@ -68,13 +68,13 @@
 }
 
 @media (max-width: 770px) {
-    .create-campaign h1 {
+    .campaign-settings h1 {
         font-size: 40px;
         top: 29%;
         left: 18%;
     }
 
-    .create-campaign form {
+    .campaign-settings form {
         width: 100%;
     }
     
@@ -82,18 +82,18 @@
 
 @media (max-width: 450px) {
 
-    .create-campaign {
+    .campaign-settings {
         height: initial;
         margin-top: 15px;
     }
 
-    .create-box {
+    .settings-box {
         display: block;
         background-color: inherit;
         padding: 0;
     }
 
-    .create-campaign h1 {
+    .campaign-settings h1 {
         font-size: 30px;
         position: inherit;
         margin-bottom: 15px;
