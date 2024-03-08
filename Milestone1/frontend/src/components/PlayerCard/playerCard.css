@@ -1,0 +1,6 @@
+.player-card {
+    display: flex;
+    background-color: #38323e;
+    border-radius: 15px;
+    padding: 3%;
+}
