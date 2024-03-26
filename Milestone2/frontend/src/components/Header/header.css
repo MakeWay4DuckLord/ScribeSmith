@@ -1,0 +1,80 @@
+.header-component {
+    padding: 10px 30px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background-color: #19181c;
+}
+
+.header-component .back-button {
+    display: none;
+    color: white;
+}
+
+.header-component button {
+    background-color: inherit;
+}
+
+.header-component nav {
+    margin-left: auto;
+}
+
+
+.header-component h1 {
+    margin: 0;
+    color: rgb(145, 255, 222);
+}
+
+.header-component a {
+    text-decoration: none;
+}
+
+.header-component button {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    margin: 5px;
+}
+
+.header-component .login {
+    background-color: rgb(103, 96, 108);
+}
+
+.header-component .login:hover {
+    background-color: rgb(63, 63, 63);
+}
+
+.header-component .sign-up {
+    background-color: rgb(155, 111, 203);
+}
+
+.header-component .sign-up:hover {
+    background-color: rgb(124, 89, 162);
+}
+
+@media (max-width: 768px) {
+    .header-component .back-button {
+        display: inline-block;
+        margin-right: 10px;
+        font-size: 30px;
+    }
+}
+
+@media (max-width:450px)  { 
+    .header-component {
+        padding: 5px;
+    }
+    .header-component h1 {
+        font-size: 25px;
+    }
+
+}
+
+@media (max-width:345px)  { 
+    .header-component button {
+        font-size: 13px;
+        padding: 6px;
+    }
+
+}
