@@ -1,0 +1,34 @@
+{
+    "1": {
+        "id": 1,
+        "userId": 1,
+        "campaignId": 3,
+        "title": "Pellentesque at nulla",
+        "content": "In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy.",
+        "tags": ["notes", "session1", "my art"]
+    },
+    "2": {
+        "id": 2,
+        "userId": 3,
+        "campaignId": 2,
+        "title": "Nulla tellus",
+        "content": "Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem. Integer tincidunt ante vel ipsum.",
+        "tags": ["thoughts", "forest"]
+    },
+    "3": {
+        "id": 3,
+        "userId": 3,
+        "campaignId": 2,
+        "title": "Quisque id justo sit amet",
+        "content": "Maecenas leo odio, condimentum id, luctus nec, molestie sed, justo. Pellentesque viverra pede ac diam.",
+        "tags": ["session1", "npc", "my art"]
+    },
+    "4": {
+        "id": 4,
+        "userId": 1,
+        "campaignId": 3,
+        "title": "Donec dapibus.",
+        "content": "In eleifend quam a odio. In hac habitasse platea dictumst. Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat.",
+        "tags": ["notes", "session1", "spells"]
+    }
+}

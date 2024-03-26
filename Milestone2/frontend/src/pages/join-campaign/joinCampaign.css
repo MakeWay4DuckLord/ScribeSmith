@@ -1,0 +1,84 @@
+
+.join-campaign {
+    display: flex;
+    flex-direction: column;
+    height: 90%;
+    align-items: center;
+    justify-content: center;
+}
+
+.join-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #494251;
+    width: 40%;
+    height: 30%;
+    border-radius: 5px;
+    padding: 30px;
+}
+
+.join-campaign input {
+    background-color: #38323e;
+    font-size: 20px;
+    color: white;
+}
+
+.join-campaign form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.join-campaign label {
+    align-self: flex-start;
+}
+
+.join-campaign input[type="submit"] {
+    margin-top: 15px;
+    background-color: rgb(155, 111, 203);
+}
+
+.join-campaign h1 {
+    color: rgb(255, 216, 97);
+    position: absolute;
+    top: 30%;
+    left: 28%;
+    margin: 0;
+}
+
+.join-campaign .error {
+    color: rgb(255, 85, 85);
+}
+
+@media (max-width: 770px) {
+    .join-box {
+        width: 60%;
+    }
+
+    .join-campaign h1 {
+        font-size: 40px;
+        top: 29%;
+        left: 18%;
+    }
+}
+
+@media (max-width: 450px) {
+
+    .join-campaign {
+        height: initial;
+        margin-top: 15px;
+    }
+
+    .join-box {
+        display: block;
+        background-color: inherit;
+        padding: 0;
+    }
+
+    .join-campaign h1 {
+        font-size: 30px;
+        position: inherit;
+        margin-bottom: 15px;
+    }
+}
