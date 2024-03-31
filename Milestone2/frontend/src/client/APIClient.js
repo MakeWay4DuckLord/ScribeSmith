@@ -13,8 +13,27 @@ function handleError(error) {
     throw error;
 }
 
+const login = (email, password) => {
+    return fetch(API_BASE + `/authenticate`, {
+        method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(
+        {
+            email: email,
+            password: password
+        })
+    })
+    .then(checkResponse)
+    .then(res => {
+        return res.json();
+    })
+    .catch(handleError)
+}
+
 const signUp = (firstName, lastName, email, password) => {
-    return fetch(API_BASE + `/users/`, {
+    return fetch(API_BASE + `/users`, {
         method: 'POST',
     headers: {
         'Content-Type': 'application/json'
@@ -100,6 +119,7 @@ const joinCampaign = (userId, joinCode) => {
 }
 
 export default {
+    login,
     signUp,
     getUserCampaigns,
     getCampaign,

@@ -17,7 +17,7 @@ export const signUpAction = async ({request}) => {
     } else {
         try {
             await api.signUp(firstName, lastName, email, password);
-            return redirect('/log-in');
+            return redirect('/');
         } catch(err) {
             console.log(err);
             return {error: err};

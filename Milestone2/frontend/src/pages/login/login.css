@@ -68,6 +68,10 @@
     font-size: 25px;
 }
 
+.login-page .error {
+    color: rgb(255, 85, 85);
+}
+
 @media (max-width: 768px) {
     .login-container {
         width: 70%;

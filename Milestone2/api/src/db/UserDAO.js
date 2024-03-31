@@ -26,7 +26,7 @@ module.exports = {
       }
       else { // if no user with provided email
         
-        reject({code: 401, message: "No such user"});
+        reject({code: 401, message: "Invalid email or password"});
       }
     })
 
