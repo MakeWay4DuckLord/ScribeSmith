@@ -1,31 +1,62 @@
+const router = require('express').Router();
+
 const users = require('./data/users');
 const campaigns = require('./data/campaigns');
 const notes = require('./data/notes');
 
-const router = require('express').Router();
+const {TokenMiddleware, generateToken, removeToken} = require('../middleware/TokenMiddleware');
+const UserDAO = require('./UserDAO');
+
 
 // Authenticate a User
 router.post('/authenticate', (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
-    const user = Object.values(users).find(user => user.email === email && user.password === password);
-    if (user) {
-        res.json(user);
-    } else {
-        res.status(401).json({ "error": "Email or password are incorrect." });
-    }
+    if(req.body.email && req.body.password) {
+        UserDAO.getUserByCredentials(req.body.email, req.body.password).then(user => {
+          let result = {
+            user: user
+          }
+    
+          generateToken(req, res, user);
+    
+          res.json(result);
+        }).catch(err => {
+          console.log(err);
+          res.status(err.code).json({error: err.message});
+        });
+      }
+      else {
+        res.status(401).json({error: 'Not authenticated'});
+      }
 });
 
 //Add a user
 router.post('/users', (req, res) => {
-    // mock data implementation
-    const userId = req.body.userId;
-    const user = users[userId];
-    if (user) {
-        res.status(400).json({ "error": "User already exists" });
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const email = req.body.email;
+    const password = req.body.password;
+
+    if(firstName && lastName && email && password) {
+        UserDAO.createNewUser(email, password).then(results => {
+            const newUser = {
+                "id": Object.keys(users).length + 1,
+                "first_name": firstName,
+                "last_name": lastName,
+                "email": email,
+                "avatar": `https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg`, //default avatar
+                "salt": results.salt,
+                "password": results.hashedPassword,
+            }
+            const usersNewId = Object.keys(users).length + 1;
+            users[usersNewId] = newUser;
+
+            res.json({success: true});
+        }).catch(err => {
+            console.log(err);
+            res.status(err.code).json({error: err.message});
+        });
     } else {
-        users[userId] = req.body;
-        res.status(200).json({"message": "success"}); // TODO: change him?????
+        res.status(401).json({error: "All fields must be filled out."});
     }
 });
 

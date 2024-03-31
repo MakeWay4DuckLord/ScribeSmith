@@ -5,7 +5,7 @@ const PORT = process.env.PORT;
 
 app.use(express.json());
 
-const APIRouter = require('./routes');
+const APIRouter = require('./db/routes');
 app.use( APIRouter);
 
 

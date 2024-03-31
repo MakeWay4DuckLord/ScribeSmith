@@ -1,31 +1,36 @@
 {
     "1": {
       "userId": 1,
-      "name": "Stu Dent",
+      "first_name": "Stu",
+      "last_name": "Dent",
       "email": "student@school.com",
-      "password": "password1",
       "icon": "https://robohash.org/veniamdoloresenim.png?size=64x64&set=set1",
       "tags": {
         "1": ["session1", "my art", "thoughts"],
         "4": ["npc", "session5", "character art", "ideas"],
         "2": ["loot", "character sheet", "fanart"]
-      }
+      },
+      "salt": "48c8947f69c054a5caa934674ce8881d02bb18fb59d5a63eeaddff735b0e9",
+      "password": "83d9bdb5e20f3571b087db9aabf190a296741c3e864d7742f35658cfccc1b79c4599aad25084aa9a28c649a50c92244227b3e53e197621301d619d1ea01873c4"
     },
     "2": {
         "userId": 2,
-        "name": "Gra Duate",
+        "first_name": "Gra",
+        "last_name": "Dent",
         "email": "graduate@school.com",
-        "password": "password2",
         "icon": "https://robohash.org/nullaautemin.png?size=64x64&set=set1",
         "tags": {
             "5": ["session4", "relationships", "theories"],
             "3": ["locations", "session2", "my character", "ideas"],
             "1": ["loot", "maps", "magic"]
-        }
+        },
+        "salt": "801e87294783281ae49fc8287a0fd86779b27d7972d3e84f0fa0d826d7cb67dfefc",
+        "password": "e289219c34f9a32ebc82393f09719b7f34872de95463242b5ffe8bb4b11a5fe7d454f9f5d082c8207c5d69b220ba06624b4bb15ffa05cc7d7d53c43f9e96da6a"
       },
       "3": {
         "userId": 3,
-        "name": "Mariam Tweede",
+        "first_name": "Mariam",
+        "last_name": "Tweed",
         "email": "mariam@school.com",
         "password": "password3",
         "icon": "https://robohash.org/illoeamolestiae.png?size=64x64&set=set1",

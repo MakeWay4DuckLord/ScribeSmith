@@ -11,7 +11,8 @@ import CampaignSettings from './pages/campaign-settings/CampaignSettings.jsx';
 import Campaign from './pages/campaign/Campaign.jsx';
 import MyNotes from './pages/my-notes/MyNotes.jsx';
 import Note from './components/Note/Note.jsx';
-import { joinCampaignAction } from './pages/join-campaign/formAction.js';
+import { joinCampaignAction } from './pages/join-campaign/formAction.jsx';
+import { signUpAction } from './pages/sign-up/formAction.jsx';
 
 
 import '../index.css'
@@ -26,7 +27,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />
+        element: <Login />
       },
       {
         path: "login",
@@ -34,7 +35,8 @@ const router = createBrowserRouter([
       },
       {
         path: "sign-up",
-        element: <SignUp />
+        element: <SignUp />,
+        action: signUpAction
       },
       {
         path: "my-campaigns",
