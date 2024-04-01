@@ -60,8 +60,14 @@ router.post('/users', (req, res) => {
     }
 });
 
+//Getting the currently authenticated user
+router.get('/users/current', TokenMiddleware, (req,res) => {
+    console.log(req.user);
+    res.json(req.user);
+});
+
 //retrieve a user by id
-router.get('/users/:userId', (req, res) => {
+router.get('/users/:userId', TokenMiddleware, (req, res) => {
     const userId = req.params.userId;
     const user = users[userId];
 

@@ -53,6 +53,15 @@ const signUp = (firstName, lastName, email, password) => {
     .catch(handleError)
 }
 
+const getCurrentUser = () => {
+    return fetch(API_BASE +'/users/current')
+    .then(checkResponse)
+    .then(res => {
+        return res.json();
+    })
+    .catch(handleError)
+}
+
 const getUserCampaigns = (userId) => {
     return fetch(API_BASE + `/users/${userId}/campaigns`)
         .then(checkResponse)
@@ -121,6 +130,7 @@ const joinCampaign = (userId, joinCode) => {
 export default {
     login,
     signUp,
+    getCurrentUser,
     getUserCampaigns,
     getCampaign,
     getUser,

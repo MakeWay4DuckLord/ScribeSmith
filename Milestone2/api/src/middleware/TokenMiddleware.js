@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const TOKEN_COOKIE_NAME = "NCParksToken";
+const TOKEN_COOKIE_NAME = "ScribeSmithToken";
 
 const API_SECRET = process.env.API_SECRET;
 
@@ -9,6 +9,7 @@ exports.TokenMiddleware = (req, res, next) => {
   // 1. A cookie in case of a browser
   // 2. The Authorization header in case of a different client
   let token = null;
+
   if(!req.cookies[TOKEN_COOKIE_NAME]) {
     //No cookie, so let's check Authorization header
     const authHeader = req.get('Authorization');
