@@ -32,12 +32,13 @@
         "first_name": "Mariam",
         "last_name": "Tweed",
         "email": "mariam@school.com",
-        "password": "password3",
         "icon": "https://robohash.org/illoeamolestiae.png?size=64x64&set=set1",
         "tags": {
             "1": ["session3", "weapons", "skills"],
             "2": ["forest", "session1", "spells", "loot"],
             "3": ["puzzles", "build plans", "magic"]
-        }
+        },
+        "salt": "801e87294783281ae49fc8287a0fd86779b27d7972d3e84f0fa0d826d7cb67dfefc",
+        "password": "e289219c34f9a32ebc82393f09719b7f34872de95463242b5ffe8bb4b11a5fe7d454f9f5d082c8207c5d69b220ba06624b4bb15ffa05cc7d7d53c43f9e96da6a"
       }
 }

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../../client/APIClient"
 import { useEffect, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
@@ -12,27 +12,41 @@ import './campaign.css';
 export default function Campaign() {
     const [campaign, setCampaign] = useState({});
     const [owner, setOwner] = useState("");
-    const [error, setError] = useState(null);
+    const [error, setError] = useState("");
     const { id } = useParams();
-
+    const navigate = useNavigate();
     
     useEffect(() => {
-        api.getCampaign(id).then(campaign => {
-            setCampaign(campaign);
-
-            if (campaign.ownerId !== undefined) {
-                api.getUser(campaign.ownerId).then(user => {
-                    setOwner(user.name);
-                });
-            }
+        api.getCurrentUser().then(currentUser => { //get the current user
+            api.getCampaign(id).then(campaign => {
+                console.log(campaign);
+                console.log(currentUser);
+                if(campaign.userIds && campaign.userIds.includes(currentUser.userId)) {
+                    setCampaign(campaign);
+    
+                    if (campaign.ownerId !== undefined) {
+                        api.getUser(campaign.ownerId).then(user => {
+                            setOwner(user.name);
+                        });
+                    }
+                } else {
+                    setError("You are not authorized to view this campaign.");
+                }
+                
+            })
+            .catch(err => {
+                console.log(err);
+                setError("Error loading campaign data");
+            })
+            
+        }).catch(() => { //not authenticated
+            navigate("/login");
         })
-        .catch(err => {
-            setError(true);
-        })
+        
     }, [id]);
 
-    if(error === true) {
-        return <h2>Error loading campaign data</h2>
+    if(error !== "") {
+        return <h2>{error}</h2>
     }
 
     return (

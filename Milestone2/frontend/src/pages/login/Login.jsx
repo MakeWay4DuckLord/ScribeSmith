@@ -7,7 +7,7 @@ export default function Login() {
     const data = useActionData();
     
     return (
-        <div className="login-page" action="/">
+        <div className="login-page" action="/login">
             <Form method="post">
                 <div className="login-container">
                     <label htmlFor="email">Email</label>

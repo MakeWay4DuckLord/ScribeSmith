@@ -10,9 +10,12 @@ export const joinCampaignAction = async ({request}) => {
         return {error: "Campaign code must be 5 characters long."};
     } else {
         try {
-            await api.joinCampaign(1, campaignCode);
-            return redirect('/my-campaigns');
+            const currentUser = await api.getCurrentUser();
+            await api.joinCampaign(currentUser.userId, campaignCode);
+            return redirect('/');
         } catch(err) {
+            //TODO: Check if error is 401, if so redirect to login page
+            //APIClient needs to be changed so error codes are returned so we can do this
             console.log(err);
             return {error: err};
         }

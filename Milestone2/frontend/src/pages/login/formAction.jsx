@@ -11,7 +11,7 @@ export const loginAction = async ({request}) => {
     } else {
         try {
             await api.login(email, password);
-            return redirect('/my-campaigns');
+            return redirect('/');
         } catch(err) {
             console.log(err);
             return {error: err};

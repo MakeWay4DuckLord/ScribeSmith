@@ -13,7 +13,6 @@ export default function Header() {
 
     useEffect(() => {
         api.getCurrentUser().then(user => {
-            console.log(user);
             setCurrentUser(user);
         }).catch(() => {
             setCurrentUser(null);

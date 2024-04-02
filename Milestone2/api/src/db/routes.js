@@ -43,7 +43,8 @@ router.post('/users', (req, res) => {
                 "first_name": firstName,
                 "last_name": lastName,
                 "email": email,
-                "avatar": `https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg`, //default avatar
+                "icon": `https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg`, //default avatar
+                "tags": [],
                 "salt": results.salt,
                 "password": results.hashedPassword,
             }
@@ -62,7 +63,6 @@ router.post('/users', (req, res) => {
 
 //Getting the currently authenticated user
 router.get('/users/current', TokenMiddleware, (req,res) => {
-    console.log(req.user);
     res.json(req.user);
 });
 
@@ -79,11 +79,10 @@ router.get('/users/:userId', TokenMiddleware, (req, res) => {
 });
 
 //Retrieve a user's campaigns
-router.get('/users/:userId/campaigns', (req, res) => {
+router.get('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
     const userId = parseInt(req.params.userId);
-    console.log(campaigns[1].userIds);
-    // TODO: remove the !userId from the filtering, it shouldnt be necessary
-    const results = Object.values(campaigns).filter(campaign => !userId || campaign.userIds.includes(userId));
+
+    const results = Object.values(campaigns).filter(campaign => campaign.userIds.includes(userId));
 
     let campaignArray = [];
     results.forEach(campaign => {
@@ -93,7 +92,7 @@ router.get('/users/:userId/campaigns', (req, res) => {
 });
 
 //Join a user to a campaign
-router.put('/users/:userId/campaigns', (req, res) => {
+router.put('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
     const userId = parseInt(req.params.userId);
     const user = users[userId];
     if (!user) {
@@ -119,6 +118,7 @@ router.put('/users/:userId/campaigns', (req, res) => {
     (campaigns[campaign.id]).userIds.push(userId);
 
     // update user's list of used tags to have a spot for this one
+    console.log(users[userId]);
     (users[userId]).tags[campaign.id] = [];
 
     // return success or failure response
@@ -126,7 +126,7 @@ router.put('/users/:userId/campaigns', (req, res) => {
 });
 
 //create a campaign
-router.post('/campaigns', (req, res) => {
+router.post('/campaigns', TokenMiddleware, (req, res) => {
     // request body should include name, description, banner
     // id and join code are generated
     // owner is the current auth'd user? but req body for NOW
@@ -152,7 +152,7 @@ router.post('/campaigns', (req, res) => {
 });
 
 //Retrieve a campaign by id
-router.get('/campaigns/:campaignId', (req, res) => {
+router.get('/campaigns/:campaignId', TokenMiddleware, (req, res) => {
     const campaignId = parseInt(req.params.campaignId);
     const campaign = campaigns[campaignId];
     if (campaign) {
@@ -163,7 +163,7 @@ router.get('/campaigns/:campaignId', (req, res) => {
 });
 
 //remove a player from a campaign
-router.delete('/campaigns/:campaignId/users/:userId', (req, res) => {
+router.delete('/campaigns/:campaignId/users/:userId', TokenMiddleware, (req, res) => {
     const campaignId = parseInt(req.params.campaignId);
     const campaign = campaigns[campaignId];
     if (!campaign) {
@@ -183,7 +183,7 @@ router.delete('/campaigns/:campaignId/users/:userId', (req, res) => {
 });
 
 //update campaign description
-router.patch('/campaigns/:campaignId/description', (req, res) => {
+router.patch('/campaigns/:campaignId/description', TokenMiddleware, (req, res) => {
     const campaignId = parseInt(req.params.campaignId);
     const campaign = campaigns[campaignId];
     if (!campaign) {
@@ -199,7 +199,7 @@ router.patch('/campaigns/:campaignId/description', (req, res) => {
 });
 
 //update campaign tags
-router.patch('/campaigns/:campaignId/tags', (req, res) => {
+router.patch('/campaigns/:campaignId/tags', TokenMiddleware, (req, res) => {
     const campaignId = parseInt(req.params.campaignId);
     const campaign = campaigns[campaignId];
     if (!campaign) {
@@ -215,7 +215,7 @@ router.patch('/campaigns/:campaignId/tags', (req, res) => {
 });
 
 //update banner image
-router.patch('/campaigns/:campaignId/banner', (req, res) => {
+router.patch('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
     const campaignId = parseInt(req.params.campaignId);
     const campaign = campaigns[campaignId];
     if (!campaign) {
@@ -231,7 +231,7 @@ router.patch('/campaigns/:campaignId/banner', (req, res) => {
 });
 
 //get notes by creator and campaign (could this be removed?)
-router.get('/campaigns/:campaignId/notes/users/:userId', (req, res) => {
+router.get('/campaigns/:campaignId/notes/users/:userId', TokenMiddleware, (req, res) => {
     // note - this request will always need to filter out non-viewable notes
     // based on authentication
     const campaignId = parseInt(req.params.campaignId);
@@ -240,12 +240,18 @@ router.get('/campaigns/:campaignId/notes/users/:userId', (req, res) => {
         res.status(401).json({ "error": "Campaign not found" });
         return;
     }
+
     // user id check - unclear if necessary.
     // will probably get changed out when we add authentication anyway so w/e
     const userId = parseInt(req.params.userId);
     const user = users[userId];
     if (!user) {
         res.status(401).json({ "error": "User not found" });
+        return;
+    }
+
+    if(!campaign.userIds.includes(userId)) {
+        res.status(401).json({ "error": "Not authorized to view this campaign's notes" });
         return;
     }
 
@@ -268,12 +274,12 @@ router.get('/campaigns/:campaignId/notes/users/:userId/tags/:tagString', (req, r
 });
 
 //get all tags a user has used in a campaign
-router.get('/users/:userId/tags/campaigns/:campaignId', (req, res) => {
+router.get('/users/:userId/tags/campaigns/:campaignId', TokenMiddleware, (req, res) => {
 
 });
 
 //create a note
-router.post('/campaign/:campaignId/notes/users/:userId', (req, res) => {
+router.post('/campaign/:campaignId/notes/users/:userId', TokenMiddleware, (req, res) => {
 
 });
 

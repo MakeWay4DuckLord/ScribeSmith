@@ -18,15 +18,13 @@ import { signUpAction } from './pages/sign-up/formAction.jsx';
 import '../index.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 
-
-//TO DO: Secure routes only when logged in
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Header />,
     children: [
       {
-        path: "/",
+        path: "/login",
         element: <Login />,
         action: loginAction,
       },
@@ -36,7 +34,7 @@ const router = createBrowserRouter([
         action: signUpAction
       },
       {
-        path: "my-campaigns",
+        path: "/",
         element: <Campaigns />
       },
       {
