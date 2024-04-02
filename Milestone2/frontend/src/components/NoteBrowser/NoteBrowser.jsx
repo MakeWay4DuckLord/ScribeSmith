@@ -10,21 +10,63 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 
+// function getSearchedTags() {
+//         const tagArray = searchBar.split(" ").filter(tag => tag.charAt(0) == "#").map(tag => tag.substring(1));
+//         console.log(tagArray);
+//         return tagArray
+// }
+
 
 export default function NoteBrowser({title, notes}) {
     const[openNote, setOpenNote] = useState({title: "New Note", content: "", tags: []});
+    const[filteredNotes, setFilteredNotes] = useState([]);
+    const[selectedTags, setSelectedTags] = useState([]);
+    const{cpnId} = useParams();
+    // const[searchBar, setSearchBar] = useState("");
     
-    function updateNote(note) {
+    function updateNote(note) { 
         setOpenNote(note);
     }
+
+    function updateSearch(event) {
+        const searchBar = event.target.value;
+        // if(searchBar) {
+            if(searchBar.length == 0) {
+                setSelectedTags([]);
+            } else {
+                const tagArray = searchBar.split(" ").filter(tag => tag.charAt(0) == "#").map(tag => tag.substring(1));
+                setSelectedTags(tagArray);
+            }
+            console.log("selected tags: ", selectedTags);
+        // }
+    }
+
+    // function tagOnClick(tag) {
+    //     let searchBar =  document.querySelector("#search-bar");
+    //     if(searchBar) {
+    //         searchBar.value += ` ${tag} `;
+    //     }
+    // }
 
     useEffect(() => {
         if(notes.length !== 0) {
             setOpenNote(notes[0]);
+
+            setFilteredNotes(notes);
+
+            //filter for notes that have all of the selected tags
+
+            
+            setFilteredNotes(notes.filter(note => selectedTags.filter(tag => !note.tags.includes(tag)).length == 0)); // and filtering
+            
+            // if(selectedTags.length > 0){
+                // setFilteredNotes(notes.filter(note => selectedTags.filter(tag => note.tags.includes(tag)).length > 0)); // or filtering
+            // }
         } else {
             setOpenNote({title: "New Note", content: "", tags: []});
         }
-    }, [notes]);
+        console.log(cpnId);
+    }, [notes, selectedTags]);
 
 
     return(
@@ -32,7 +74,7 @@ export default function NoteBrowser({title, notes}) {
             <aside>
                 <h1>{title}</h1>
                 <search>
-                    <input type="text" placeholder='Search...' />
+                    <input type="text" id="search-bar" placeholder='Search...' onChange={updateSearch}/>
                     <IoIosSearch className='searchIcon' />
 
                 </search>
@@ -44,7 +86,7 @@ export default function NoteBrowser({title, notes}) {
                 </div>
 
                 <div className='note-container'>
-                    {notes.map(note => (
+                    {filteredNotes.map(note => (
                         <div onClick={()=>{updateNote(note)}} key={note.id}>
                             <NotePreview  id={note.id} title={note.title} content={note.content} tags={note.tags}/>
                         </div>
