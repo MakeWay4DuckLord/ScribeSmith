@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import Header from './components/Header/Header.jsx';
-import Home from './pages/home/Home.jsx';
 import Login from './pages/login/Login.jsx';
 import SignUp from './pages/sign-up/SignUp.jsx';
 import Campaigns from './pages/campaigns/Campaigns.jsx';
@@ -11,33 +10,31 @@ import CampaignSettings from './pages/campaign-settings/CampaignSettings.jsx';
 import Campaign from './pages/campaign/Campaign.jsx';
 import MyNotes from './pages/my-notes/MyNotes.jsx';
 import Note from './components/Note/Note.jsx';
-import { joinCampaignAction } from './pages/join-campaign/formAction.js';
+import { joinCampaignAction } from './pages/join-campaign/formAction.jsx';
+import { loginAction } from './pages/login/formAction.jsx';
+import { signUpAction } from './pages/sign-up/formAction.jsx';
 
 
 import '../index.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 
-
-//TO DO: Secure routes only when logged in
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Header />,
     children: [
       {
-        path: "/",
-        element: <Home />
-      },
-      {
-        path: "login",
-        element: <Login />
+        path: "/login",
+        element: <Login />,
+        action: loginAction,
       },
       {
         path: "sign-up",
-        element: <SignUp />
+        element: <SignUp />,
+        action: signUpAction
       },
       {
-        path: "my-campaigns",
+        path: "/",
         element: <Campaigns />
       },
       {

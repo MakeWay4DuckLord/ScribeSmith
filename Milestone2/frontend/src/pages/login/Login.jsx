@@ -1,27 +1,28 @@
-import { Form, Link } from "react-router-dom";
+import { Form, Link, useActionData } from "react-router-dom";
 import "./login.css"
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 
-
-//TODO: Need functionality for logging in, right now its just styling
 export default function Login() {
+    const data = useActionData();
+    
     return (
-        <div className="login-page">
+        <div className="login-page" action="/login">
             <Form method="post">
                 <div className="login-container">
-                    <p className="alert">Incorrect username or password.</p>
                     <label htmlFor="email">Email</label>
                     <div className="input-container"> 
                         <MdEmail className="icon" />
-                        <input type="email" id="email" placeholder="Email" />
+                        <input type="email" name="email" placeholder="Email" required />
                     </div>
 
                     <label htmlFor="password">Password</label>
                     <div className="input-container">
                         <RiLockPasswordFill className="icon" />
-                        <input type="password" id="password" placeholder="Password" />
+                        <input type="password" name="password" placeholder="Password" required/>
                     </div>
+
+                    {data && data.error && <p className="error">{data.error}</p>}
                     <input type="submit" value="LOGIN" />
                     <p>Need an account? <Link to="/sign-up">Register</Link></p>
                 </div>

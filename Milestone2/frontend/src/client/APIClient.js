@@ -1,5 +1,4 @@
 const API_BASE = '/api';
-
 function checkResponse(res) {
     if(!res.ok) {
         return res.json().then(error => {
@@ -12,6 +11,55 @@ function checkResponse(res) {
 function handleError(error) {
     console.log("ERROR", error);
     throw error;
+}
+
+const login = (email, password) => {
+    return fetch(API_BASE + `/authenticate`, {
+        method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(
+        {
+            email: email,
+            password: password
+        })
+    })
+    .then(checkResponse)
+    .then(res => {
+        return res.json();
+    })
+    .catch(handleError)
+}
+
+const signUp = (firstName, lastName, email, password) => {
+    return fetch(API_BASE + `/users`, {
+        method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(
+        {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: password
+        })
+    })
+    .then(checkResponse)
+    .then(res => {
+        return res.json();
+    })
+    .catch(handleError)
+}
+
+const getCurrentUser = () => {
+    return fetch(API_BASE +'/users/current')
+    .then(checkResponse)
+    .then(res => {
+        return res.json();
+    })
+    .catch(handleError)
 }
 
 const getUserCampaigns = (userId) => {
@@ -80,6 +128,9 @@ const joinCampaign = (userId, joinCode) => {
 }
 
 export default {
+    login,
+    signUp,
+    getCurrentUser,
     getUserCampaigns,
     getCampaign,
     getUser,
