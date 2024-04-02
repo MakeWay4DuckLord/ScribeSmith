@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom';
 
 export default function MyNotes() {
     const[myNotes, setNotes] = useState([]);
+    const[campaignTags, setCampaignTags] = useState([]);
     const {id} = useParams();
     const [error, setError] = useState("");
 
@@ -20,6 +21,12 @@ export default function MyNotes() {
             }).catch(err => {
                 setError(err);
             });
+
+            api.getCampaign(id).then(cpn => {
+                setCampaignTags(cpn.tags);
+            })
+
+
         }).catch(() => { //user not authenticated
             navigate("/login");
         });
@@ -33,7 +40,7 @@ export default function MyNotes() {
 
     return(
         <div className='myNotes'>
-        <NoteBrowser title='My Notes' notes={myNotes}/>
+        <NoteBrowser title='My Notes' notes={myNotes} campaignTags={campaignTags}/>
 
         </div>
     );
