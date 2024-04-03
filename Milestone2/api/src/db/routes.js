@@ -29,6 +29,12 @@ router.post('/authenticate', (req, res) => {
       }
 });
 
+//Logout the current authenticated user
+router.post('/users/logout', (req,  res) => {
+    removeToken(req, res);  
+    res.json({success: true});
+});
+
 //Add a user
 router.post('/users', (req, res) => {
     const firstName = req.body.firstName;

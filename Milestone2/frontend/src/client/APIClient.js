@@ -32,6 +32,20 @@ const login = (email, password) => {
     .catch(handleError)
 }
 
+const logout = () => {
+    return fetch(API_BASE + `/users/logout`, {
+        method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    })
+    .then(checkResponse)
+    .then(res => {
+        return res.json();
+    })
+    .catch(handleError)
+}
+
 const signUp = (firstName, lastName, email, password) => {
     return fetch(API_BASE + `/users`, {
         method: 'POST',
@@ -130,6 +144,7 @@ const joinCampaign = (userId, joinCode) => {
 export default {
     login,
     signUp,
+    logout,
     getCurrentUser,
     getUserCampaigns,
     getCampaign,

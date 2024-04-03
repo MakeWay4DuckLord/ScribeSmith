@@ -1,10 +1,15 @@
 import './header.css'
-import { Link } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import { useLocation, Outlet,  useNavigate } from "react-router-dom";
 import { FiChevronLeft } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import api from "../../client/APIClient"
 
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
 export default function Header() {
     const [currentUser, setCurrentUser] = useState(null);
@@ -19,9 +24,17 @@ export default function Header() {
         });
     }, [location.pathname]);
 
+    const logoutUser = () => {
+        api.logout().then(() => {
+            console.log("HI");
+            navigate('/login');
+        }).catch((err) => {
+            console.log(`Error loging out user: ${err}`)
+        });
+    }
     //TODO: Conditional rendering needs to be changed based on if a user is logged in, not based on path
     //TODO: Make conditional route, where if logged in, clicking on the logo brings to user campaigns page
-    return ( 
+    return (
         <>
             <header className='header-component'>
                 <button className='back-button' onClick={() => {navigate(-1);}}>
@@ -35,8 +48,23 @@ export default function Header() {
                         <Link to="login"><button className='login'>Login</button></Link>
                         <Link to="sign-up"><button className='sign-up'>Sign Up</button></Link>
                     </>                    
-                    : 
-                    <p>{currentUser.email}</p>
+                    :
+                    <div>
+                        <PopupState variant="popover" popupId="demo-popup-menu">
+                            {(popupState) => (
+                                <React.Fragment>
+                                <Button variant="contained" {...bindTrigger(popupState)}>
+                                    <img src={currentUser.icon} alt="user icon" />
+                                </Button>
+                                <Menu {...bindMenu(popupState)}>
+                                    <MenuItem onClick={popupState.close}>Profile Settings</MenuItem>
+                                    <MenuItem onClick={logoutUser}>Logout</MenuItem>
+                                </Menu>
+                                </React.Fragment>
+                            )}
+                        </PopupState>
+                    </div>
+                    
                     }
                 </nav>
             </header>
