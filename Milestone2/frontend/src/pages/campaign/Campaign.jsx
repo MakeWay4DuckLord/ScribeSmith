@@ -13,12 +13,12 @@ export default function Campaign() {
     const [campaign, setCampaign] = useState({});
     const [owner, setOwner] = useState("");
     const [error, setError] = useState("");
-    const { id } = useParams();
+    const { campaignId } = useParams();
     const navigate = useNavigate();
     
     useEffect(() => {
         api.getCurrentUser().then(currentUser => { //get the current user
-            api.getCampaign(id).then(campaign => {
+            api.getCampaign(campaignId).then(campaign => {
                 console.log(campaign);
                 console.log(currentUser);
                 if(campaign.userIds && campaign.userIds.includes(currentUser.userId)) {
@@ -59,12 +59,12 @@ export default function Campaign() {
                 </div>
 
                 <div>
-                    <Link className="nav-container" to={`/my-notes/${campaign.id}`}>
+                    <Link className="nav-container" to={`/campaigns/${campaign.id}/my-notes`}>
                         <FaUserCircle className="icon" />
                         <h3>My Notes</h3>
                     </Link>
 
-                    <Link to={`/shared-notes/${campaign.id}`} className="nav-container"> 
+                    <Link to={`/campaigns/${campaign.id}/shared-notes`} className="nav-container"> 
                         <MdSupervisedUserCircle className="icon" />
                         <h3>Shared Notes</h3>
                     </Link>
