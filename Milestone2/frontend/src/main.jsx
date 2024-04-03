@@ -47,16 +47,20 @@ const router = createBrowserRouter([
         element: <CreateCampaign />
       },
       {
-        path: "campaigns/:id",
+        path: "campaigns/:campaignId",
         element: <Campaign />,
       },
       {
-        path: "campaigns/:id/settings",
+        path: "campaigns/:campaignId/settings",
         element: <CampaignSettings />,
       },
       {
-        path: "my-notes/:id",
+        path: "campaigns/:campaignId/my-notes",
         element: <MyNotes />
+      },
+      {
+        path: "campaigns/:campaignId/shared-notes",
+        element: <SharedNotes />
       },
       {
         path: "note-debug",
