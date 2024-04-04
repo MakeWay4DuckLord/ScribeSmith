@@ -1,12 +1,12 @@
 const API_BASE = '/api';
 function checkResponse(res) {
-    if(!res.ok) {
+    if (!res.ok) {
         return res.json().then(error => {
             throw error.error;
         })
     }
     return res;
-  }
+}
 
 function handleError(error) {
     console.log("ERROR", error);
@@ -16,20 +16,20 @@ function handleError(error) {
 const login = (email, password) => {
     return fetch(API_BASE + `/authenticate`, {
         method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(
-        {
-            email: email,
-            password: password
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(
+            {
+                email: email,
+                password: password
+            })
+    })
+        .then(checkResponse)
+        .then(res => {
+            return res.json();
         })
-    })
-    .then(checkResponse)
-    .then(res => {
-        return res.json();
-    })
-    .catch(handleError)
+        .catch(handleError)
 }
 
 const logout = () => {
@@ -49,31 +49,31 @@ const logout = () => {
 const signUp = (firstName, lastName, email, password) => {
     return fetch(API_BASE + `/users`, {
         method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(
-        {
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            password: password
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(
+            {
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: password
+            })
+    })
+        .then(checkResponse)
+        .then(res => {
+            return res.json();
         })
-    })
-    .then(checkResponse)
-    .then(res => {
-        return res.json();
-    })
-    .catch(handleError)
+        .catch(handleError)
 }
 
 const getCurrentUser = () => {
-    return fetch(API_BASE +'/users/current')
-    .then(checkResponse)
-    .then(res => {
-        return res.json();
-    })
-    .catch(handleError)
+    return fetch(API_BASE + '/users/current')
+        .then(checkResponse)
+        .then(res => {
+            return res.json();
+        })
+        .catch(handleError)
 }
 
 const getUserCampaigns = (userId) => {
@@ -127,18 +127,60 @@ const getCampaignNotesByUser = (campaignId, userId) => {
 
 const joinCampaign = (userId, joinCode) => {
     return fetch(API_BASE + `/users/${userId}/campaigns`, {
-            method: 'PUT',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({userId: userId,
-                              joinCode: joinCode})
+        body: JSON.stringify({
+            userId: userId,
+            joinCode: joinCode
+        })
     })
-    .then(checkResponse)
-    .then(res => {
-        return res.json();
+        .then(checkResponse)
+        .then(res => {
+            return res.json();
+        })
+        .catch(handleError);
+}
+
+const createNote = (campaignId, title, content, tags, sharedWith) => {
+    return fetch(API_BASE + `/campaigns/${campaignId}/notes`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title: title,
+            content: content,
+            tags: tags,
+            sharedWith: sharedWith
+        })
     })
-    .catch(handleError);
+        .then(checkResponse)
+        .then(res => {
+            return res.json();
+        })
+        .catch(handleError);
+}
+
+const updateNote = (noteId, campaignId, title, content, tags, sharedWith) => {
+    return fetch(API_BASE + `/campaigns/${campaignId}/notes/${noteId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title: title,
+            content: content,
+            tags: tags,
+            sharedWith: sharedWith
+        })
+    })
+        .then(checkResponse)
+        .then(res => {
+            return res.json();
+        })
+        .catch(handleError);
 }
 
 export default {
@@ -151,4 +193,6 @@ export default {
     getUser,
     getCampaignNotesByUser,
     joinCampaign,
+    createNote,
+    updateNote
 }

@@ -284,8 +284,13 @@ router.get('/users/:userId/tags/campaigns/:campaignId', TokenMiddleware, (req, r
 });
 
 //create a note
-router.post('/campaign/:campaignId/notes/users/:userId', TokenMiddleware, (req, res) => {
+router.post('/campaigns/:campaignId/notes', TokenMiddleware, (req, res) => {
+    console.log("post request received");
+});
 
+//update a note
+router.put('/campaigns/:campaignId/notes/:noteId', TokenMiddleware, (req, res) => {
+    console.log("put request received");
 });
 
 module.exports = router;
