@@ -1,4 +1,4 @@
-import { Form } from "react-router-dom";
+import { Form, useActionData } from "react-router-dom";
 import api from "../../client/APIClient";
 import { useEffect, useState } from "react";
 import Avatar from '@mui/material/Avatar';
@@ -9,6 +9,8 @@ export default function UserSettings() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+
+    const data = useActionData();
 
     useEffect(() => {
         api.getCurrentUser().then((user) => {
@@ -38,10 +40,10 @@ export default function UserSettings() {
                     <h3>Change Name:</h3>
                     <div className="name-inputs">
                         <label htmlFor="firstName">First Name</label>
-                            <input type="text" name="firstName" placeholder="First Name" defaultValue={firstName} required/>
+                            <input type="text" name="firstName" placeholder="First Name" defaultValue={firstName} maxLength={50} required/>
 
                             <label htmlFor="lastName">First Name</label>
-                            <input type="text" name="lastName" placeholder="Last Name" defaultValue={lastName} required/>
+                            <input type="text" name="lastName" placeholder="Last Name" defaultValue={lastName} maxLength={50} required/>
                     </div>
                     
                      
@@ -51,10 +53,11 @@ export default function UserSettings() {
                             src={selectedFile} 
                             alt="Profile image"
                             sx={{ width: 56, height: 56 }} />
-                        <input type="file" onChange={handleFileChange} accept="image/*" />
+                        <input type="file" onChange={handleFileChange} accept="image/*" name="image" />
                     </div>
                     
                     <button type="button" onClick={handleResetClick}>Reset Profile Image</button>
+                    {data && data.error && <p className="error">{data.error}</p>}
                     <input type="submit" value="SAVE SETTINGS" />
                 </Form>
             </main>

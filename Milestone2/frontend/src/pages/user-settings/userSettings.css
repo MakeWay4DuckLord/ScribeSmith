@@ -17,6 +17,11 @@ body {
     padding: 30px;
 }
 
+.user-settings-page .error {
+    color: rgb(255, 91, 91);
+}
+
+
 .user-settings-page .name-inputs {
     display: flex;
     flex-direction: column;

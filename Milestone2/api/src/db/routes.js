@@ -1,5 +1,4 @@
 const router = require('express').Router();
-
 const users = require('./data/users');
 const campaigns = require('./data/campaigns');
 const notes = require('./data/notes');
@@ -49,7 +48,7 @@ router.post('/users', (req, res) => {
                 "first_name": firstName,
                 "last_name": lastName,
                 "email": email,
-                "icon": `https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg`, //default avatar
+                "icon": "",
                 "tags": [],
                 "salt": results.salt,
                 "password": results.hashedPassword,
