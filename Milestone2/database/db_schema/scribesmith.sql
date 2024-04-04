@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `note` (
   `note_owner_id` int(10) unsigned NOT NULL,
   `note_campaign_id` int(10) unsigned NOT NULL,
   `note_title` varchar(60) NOT NULL,
-  `note_text` varchar(Max),
+  `note_text` varchar(50000),
   PRIMARY KEY (`note_id`),
   CONSTRAINT `FK_NOTE_USR` FOREIGN KEY (`note_owner_id`) REFERENCES user(`usr_id`),
   CONSTRAINT `FK_NOTE_CPN` FOREIGN KEY (`note_campaign_id`) REFERENCES campaign(`cpn_id`)
