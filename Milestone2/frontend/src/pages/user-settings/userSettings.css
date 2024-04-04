@@ -1,0 +1,66 @@
+body {
+    place-items: center;
+}
+
+.user-settings-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-settings-page main {
+    background-color: #494251;
+    width: 50%;
+    border-radius: 5px;
+    padding: 30px;
+}
+
+.user-settings-page .name-inputs {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-settings-page input[type="text"] {
+    color: white;
+    background-color: #38323e;
+    margin-bottom: 10px;
+}
+
+.user-settings-page  label {
+    align-self: flex-start;
+    margin-bottom: 5px;
+}
+
+.user-settings-page .icon-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.user-settings-page h1 {
+    color: rgb(255, 216, 97);
+    align-self:center;
+    margin-bottom: 0;
+}
+
+.user-settings-page button {
+    width: fit-content;
+}
+
+.user-settings-page input[type="submit"] {
+    margin-top: 30px;
+    background-color: rgb(155, 111, 203);
+}
+
+.user-settings-page .form {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 770px) { 
+    .user-settings-page main {
+        width: 70%;
+    }
+}

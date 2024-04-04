@@ -17,6 +17,7 @@ import { signUpAction } from './pages/sign-up/formAction.jsx';
 
 import '../index.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import UserSettings from './pages/user-settings/UserSettings.jsx';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Campaigns />
+      },
+      {
+        path: "/user-settings",
+        element: <UserSettings />
       },
       {
         path: "join-campaign",

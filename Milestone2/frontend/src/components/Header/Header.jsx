@@ -10,6 +10,7 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import Avatar from '@mui/material/Avatar';
 
 export default function Header() {
     const [currentUser, setCurrentUser] = useState(null);
@@ -24,7 +25,7 @@ export default function Header() {
         });
     }, [location.pathname]);
 
-    const logoutUser = () => {
+    const handleOnClickLogoutUser = () => {
         api.logout().then(() => {
             console.log("HI");
             navigate('/login');
@@ -32,8 +33,11 @@ export default function Header() {
             console.log(`Error loging out user: ${err}`)
         });
     }
-    //TODO: Conditional rendering needs to be changed based on if a user is logged in, not based on path
-    //TODO: Make conditional route, where if logged in, clicking on the logo brings to user campaigns page
+
+    const handleOnClickUserSettings = () => {
+        navigate('/user-settings');
+    }
+
     return (
         <>
             <header className='header-component'>
@@ -53,12 +57,10 @@ export default function Header() {
                         <PopupState variant="popover" popupId="demo-popup-menu">
                             {(popupState) => (
                                 <React.Fragment>
-                                <Button variant="contained" {...bindTrigger(popupState)}>
-                                    <img src={currentUser.icon} alt="user icon" />
-                                </Button>
+                                <Avatar alt="User icon"  src={currentUser.icon} {...bindTrigger(popupState)} />
                                 <Menu {...bindMenu(popupState)}>
-                                    <MenuItem onClick={popupState.close}>Profile Settings</MenuItem>
-                                    <MenuItem onClick={logoutUser}>Logout</MenuItem>
+                                    <MenuItem onClick={handleOnClickUserSettings}>User Settings</MenuItem>
+                                    <MenuItem onClick={handleOnClickLogoutUser}>Logout</MenuItem>
                                 </Menu>
                                 </React.Fragment>
                             )}
