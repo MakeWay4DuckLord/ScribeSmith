@@ -43,7 +43,7 @@ export default function Campaign() {
             navigate("/login");
         })
         
-    }, [id]);
+    }, [campaignId]);
 
     if(error !== "") {
         return <h2>{error}</h2>
