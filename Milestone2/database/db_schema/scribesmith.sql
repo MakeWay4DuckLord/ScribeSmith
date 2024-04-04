@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS `user` (
   `usr_first_name` varchar(20) NOT NULL,
   `usr_last_name` varchar(20),
   `usr_password` char(128) NOT NULL,
-  `usr_salt` char(67) NOT NULL,
-  `usr_icon` varchar(500),
+  `usr_salt` varchar(100) NOT NULL,
+  `usr_icon` varchar(200),
   PRIMARY KEY (`usr_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `campaign` (
   `cpn_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cpn_owner_id` int(10) unsigned NOT NULL,
   `cpn_name` varchar(50) NOT NULL,
-  `cpn_banner` varchar(500),
+  `cpn_banner` varchar(200),
   `cpn_description` varchar(1200),
   `cpn_join_code` char(5),
   PRIMARY KEY (`cpn_id`),
@@ -47,3 +47,11 @@ CREATE TABLE IF NOT EXISTS `tag` (
   `tag_text` varchar(60) NOT NULL,
   PRIMARY KEY (`tag_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DELETE FROM `user`;
+INSERT INTO `user` VALUES
+  (1, 'llkoger@ncsu.edu', 'Luce', 'TestUser', 'e289219c34f9a32ebc82393f09719b7f34872de95463242b5ffe8bb4b11a5fe7d454f9f5d082c8207c5d69b220ba06624b4bb15ffa05cc7d7d53c43f9e96da6a', '801e87294783281ae49fc8287a0fd86779b27d7972d3e84f0fa0d826d7cb67dfefc', 'https://robohash.org/illoeamolestiae.png?size=64x64&set=set1');
+
+DELETE FROM `campaign`;
+INSERT INTO `campaign` VALUES
+  (1, 1, "Luce's Test Campaign", "https://pbs.twimg.com/media/D-jnKUPU4AE3hVR.jpg", 'This campaign is a test drive of the actual system', '00000');
