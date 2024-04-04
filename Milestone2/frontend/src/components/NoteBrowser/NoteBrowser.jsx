@@ -23,7 +23,7 @@ export default function NoteBrowser({title, notes, campaignTags}) {
     const[filteredNotes, setFilteredNotes] = useState([]);
     const[selectedTags, setSelectedTags] = useState([]);
     const[searchedTags, setSearchedTags] = useState([]);
-    const{id} = useParams();
+    const{campaignId} = useParams();
     // const[tags, setTags] = useState(campaignTags);
     // const[searchBar, setSearchBar] = useState("");
     
@@ -81,7 +81,7 @@ export default function NoteBrowser({title, notes, campaignTags}) {
         
             setOpenNote(notes[0]);
         } else {
-            setOpenNote({title: "New Note", content: "", tags: []});
+            setOpenNote({title: "New Note", content: "", tags: [], sharedWith: []});
         }
         console.log(campaignTags);
     }, [notes, selectedTags, searchedTags, campaignTags]);
