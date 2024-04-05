@@ -11,15 +11,17 @@ import {
     Button, 
     Backdrop, 
     List, 
-    ListItemButton, 
+    ListItemButton,
+    ListItem, 
     ListItemAvatar, 
     ListItemText, 
     ListItemIcon, 
     Avatar, 
-    Checkbox, 
+    Checkbox,
+    TextField, 
     Divider
 } from '@mui/material';
-
+import { FaTrash } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../client/APIClient";
@@ -45,20 +47,48 @@ function onSubmit(e) {
 
 export default function Note({note}) {
     const[openNote, setOpenNote] = useState({title: "New Note", content: "", tags: [], id:-1, campaignId:-1, sharedWith: []});
-    const[shareOpen, setShareOpen] = useState(false);
     const[currentUser, setCurrentUser] = useState({});
     const[isOwner, setIsOwner] = useState(false);
     const {campaignId} = useParams();
-
+    
     const[modified, setModified] = useState(false);
     const[isNew, setIsNew] = useState(true);
     
     const[sharedWith, setSharedWith] = useState([]);
     const[users, setUsers] = useState([]);
-
+    
     const[editor, setEditor] = useState(null);
-
     const navigate = useNavigate();
+    
+    const[shareOpen, setShareOpen] = useState(false);
+    
+    const[tagsOpen, setTagsOpen] = useState(false);
+    const[newTag, setNewTag] = useState("");
+    const[tags, setTags] = useState([]);
+
+    const addTag = () => {
+        if(tags.includes(newTag)) {
+            return;
+        }
+        setTags([...tags, newTag]);
+        setNewTag("");
+    }
+
+    const toggleTag = (tag) => () => {
+        const currentIndex = tags.indexOf(tag);
+        const newTags = [...tags];
+    
+        if (currentIndex === -1) {
+            newTags.push(tag);
+        } else {
+          newTags.splice(currentIndex, 1);
+        }
+    
+        setTags(newTags);
+        // note.sharedWith = newChecked);
+        // user.shared = !user.shared;
+      };
+
     //TODO populate sharedWith from the note
 
     // function handleShare() {
@@ -68,6 +98,10 @@ export default function Note({note}) {
 
     const save = () => {
         //check if we've got all the stuff we need
+        
+        setTagsOpen(false);
+        setShareOpen(false);
+        
         if(!editor) {
             return;
         }
@@ -79,6 +113,11 @@ export default function Note({note}) {
         }
 
 
+    }
+
+    const shareAndSave = () => {
+        save();
+        setShareOpen(false);
     }
 
     const toggleShare = (userId) => () => {
@@ -105,8 +144,8 @@ export default function Note({note}) {
                     console.log("ope, whoopsie doopsie. you just lost all the change");
                 }
                 setOpenNote(note);
-                setSharedWith[[...openNote.sharedWith]];
-                console.log(note);
+                setSharedWith([...openNote.sharedWith]);
+                setTags(note.tags);
                 if(note.userId == currentUser.userId) {
                     setIsOwner(true);
                 } else {
@@ -141,21 +180,44 @@ export default function Note({note}) {
 {/*  */}
         <TextEditor name="content" content={openNote.content} readOnly={!isOwner} editorCallback={setEditor}/>
 
-        <Card variant="outlined" sx={{
-            bgcolor: 'background.light', 
-            color: 'white',
-            my: 4,
-            p: 4,
-            
-        }}>
-            <CardContent className='tags'>
-                <div name="tags" className="tagContainer">
-                    {openNote.tags.map((tag, index) => (
-                        <Tag content={tag} key={index}/>
-                        ))}
-                </div>
-            </CardContent>
-        </Card>
+
+        <Button variant="contained" onClick={() => setTagsOpen(true)}> Tags </Button>
+        <Backdrop open={tagsOpen} sx={{ color: 'white', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+            <Card variant="outlined" sx={{
+                bgcolor: 'background.light', 
+                color: 'white',
+                my: 4,
+                p: 4,
+                
+            }}>
+                <CardContent className='tags'>
+                    {/* <div name="tags" className="tagContainer"> */}
+                    <List dense>
+                        {tags.map(tag => {
+                            const labelId = `checkbox-list-label-${tag}`;
+                            return (
+                            <ListItemButton role={undefined} key={labelId} onClick={toggleTag(tag)}>
+                                <ListItemIcon>
+                                    <Tag content={tag}></Tag>
+                                </ListItemIcon>
+                                <ListItemIcon>
+                                    <FaTrash></FaTrash>
+                                </ListItemIcon>
+                            </ListItemButton>
+                        )})}
+                    </List>
+                    <Divider></Divider>
+                    <TextField id="newTag" placeholder="New Tag" shrink="true" variant="outlined" onChange={(event) => setNewTag(event.target.value)} sx={{textcolor: "white"}}/>
+                    <Button onClick={addTag} variant="contained"> Add Tag </Button>
+                </CardContent>
+                <Divider></Divider>
+                <CardActions>
+                    <br/>
+                    <Button variant="contained" onClick={save}> Save Note </Button>
+                    <Button onClick={() => setTagsOpen(false)} variant="outlined">Cancel</Button>
+                </CardActions>
+            </Card>
+        </Backdrop>
 
         <Button variant="contained" onClick={()=>{setShareOpen(true)}}>Share</Button>
         <Backdrop
@@ -183,14 +245,14 @@ export default function Note({note}) {
                                     disableRipple
                                     />
                                 </ListItemIcon>
-
                             </ListItemButton>
                         )})}
                     </List>
                 </CardContent>
+                <Divider></Divider>
                 <CardActions>
-                    <Button variant="contained" onClick={()=>{setShareOpen(false)}}>Save Changes</Button>
-                    <Button variant="contained" onClick={() => {setShareOpen(false)}}>Cancel</Button>
+                    <Button variant="contained" onClick={save}>Save & Share</Button>
+                    <Button variant="outlined" onClick={() => {setShareOpen(false)}}>Cancel</Button>
                 </CardActions>
             </Card>
         </Backdrop>

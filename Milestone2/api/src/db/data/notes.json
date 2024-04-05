@@ -6,7 +6,7 @@
         "title": "Pellentesque at nulla",
         "content": "In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy.",
         "tags": ["notes", "session1", "my art"],
-        "sharedWith": [2, 3, 4]
+        "sharedWith": [2, 3]
     },
     "2": {
         "id": 2,
@@ -15,7 +15,7 @@
         "title": "Nulla tellus",
         "content": "Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem. Integer tincidunt ante vel ipsum.",
         "tags": ["thoughts", "forest"],
-        "sharedWith": [1, 2, 3, 4]
+        "sharedWith": [1, 2]
     },
     "3": {
         "id": 3,
@@ -33,6 +33,6 @@
         "title": "Donec dapibus.",
         "content": "In eleifend quam a odio. In hac habitasse platea dictumst. Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat.",
         "tags": ["notes", "session1", "spells"],
-        "sharedWith": [2, 3, 4]
+        "sharedWith": [2, 3]
     }
 }
