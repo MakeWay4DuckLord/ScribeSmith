@@ -9,7 +9,25 @@ function getCampaignsByUser(userId) {
 }
 
 function getCampaignById(campaignId) {
-    return db.query('SELECT * FROM campaign WHERE cpn_id=?', [campaignId]).then(({ results }) => {
+    return db.query(`SELECT
+    c.cpn_id,
+    c.cpn_owner_id,
+    c.cpn_name,
+    c.cpn_banner,
+    c.cpn_description,
+    c.cpn_join_code,
+    JSON_ARRAYAGG(DISTINCT cu.cpu_usr_id) AS cpn_user_ids,
+    JSON_ARRAYAGG(DISTINCT t.tag_text) AS cpn_tags
+  FROM
+    campaign c
+  JOIN
+    campaign_user cu ON c.cpn_id = cu.cpu_cpn_id
+  JOIN
+    campaign_tag ct ON c.cpn_id = ct.cpt_cpn_id
+  JOIN
+    tag t ON ct.cpt_tag_id = t.tag_id
+  WHERE
+    c.cpn_id = ?;`, [campaignId]).then(({ results }) => {
         if (results[0]) {
             return new Campaign(results[0]);
         }
