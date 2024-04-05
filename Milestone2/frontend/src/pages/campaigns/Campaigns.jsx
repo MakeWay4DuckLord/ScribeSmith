@@ -21,7 +21,7 @@ export default function Campaigns() {
                         campaigns.map(campaign =>
                           api.getUser(campaign.ownerId).then(user => ({
                             ownerId: campaign.ownerId,
-                            ownerName: user.name
+                            ownerName: `${user.first_name} ${user.last_name}`
                           }))
                         )
                       ).then(ownerNamesArr => {
@@ -44,7 +44,7 @@ export default function Campaigns() {
         
 
     if(error === true) {
-        return <h1>Error loading campaigns. Error: {error}</h1>
+        return <h1>Error loading campaigns.</h1>
     }
 
     return (

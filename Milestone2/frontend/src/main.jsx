@@ -9,14 +9,17 @@ import CreateCampaign from './pages/create-campaign/CreateCampaign.jsx';
 import CampaignSettings from './pages/campaign-settings/CampaignSettings.jsx';
 import Campaign from './pages/campaign/Campaign.jsx';
 import MyNotes from './pages/my-notes/MyNotes.jsx';
+// import SharedNotes from '.pages/shared-notes/'
 import Note from './components/Note/Note.jsx';
 import { joinCampaignAction } from './pages/join-campaign/formAction.jsx';
 import { loginAction } from './pages/login/formAction.jsx';
 import { signUpAction } from './pages/sign-up/formAction.jsx';
-
-
 import '../index.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import UserSettings from './pages/user-settings/UserSettings.jsx';
+import { userSettingsAction } from './pages/user-settings/formAction.jsx';
+import { createCampaignAction } from './pages/create-campaign/formAction.js';
 
 const router = createBrowserRouter([
   {
@@ -35,7 +38,12 @@ const router = createBrowserRouter([
       },
       {
         path: "/",
-        element: <Campaigns />
+        element: <Campaigns /> 
+      },
+      {
+        path: "/user-settings",
+        element: <UserSettings />,
+        action: userSettingsAction
       },
       {
         path: "join-campaign",
@@ -44,7 +52,8 @@ const router = createBrowserRouter([
       },
       {
         path: "create-campaign",
-        element: <CreateCampaign />
+        element: <CreateCampaign />,
+        action: createCampaignAction
       },
       {
         path: "campaigns/:campaignId",
@@ -58,10 +67,10 @@ const router = createBrowserRouter([
         path: "campaigns/:campaignId/my-notes",
         element: <MyNotes />
       },
-      {
-        path: "campaigns/:campaignId/shared-notes",
-        element: <SharedNotes />
-      },
+      // {
+      //   path: "campaigns/:campaignId/shared-notes",
+      //   element: <SharedNotes />
+      // },
       {
         path: "note-debug",
         element: <Note />
@@ -70,8 +79,26 @@ const router = createBrowserRouter([
   },  
 ]);
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#9b6fcb', //purple
+    },
+    secondary: {
+      main: '#91ffde' //light blue/teal
+    },
+    background: {
+      main: '#252328',
+      dark: '#19181c',
+      light: '#494251'
+    },
+  },
+});
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ThemeProvider theme={theme}>
+      <RouterProvider router={router} />
+    </ThemeProvider>
   </React.StrictMode>,
 )

@@ -11,6 +11,7 @@ import './campaign.css';
 //TODO: Only show settings if the user who is logged in is the owener of the campaign
 export default function Campaign() {
     const [campaign, setCampaign] = useState({});
+    const [banner, setBanner] = useState(null);
     const [owner, setOwner] = useState("");
     const [error, setError] = useState("");
     const { campaignId } = useParams();
@@ -19,16 +20,19 @@ export default function Campaign() {
     useEffect(() => {
         api.getCurrentUser().then(currentUser => { //get the current user
             api.getCampaign(campaignId).then(campaign => {
-                console.log(campaign);
-                console.log(currentUser);
-                if(campaign.userIds && campaign.userIds.includes(currentUser.userId)) {
+
+                if(campaign.userIds && campaign.userIds.includes(currentUser.userId) || campaign.ownerId == currentUser.userId) { //check if current user is authorized
                     setCampaign(campaign);
     
                     if (campaign.ownerId !== undefined) {
                         api.getUser(campaign.ownerId).then(user => {
-                            setOwner(user.name);
+                            setOwner(`${user.first_name} ${user.last_name}`);
                         });
                     }
+
+                    api.getCampaignBanner(campaignId).then(banner => {
+                        setBanner(banner);
+                    });
                 } else {
                     setError("You are not authorized to view this campaign.");
                 }
@@ -43,7 +47,7 @@ export default function Campaign() {
             navigate("/login");
         })
         
-    }, [id]);
+    }, [campaignId]);
 
     if(error !== "") {
         return <h2>{error}</h2>
@@ -53,7 +57,7 @@ export default function Campaign() {
         <div className="campaign-page">
             <main>
                 <div>
-                    <img className="banner" src={campaign.banner} alt="campaign banner" />
+                    <img className="banner" src={banner} alt="campaign banner" />
                     <h2>{campaign.name}</h2>
                     <span>GM: <p className="owner">{owner}</p></span>
                 </div>

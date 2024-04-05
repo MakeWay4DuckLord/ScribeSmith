@@ -39,6 +39,10 @@
     background-color: rgb(155, 111, 203);
 }
 
+.join-campaign input[type="submit"]:hover {
+    background-color: rgb(124, 89, 162);
+}
+
 .join-campaign h1 {
     color: rgb(255, 216, 97);
     position: absolute;

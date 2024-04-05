@@ -14,7 +14,7 @@ export default function JoinCampaign() {
                         <Form method="post" action="/join-campaign">
                             
                             <label htmlFor="code">Enter Campaign Code:</label>
-                            <input type="text" name="code" />
+                            <input type="text" name="code" maxLength={5} />
                             {data && data.error && <p className="error">{data.error}</p>}
                             <input type="submit" value="Join Campaign!" />
                         </Form>
