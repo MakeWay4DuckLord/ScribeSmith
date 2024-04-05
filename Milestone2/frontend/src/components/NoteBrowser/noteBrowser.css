@@ -29,6 +29,11 @@
     align-content: center;
     padding: 5px;
     margin-bottom: 10px;
+    color: black;
+}
+
+.noteBrowser #search-bar {
+    color: black;
 }
 
 .noteBrowser input:focus + search {
