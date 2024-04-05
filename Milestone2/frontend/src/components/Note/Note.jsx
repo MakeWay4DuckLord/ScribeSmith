@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../client/APIClient";
 
+
 //save function to pass to TextEditor
 function save(formData) {
     //TODO implement this for realsies
@@ -101,7 +102,7 @@ export default function Note({note}) {
             console.log(currentUser)
             if(note) {
                 if(openNote != note && editor && editor.isDirty()) {
-                    console.log("ope, whoopsie doopsie. you just lost all the change")
+                    console.log("ope, whoopsie doopsie. you just lost all the change");
                 }
                 setOpenNote(note);
                 setSharedWith[[...openNote.sharedWith]];
@@ -117,9 +118,11 @@ export default function Note({note}) {
                             api.getUser(cpn.userIds[i]).then(user => {
                                 users[i] = user;
                             })
-    
                         }
-                    })
+                        api.getUser(cpn.ownerId).then(gm => {
+                            users[users.length] = gm;
+                        });
+                    });
                 }
             }
         }).catch(() => {

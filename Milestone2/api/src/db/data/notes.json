@@ -15,7 +15,7 @@
         "title": "Nulla tellus",
         "content": "Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem. Integer tincidunt ante vel ipsum.",
         "tags": ["thoughts", "forest"],
-        "sharedWith": []
+        "sharedWith": [1, 2, 3, 4]
     },
     "3": {
         "id": 3,
