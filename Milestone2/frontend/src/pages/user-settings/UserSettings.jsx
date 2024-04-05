@@ -26,7 +26,13 @@ export default function UserSettings() {
             setLastName(user.lastName);
             
             api.getUserCampaigns(user.userId).then(campaigns => {
-                setUserCampaigns(campaigns);
+                let joinedCampaigns = [];
+                campaigns.forEach(campaign => {
+                    if(campaign.ownerId != user.userId) { //dont include campaigns a user is owner of, this is deleted under campaign settings
+                        joinedCampaigns.push(campaign);
+                    }
+                })
+                setUserCampaigns(joinedCampaigns);
             }).catch((err) => {
                 setError(true);
                 console.log(err);

@@ -161,10 +161,11 @@ router.get('/users/:userId/icon', TokenMiddleware, (req, res) => {
 });
 
 //Retrieve a user's campaigns
-router.get('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
+router.get('/users/:userId/campaigns', TokenMiddleware, upload, (req, res) => {
     const userId = parseInt(req.params.userId);
 
-    const results = Object.values(campaigns).filter(campaign => campaign.userIds.includes(userId));
+    console.log(campaigns);
+    const results = Object.values(campaigns).filter(campaign => campaign.userIds.includes(userId) || campaign.ownerId === userId);
 
     let campaignArray = [];
     results.forEach(campaign => {
@@ -208,7 +209,7 @@ router.put('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
 });
 
 //create a campaign
-router.post('/campaigns', TokenMiddleware, (req, res) => {
+router.post('/campaigns', TokenMiddleware, upload, (req, res) => {
     // request body should include name, description, banner
     // id and join code are generated
     // owner is the current auth'd user? but req body for NOW
@@ -219,18 +220,18 @@ router.post('/campaigns', TokenMiddleware, (req, res) => {
     while (Object.values(campaigns).find(campaign => campaign.joinCode == newCampaign.joinCode) != undefined) {
         newCampaign.joinCode = makeJoinCode(5);
     }
+
     // TODO: make sure all fields are validated!
-    newCampaign.ownerId = req.body.ownerId;
+    newCampaign.ownerId = parseInt(req.body.ownerId);
     newCampaign.name = req.body.name;
     newCampaign.description = req.body.description;
-    newCampaign.banner = req.body.banner;
+    newCampaign.banner = req.file.path;
     newCampaign.userIds = [];
     newCampaign.tags = [];
 
     campaigns[newCampaign.id] = newCampaign;
-
     // return success or failure response
-    res.status(200).json({"message": "success"});
+    res.status(200).json(newCampaign.joinCode);
 });
 
 //Retrieve a campaign by id
@@ -242,6 +243,20 @@ router.get('/campaigns/:campaignId', TokenMiddleware, (req, res) => {
     } else {
         res.status(404).json({ "error": "Campaign not found" });
     }
+});
+
+//Retrieve a campaign's banner
+router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
+    const campaignId = req.params.campaignId;
+    const campaign = campaigns[campaignId];
+
+    if(!campaign) {
+        res.status(404).json({ "error": "Campaign not found" });
+        return;
+    }
+
+    const filePath = path.join(__dirname, '..', '..', campaign.banner);
+    res.sendFile(filePath);
 });
 
 //remove a player from a campaign
@@ -332,7 +347,7 @@ router.get('/campaigns/:campaignId/notes/users/:userId', TokenMiddleware, (req, 
         return;
     }
 
-    if(!campaign.userIds.includes(userId)) {
+    if(!campaign.userIds.includes(userId) && campaign.ownerId !== userId) {
         res.status(401).json({ "error": "Not authorized to view this campaign's notes" });
         return;
     }
