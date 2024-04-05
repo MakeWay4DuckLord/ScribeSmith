@@ -11,9 +11,10 @@ const SKINS_PATH = '/src/components/TextEditor/scribesmith-dark/skins/';
  * - sorting out file uploads
  */
 
-export default function TextEditor({content, readOnly}) {
+export default function TextEditor({content, readOnly, editorCallback}) {
 
     const editorRef = useRef(null);
+
     const log = () => {
         if (editorRef.current) {
             console.log(editorRef.current.getContent());
@@ -23,7 +24,10 @@ export default function TextEditor({content, readOnly}) {
         <>
             <Editor
                 apiKey='knfnarhktdvw0v5q8muzms71g5lgmhn6rkdv8bxytr7qhcl8'
-                onInit={(evt, editor) => editorRef.current = editor}
+                onInit={(evt, editor) => {
+                    editorRef.current = editor;
+                    editorCallback(editor);
+                }}
                 initialValue={content}
                 init={{
                     height: 200,

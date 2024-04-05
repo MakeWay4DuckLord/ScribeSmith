@@ -31,6 +31,11 @@ export default function NoteBrowser({title, notes, campaignTags}) {
         setOpenNote(note);
     }
 
+    const changeCallback = (content) => {
+        openNote.content = content;
+
+    }
+
     function tagOnClick(tag) {
         console.log(tag);
         const index = selectedTags.indexOf(tag);
@@ -81,7 +86,7 @@ export default function NoteBrowser({title, notes, campaignTags}) {
         
             setOpenNote(notes[0]);
         } else {
-            setOpenNote({title: "New Note", content: "", tags: [], sharedWith: []});
+            setOpenNote(null);
         }
         console.log(campaignTags);
     }, [notes, selectedTags, searchedTags, campaignTags]);
