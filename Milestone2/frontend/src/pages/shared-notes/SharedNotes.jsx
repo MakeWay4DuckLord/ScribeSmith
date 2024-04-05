@@ -24,8 +24,9 @@ export default function SharedNotes() {
                     console.log(id)
                     //this will be replaced with an endpoint that does filtering with sql queries in the backend
                     api.getCampaignNotesByUser(campaignId, id).then(notes => {
-                        notes.filter(note => currentUser.id === note.userId || note.sharedWith.includes(currentUser.id));
-                        setNotes([...myNotes, ...notes]);
+                        console.log("notes", notes);
+                        console.log("userID, ", currentUser.userId);
+                        setNotes([...myNotes, ...notes.filter(note => note.sharedWith.includes(currentUser.userId))]); 
                     }).catch(err => {
                         setError(err);
                     });
