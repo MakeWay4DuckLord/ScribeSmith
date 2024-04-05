@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const users = require('./data/users');
+const users = require('./data/users'); // goal is to get rid of these
 const campaigns = require('./data/campaigns');
 const notes = require('./data/notes');
 const path = require('path');
@@ -37,34 +37,41 @@ router.post('/users/logout', (req,  res) => {
 
 //Add a user
 router.post('/users', (req, res) => {
-    const firstName = req.body.firstName;
-    const lastName = req.body.lastName;
-    const email = req.body.email;
-    const password = req.body.password;
+    // const firstName = req.body.firstName;
+    // const lastName = req.body.lastName;
+    // const email = req.body.email;
+    // const password = req.body.password;
 
-    if(firstName && lastName && email && password) {
-        UserDAO.createNewUser(email, password).then(results => {
-            const newUser = {
-                "id": Object.keys(users).length + 1,
-                "first_name": firstName,
-                "last_name": lastName,
-                "email": email,
-                "icon": "",
-                "tags": [],
-                "salt": results.salt,
-                "password": results.hashedPassword,
-            }
-            const usersNewId = Object.keys(users).length + 1;
-            users[usersNewId] = newUser;
+    let user = req.body;
+    UserDAO.createUser(user).then(newUser => {
+        res.json(newUser);
+    }).catch(err => {
+        console.log(err);
+        res.status(err.code).json({error: err.message});
+    });
 
-            res.json({success: true});
-        }).catch(err => {
-            console.log(err);
-            res.status(err.code).json({error: err.message});
-        });
-    } else {
-        res.status(400).json({error: "All fields must be filled out."});
-    }
+    // if(firstName && lastName && email && password) {
+    //     UserDAO.createNewUser(email, password).then(results => {
+    //         const newUser = {
+    //             "id": Object.keys(users).length + 1,
+    //             "first_name": firstName,
+    //             "last_name": lastName,
+    //             "email": email,
+    //             "icon": "",
+    //             "salt": results.salt,
+    //             "password": results.hashedPassword,
+    //         }
+    //         //const usersNewId = Object.keys(users).length + 1;
+    //         // users[usersNewId] = newUser;
+
+    //         res.json({success: true});
+    //     }).catch(err => {
+    //         console.log(err);
+    //         res.status(err.code).json({error: err.message});
+    //     });
+    // } else {
+    //     res.status(400).json({error: "All fields must be filled out."});
+    // }
 });
 
 //Getting the currently authenticated user

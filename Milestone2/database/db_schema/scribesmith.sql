@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS `user` (
   `usr_password` char(128) NOT NULL,
   `usr_salt` varchar(100) NOT NULL,
   `usr_icon` varchar(200),
-  PRIMARY KEY (`usr_id`)
+  PRIMARY KEY (`usr_id`),
+  CONSTRAINT `U_USR_EMAIL` UNIQUE (`usr_email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `campaign` (
