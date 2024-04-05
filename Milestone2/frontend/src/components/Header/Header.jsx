@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import api from "../../client/APIClient"
 
 import * as React from 'react';
-import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
@@ -14,12 +13,16 @@ import Avatar from '@mui/material/Avatar';
 
 export default function Header() {
     const [currentUser, setCurrentUser] = useState(null);
+    const [userIcon, setUserIcon] = useState(null);
     const location = useLocation();
     const navigate = useNavigate();
 
     useEffect(() => {
         api.getCurrentUser().then(user => {
             setCurrentUser(user);
+            api.getUserIcon(user.userId).then(icon => {
+                setUserIcon(icon);
+            })
         }).catch(() => {
             setCurrentUser(null);
         });
@@ -27,7 +30,6 @@ export default function Header() {
 
     const handleOnClickLogoutUser = () => {
         api.logout().then(() => {
-            console.log("HI");
             navigate('/login');
         }).catch((err) => {
             console.log(`Error loging out user: ${err}`)
@@ -57,7 +59,7 @@ export default function Header() {
                         <PopupState variant="popover" popupId="demo-popup-menu">
                             {(popupState) => (
                                 <React.Fragment>
-                                <Avatar alt="User icon"  src={currentUser.icon} {...bindTrigger(popupState)} />
+                                <Avatar alt="User icon"  src={userIcon} {...bindTrigger(popupState)} />
                                 <Menu {...bindMenu(popupState)}>
                                     <MenuItem onClick={handleOnClickUserSettings}>User Settings</MenuItem>
                                     <MenuItem onClick={handleOnClickLogoutUser}>Logout</MenuItem>

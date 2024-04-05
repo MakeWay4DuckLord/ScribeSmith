@@ -112,6 +112,30 @@ const getUser = (userId) => {
         .catch(handleError);
 }
 
+const getUserIcon = (userId) => {
+    return fetch(API_BASE + `/users/${userId}/icon`)
+        .then(checkResponse)
+        .then(res => {
+            return res.blob();
+        }).then(blob => {
+            const imageURL = URL.createObjectURL(blob);
+            return imageURL;
+        })
+        .catch(handleError);
+}
+
+const updateUser = (userId, formData) => {
+    return fetch(API_BASE + `/users/${userId}`, {
+        method: 'PUT',
+        body: formData
+    })
+        .then(checkResponse)
+        .then(res => {
+            return res.json();
+        })
+        .catch(handleError);
+}
+
 const getCampaignNotesByUser = (campaignId, userId) => {
     // /campaigns/:campaignId/notes/users/:userId
     return fetch(API_BASE + `/campaigns/${campaignId}/notes/users/${userId}`)
@@ -186,8 +210,10 @@ const updateNote = (noteId, campaignId, title, content, tags, sharedWith) => {
 export default {
     login,
     signUp,
+    updateUser,
     logout,
     getCurrentUser,
+    getUserIcon,
     getUserCampaigns,
     getCampaign,
     getUser,

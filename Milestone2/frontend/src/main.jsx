@@ -37,7 +37,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/",
-        element: <Campaigns />
+        element: <Campaigns /> 
       },
       {
         path: "/user-settings",

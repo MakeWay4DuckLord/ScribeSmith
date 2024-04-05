@@ -21,7 +21,7 @@ export default function Campaigns() {
                         campaigns.map(campaign =>
                           api.getUser(campaign.ownerId).then(user => ({
                             ownerId: campaign.ownerId,
-                            ownerName: user.name
+                            ownerName: `${user.first_name} ${user.last_name}`
                           }))
                         )
                       ).then(ownerNamesArr => {

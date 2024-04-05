@@ -65,6 +65,5 @@ function getFilteredUser(user) {
     "firstName": user.first_name,
     "lastName": user.last_name,
     "email": user.email,
-    "icon": user.icon
   }
 }

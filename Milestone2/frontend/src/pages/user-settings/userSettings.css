@@ -10,9 +10,16 @@ body {
     justify-content: center;
 }
 
+.user-settings-page .container {
+    width: 50%;
+}
+
+.user-settings-page h3 {
+    margin: 0;
+}
+
 .user-settings-page main {
     background-color: #494251;
-    width: 50%;
     border-radius: 5px;
     padding: 30px;
 }
@@ -42,6 +49,20 @@ body {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.user-settings-page .reset {
+    margin-top: 5px;
+    padding: 10px;
+    background-color: #211c32;
+    color: white;
+    border-radius: 5px;
+    border: none;
+}
+
+.user-settings-page .reset:hover {
+    background-color: #1a1625;
 }
 
 .user-settings-page h1 {
@@ -52,6 +73,10 @@ body {
 
 .user-settings-page button {
     width: fit-content;
+}
+
+.user-settings-page input[type="submit"]:hover {
+    background-color: rgb(124, 89, 162);
 }
 
 .user-settings-page input[type="submit"] {
@@ -65,7 +90,7 @@ body {
 }
 
 @media (max-width: 770px) { 
-    .user-settings-page main {
-        width: 70%;
+    .user-settings-page .container {
+        width: 80%;
     }
 }
