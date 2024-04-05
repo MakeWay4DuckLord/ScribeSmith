@@ -2,13 +2,17 @@ import { Form, useActionData, useNavigate } from "react-router-dom";
 import api from "../../client/APIClient";
 import { useEffect, useState, useRef } from "react";
 import Avatar from '@mui/material/Avatar';
+import { FaTrash, FaUndo } from "react-icons/fa";
 import "./userSettings.css"
 
 export default function UserSettings() {
     const [currentUser, setCurrentUser] = useState({});
+    const [userCampaigns, setUserCampaigns] = useState([]);
+    const [selectedCampaigns, setSelectedCampaigns] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [error, setError] = useState(null);
     const fileInputRef = useRef(null);
 
     const data = useActionData();
@@ -20,10 +24,21 @@ export default function UserSettings() {
             setSelectedFile(user.icon);
             setFirstName(user.firstName);
             setLastName(user.lastName);
+            
+            api.getUserCampaigns(user.userId).then(campaigns => {
+                setUserCampaigns(campaigns);
+            }).catch((err) => {
+                setError(true);
+                console.log(err);
+            })
         }).catch(() => {  //not authenticated
             navigate("/login");
         })
     }, []);
+
+    if(error === true) {
+        return <h1>Error loading user settings.</h1>
+    }
 
     const handleFileChange = (e) => {
         const imageUrl = URL.createObjectURL(e.target.files[0]);
@@ -36,6 +51,16 @@ export default function UserSettings() {
         if (fileInputRef.current) {
             fileInputRef.current.value = ''; // Reset file input value
         }
+    }
+
+    const handleDeleteCampaignClick = (campaignId) => {
+        let updatedSelectedCampaigns = [];
+        if(selectedCampaigns.includes(campaignId)) { //user pressed undo
+            updatedSelectedCampaigns = selectedCampaigns.filter(id => id !== campaignId);
+        } else { //user pressed delete
+            updatedSelectedCampaigns = [...selectedCampaigns, campaignId];
+        }
+        setSelectedCampaigns(updatedSelectedCampaigns);
     }
 
     return (
@@ -61,9 +86,23 @@ export default function UserSettings() {
                                 alt="Profile image"
                                 sx={{ width: 56, height: 56 }} />
                             <input type="file" onChange={handleFileChange} accept="image/*" name="image" ref={fileInputRef} />
-                        </div>
-                        
+                        </div>                        
                         <button type="button" className="reset" onClick={handleResetClick}>Reset Profile Image</button>
+
+                        <h3>Leave Campaigns</h3>
+                        {userCampaigns.map(campaign => (
+                            <div className="campaign" key={campaign.id}>
+                                <p>{campaign.name}</p>
+                                {selectedCampaigns.includes(campaign.id) ? 
+                                <FaUndo className="icon" onClick={() => handleDeleteCampaignClick(campaign.id)} /> 
+                                :
+                                <FaTrash className="icon" onClick={() => handleDeleteCampaignClick(campaign.id)} />}
+                                
+                            </div>
+                        ))}
+                        <input type="hidden" name="selectedCampaigns" value={JSON.stringify(selectedCampaigns)} />
+
+
                         {data && data.error && <p className="error">{data.error}</p>}
                         <input type="submit" value="SAVE SETTINGS" />
                     </Form>

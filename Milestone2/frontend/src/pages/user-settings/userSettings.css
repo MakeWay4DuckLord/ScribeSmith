@@ -90,6 +90,20 @@ body {
     flex-direction: column;
 }
 
+.user-settings-page .campaign {
+    display: flex;
+    margin-bottom: 15px;
+    font-size: 15px;
+}
+
+.user-settings-page .campaign p {
+    font-size: 15px;
+}
+
+.user-settings-page .icon {
+    margin-left: auto;
+}
+
 @media (max-width: 770px) { 
     .user-settings-page .container {
         width: 80%;

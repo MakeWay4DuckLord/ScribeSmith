@@ -5,8 +5,6 @@ export const userSettingsAction = async ({request}) => {
     const data = await request.formData();
     const firstName = data.get("firstName");
     const lastName = data.get("lastName");
-    const image = data.get("image");
-
     if(lastName.trim().length === 0 || firstName.trim().length === 0) { //name cannot be empty
         return {error: "Please fill out first and last name fields" };
     }

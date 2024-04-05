@@ -85,7 +85,7 @@ router.get('/users/:userId', TokenMiddleware, (req, res) => {
 });
 
 //Update a User
-//User has the ability to update their first/last name and their profile image icon
+//User has the ability to update their first/last name, their profile image icon, and leave campaigns
 router.put('/users/:userId', TokenMiddleware, upload, (req, res) => {
     const userId = req.params.userId;
     const user = users[userId];
@@ -97,12 +97,13 @@ router.put('/users/:userId', TokenMiddleware, upload, (req, res) => {
 
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
+    const selectedCampaigns = JSON.parse(req.body.selectedCampaigns);
 
     if(!(firstName) || !(lastName)) {
         res.status(400).json({ "error": "Not all fields filled out" });
         return;
     }
-    console.log(req.file);
+
     let imageURL = "";
     if (!req.file) { //no image was uploaded
         imageURL = user.icon;
@@ -129,6 +130,16 @@ router.put('/users/:userId', TokenMiddleware, upload, (req, res) => {
         lastName: updatedUser.last_name,
         email: updatedUser.email,
     }
+
+    //remove user from campaigns
+    selectedCampaigns.forEach(campaignId => {
+        if (!campaigns[campaignId]) {
+            res.status(404).json({ "error": "Campaign not found" });
+            return;
+        }
+
+        campaigns[campaignId].userIds = campaigns[campaignId].userIds.filter(id => id != userId);
+    });
 
     //update the token with the new user info
     removeToken(req, res);
