@@ -9,6 +9,7 @@ import TextEditor from '../TextEditor/TextEditor';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Campaign from '../../pages/campaign/Campaign';
+import { Button } from '@mui/material';
 
 
 // function getSearchedTags() {
@@ -25,7 +26,13 @@ export default function NoteBrowser({title, notes, campaignTags}) {
     const[searchedTags, setSearchedTags] = useState([]);
     const{campaignId} = useParams();
     // const[tags, setTags] = useState(campaignTags);
-    // const[searchBar, setSearchBar] = useState("");
+    // const[searchBar, setSearchBar] = useState("");\
+
+    function newNote() {
+        api.getCurrentUser().then(user => {
+            updateNote({title: "New Note", userId: user.userId, content: "", tags: [], id:-1, campaignId, sharedWith: []});
+        })
+    }
     
     function updateNote(note) { 
         setOpenNote(note);
@@ -99,7 +106,6 @@ export default function NoteBrowser({title, notes, campaignTags}) {
                 <search>
                     <input type="text" id="search-bar" placeholder='Search...' onChange={updateSearch}/>
                     <IoIosSearch className='searchIcon' />
-
                 </search>
                 <div className='tagList'>
                     {campaignTags.map(tag => (
@@ -113,6 +119,8 @@ export default function NoteBrowser({title, notes, campaignTags}) {
                     ))}
                 <FaCirclePlus className='addTagIcon' />
                 </div>
+
+                <Button variant="contained" onClick={newNote}>Create New Note</Button>
 
                 <div className='note-container'>
                     {filteredNotes.map(note => (

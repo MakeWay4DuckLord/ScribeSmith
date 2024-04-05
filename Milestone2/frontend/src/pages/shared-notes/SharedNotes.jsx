@@ -24,7 +24,7 @@ export default function SharedNotes() {
                     console.log(id)
                     //this will be replaced with an endpoint that does filtering with sql queries in the backend
                     api.getCampaignNotesByUser(campaignId, id).then(notes => {
-                        // notes.filter(note => currentUser.id === note.userId || note.sharedWith.includes(currentUser.id));
+                        notes.filter(note => currentUser.id === note.userId || note.sharedWith.includes(currentUser.id));
                         setNotes([...myNotes, ...notes]);
                     }).catch(err => {
                         setError(err);
@@ -50,7 +50,7 @@ export default function SharedNotes() {
 
     return(
         <div className='myNotes'>
-        <NoteBrowser title='My Notes' notes={myNotes} campaignTags={campaignTags}/>
+        <NoteBrowser title='Shared Notes' notes={myNotes} campaignTags={campaignTags}/>
         </div>
     );
 }
