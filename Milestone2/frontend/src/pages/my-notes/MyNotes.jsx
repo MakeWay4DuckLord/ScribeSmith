@@ -23,7 +23,7 @@ export default function MyNotes() {
             });
 
             api.getCampaign(campaignId).then(cpn => {
-                setCampaignTags(cpn.tags);
+                setCampaignTags(cpn.tags); //this may need to change now that we are using sql
             })
 
 

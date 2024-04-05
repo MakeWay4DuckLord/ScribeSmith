@@ -11,9 +11,10 @@ const SKINS_PATH = '/src/components/TextEditor/scribesmith-dark/skins/';
  * - sorting out file uploads
  */
 
-export default function TextEditor({content, saveCallback}) {
+export default function TextEditor({content, readOnly, editorCallback}) {
 
     const editorRef = useRef(null);
+
     const log = () => {
         if (editorRef.current) {
             console.log(editorRef.current.getContent());
@@ -23,17 +24,20 @@ export default function TextEditor({content, saveCallback}) {
         <>
             <Editor
                 apiKey='knfnarhktdvw0v5q8muzms71g5lgmhn6rkdv8bxytr7qhcl8'
-                onInit={(evt, editor) => editorRef.current = editor}
+                onInit={(evt, editor) => {
+                    editorRef.current = editor;
+                    editorCallback(editor);
+                }}
                 initialValue={content}
                 init={{
-                    height: 500,
+                    height: 200,
                     menubar: false,
                     plugins: [
                         'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                         'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount', 'save'
+                        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
                     ],
-                    toolbar: 'save | undo redo | blocks | ' +
+                    toolbar: '| undo redo | blocks | ' +
                         'bold italic forecolor | alignleft aligncenter ' +
                         'alignright alignjustify | bullist numlist outdent indent | ' +
                         'removeformat | image | help',
@@ -44,7 +48,8 @@ export default function TextEditor({content, saveCallback}) {
                     //created a TinyMCE skin at http://skin.tiny.cloud/t5/
                     content_css: SKINS_PATH + 'content/scribesmith-dark/content.css', //css for the rich text content of the editor
                     skin_url: SKINS_PATH + 'ui/scribesmith-dark', //directory of css for the ui of the editor
-
+                    
+                    readonly: readOnly,
 
                 /**
                  * file picker code copied from TinyMCE documentation.
