@@ -17,6 +17,9 @@ import { signUpAction } from './pages/sign-up/formAction.jsx';
 import '../index.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import UserSettings from './pages/user-settings/UserSettings.jsx';
+import { userSettingsAction } from './pages/user-settings/formAction.jsx';
+import { createCampaignAction } from './pages/create-campaign/formAction.js';
 
 const router = createBrowserRouter([
   {
@@ -35,7 +38,12 @@ const router = createBrowserRouter([
       },
       {
         path: "/",
-        element: <Campaigns />
+        element: <Campaigns /> 
+      },
+      {
+        path: "/user-settings",
+        element: <UserSettings />,
+        action: userSettingsAction
       },
       {
         path: "join-campaign",
@@ -44,7 +52,8 @@ const router = createBrowserRouter([
       },
       {
         path: "create-campaign",
-        element: <CreateCampaign />
+        element: <CreateCampaign />,
+        action: createCampaignAction
       },
       {
         path: "campaigns/:campaignId",

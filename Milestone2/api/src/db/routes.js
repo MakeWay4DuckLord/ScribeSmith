@@ -1,12 +1,12 @@
 const router = require('express').Router();
-
 const users = require('./data/users');
 const campaigns = require('./data/campaigns');
 const notes = require('./data/notes');
+const path = require('path');
 
 const {TokenMiddleware, generateToken, removeToken} = require('../middleware/TokenMiddleware');
+const upload = require('../middleware/multerConfig');
 const UserDAO = require('./UserDAO');
-
 
 // Authenticate a User
 router.post('/authenticate', (req, res) => {
@@ -29,6 +29,12 @@ router.post('/authenticate', (req, res) => {
       }
 });
 
+//Logout the current authenticated user
+router.post('/users/logout', (req,  res) => {
+    removeToken(req, res);  
+    res.json({success: true});
+});
+
 //Add a user
 router.post('/users', (req, res) => {
     const firstName = req.body.firstName;
@@ -43,7 +49,7 @@ router.post('/users', (req, res) => {
                 "first_name": firstName,
                 "last_name": lastName,
                 "email": email,
-                "icon": `https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg`, //default avatar
+                "icon": "",
                 "tags": [],
                 "salt": results.salt,
                 "password": results.hashedPassword,
@@ -57,7 +63,7 @@ router.post('/users', (req, res) => {
             res.status(err.code).json({error: err.message});
         });
     } else {
-        res.status(401).json({error: "All fields must be filled out."});
+        res.status(400).json({error: "All fields must be filled out."});
     }
 });
 
@@ -74,15 +80,92 @@ router.get('/users/:userId', TokenMiddleware, (req, res) => {
     if (user) {
         res.json(user);
     } else {
-        res.status(401).json({ "error": "User not found" });
+        res.status(404).json({ "error": "User not found" });
     }
 });
 
+//Update a User
+//User has the ability to update their first/last name, their profile image icon, and leave campaigns
+router.put('/users/:userId', TokenMiddleware, upload, (req, res) => {
+    const userId = req.params.userId;
+    const user = users[userId];
+
+    if(!user) {
+        res.status(404).json({ "error": "User not found" });
+        return;
+    }
+
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const selectedCampaigns = JSON.parse(req.body.selectedCampaigns);
+
+    if(!(firstName) || !(lastName)) {
+        res.status(400).json({ "error": "Not all fields filled out" });
+        return;
+    }
+
+    let imageURL = "";
+    if (!req.file) { //no image was uploaded
+        imageURL = user.icon;
+    } else {
+        imageURL = `${req.file.path}`; 
+    }
+
+    const updatedUser = {
+        userId: user.userId,
+        first_name: firstName,
+        last_name: lastName,
+        email: user.email,
+        icon: imageURL,
+        tags: user.tags,
+        salt: user.salt,
+        password: user.password,
+    }
+
+    users[user.userId] = updatedUser; //update in "Database"
+
+    const filteredUser = {
+        userId: updatedUser.userId,
+        firstName: updatedUser.first_name,
+        lastName: updatedUser.last_name,
+        email: updatedUser.email,
+    }
+
+    //remove user from campaigns
+    selectedCampaigns.forEach(campaignId => {
+        if (!campaigns[campaignId]) {
+            res.status(404).json({ "error": "Campaign not found" });
+            return;
+        }
+
+        campaigns[campaignId].userIds = campaigns[campaignId].userIds.filter(id => id != userId);
+    });
+
+    //update the token with the new user info
+    removeToken(req, res);
+    generateToken(req, res, filteredUser);
+    res.json(filteredUser);
+});
+
+//Retrieve a user's profile icon
+router.get('/users/:userId/icon', TokenMiddleware, (req, res) => {
+    const userId = req.params.userId;
+    const user = users[userId];
+
+    if(!user) {
+        res.status(404).json({ "error": "User not found" });
+        return;
+    }
+    const filePath = path.join(__dirname, '..', '..', user.icon);
+    res.sendFile(filePath);
+});
+
 //Retrieve a user's campaigns
-router.get('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
+router.get('/users/:userId/campaigns', TokenMiddleware, upload, (req, res) => {
     const userId = parseInt(req.params.userId);
 
-    const results = Object.values(campaigns).filter(campaign => campaign.userIds.includes(userId));
+    console.log(campaigns);
+    const results = Object.values(campaigns).filter(campaign => campaign.userIds.includes(userId) || campaign.ownerId === userId);
 
     let campaignArray = [];
     results.forEach(campaign => {
@@ -96,7 +179,7 @@ router.put('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
     const userId = parseInt(req.params.userId);
     const user = users[userId];
     if (!user) {
-        res.status(401).json({ "error": "User not found" });
+        res.status(404).json({ "error": "User not found" });
         return;
     }
 
@@ -104,13 +187,13 @@ router.put('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
     const joinCode = req.body.joinCode;
     const campaign = Object.values(campaigns).find(campaign => campaign.joinCode == joinCode);
     if (!campaign) {
-        res.status(401).json({ "error": "Campaign not found" });
+        res.status(404).json({ "error": "Campaign not found" });
         return;
     }
     //check if a user is already in a campaign
     console.log(campaign["userIds"]);
     if(campaign["userIds"].includes(userId)) {
-        res.status(409).json({"error": "You have already joined this campaign."});
+        res.status(400).json({"error": "You have already joined this campaign."});
         return;
     }
 
@@ -126,7 +209,7 @@ router.put('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
 });
 
 //create a campaign
-router.post('/campaigns', TokenMiddleware, (req, res) => {
+router.post('/campaigns', TokenMiddleware, upload, (req, res) => {
     // request body should include name, description, banner
     // id and join code are generated
     // owner is the current auth'd user? but req body for NOW
@@ -137,18 +220,18 @@ router.post('/campaigns', TokenMiddleware, (req, res) => {
     while (Object.values(campaigns).find(campaign => campaign.joinCode == newCampaign.joinCode) != undefined) {
         newCampaign.joinCode = makeJoinCode(5);
     }
+
     // TODO: make sure all fields are validated!
-    newCampaign.ownerId = req.body.ownerId;
+    newCampaign.ownerId = parseInt(req.body.ownerId);
     newCampaign.name = req.body.name;
     newCampaign.description = req.body.description;
-    newCampaign.banner = req.body.banner;
+    newCampaign.banner = req.file.path;
     newCampaign.userIds = [];
     newCampaign.tags = [];
 
     campaigns[newCampaign.id] = newCampaign;
-
     // return success or failure response
-    res.status(200).json({"message": "success"});
+    res.status(200).json(newCampaign.joinCode);
 });
 
 //Retrieve a campaign by id
@@ -158,8 +241,22 @@ router.get('/campaigns/:campaignId', TokenMiddleware, (req, res) => {
     if (campaign) {
         res.json(campaign);
     } else {
-        res.status(401).json({ "error": "Campaign not found" });
+        res.status(404).json({ "error": "Campaign not found" });
     }
+});
+
+//Retrieve a campaign's banner
+router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
+    const campaignId = req.params.campaignId;
+    const campaign = campaigns[campaignId];
+
+    if(!campaign) {
+        res.status(404).json({ "error": "Campaign not found" });
+        return;
+    }
+
+    const filePath = path.join(__dirname, '..', '..', campaign.banner);
+    res.sendFile(filePath);
 });
 
 //remove a player from a campaign
@@ -167,13 +264,13 @@ router.delete('/campaigns/:campaignId/users/:userId', TokenMiddleware, (req, res
     const campaignId = parseInt(req.params.campaignId);
     const campaign = campaigns[campaignId];
     if (!campaign) {
-        res.status(401).json({ "error": "Campaign not found" });
+        res.status(404).json({ "error": "Campaign not found" });
         return;
     }
     const userId = parseInt(req.params.userId);
     const index = campaign.userIds.indexOf(userId);
     if (index == -1) {
-        res.status(401).json({ "error": "User not found" });
+        res.status(404).json({ "error": "User not found" });
         return;
     }
     campaign.userIds.splice(index, 1);
@@ -187,7 +284,7 @@ router.patch('/campaigns/:campaignId/description', TokenMiddleware, (req, res) =
     const campaignId = parseInt(req.params.campaignId);
     const campaign = campaigns[campaignId];
     if (!campaign) {
-        res.status(401).json({ "error": "Campaign not found" });
+        res.status(404).json({ "error": "Campaign not found" });
         return;
     }
     if (req.body.description == undefined || req.body.description == "") {
@@ -203,7 +300,7 @@ router.patch('/campaigns/:campaignId/tags', TokenMiddleware, (req, res) => {
     const campaignId = parseInt(req.params.campaignId);
     const campaign = campaigns[campaignId];
     if (!campaign) {
-        res.status(401).json({ "error": "Campaign not found" });
+        res.status(404).json({ "error": "Campaign not found" });
         return;
     }
     if (req.body.tags == undefined || !Array.isArray(req.body.tags)) {
@@ -219,7 +316,7 @@ router.patch('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
     const campaignId = parseInt(req.params.campaignId);
     const campaign = campaigns[campaignId];
     if (!campaign) {
-        res.status(401).json({ "error": "Campaign not found" });
+        res.status(404).json({ "error": "Campaign not found" });
         return;
     }
     if (req.body.banner == undefined || req.body.banner == "") {
@@ -237,7 +334,7 @@ router.get('/campaigns/:campaignId/notes/users/:userId', TokenMiddleware, (req, 
     const campaignId = parseInt(req.params.campaignId);
     const campaign = campaigns[campaignId];
     if (!campaign) {
-        res.status(401).json({ "error": "Campaign not found" });
+        res.status(404).json({ "error": "Campaign not found" });
         return;
     }
 
@@ -246,11 +343,11 @@ router.get('/campaigns/:campaignId/notes/users/:userId', TokenMiddleware, (req, 
     const userId = parseInt(req.params.userId);
     const user = users[userId];
     if (!user) {
-        res.status(401).json({ "error": "User not found" });
+        res.status(404).json({ "error": "User not found" });
         return;
     }
 
-    if(!campaign.userIds.includes(userId)) {
+    if(!campaign.userIds.includes(userId) && campaign.ownerId !== userId) {
         res.status(401).json({ "error": "Not authorized to view this campaign's notes" });
         return;
     }

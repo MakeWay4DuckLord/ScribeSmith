@@ -32,6 +32,20 @@ const login = (email, password) => {
         .catch(handleError)
 }
 
+const logout = () => {
+    return fetch(API_BASE + `/users/logout`, {
+        method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    })
+    .then(checkResponse)
+    .then(res => {
+        return res.json();
+    })
+    .catch(handleError)
+}
+
 const signUp = (firstName, lastName, email, password) => {
     return fetch(API_BASE + `/users`, {
         method: 'POST',
@@ -74,6 +88,18 @@ const getUserCampaigns = (userId) => {
         .catch(handleError);
 }
 
+const createCampaign = (formData) => {
+    return fetch(API_BASE + `/campaigns`, {
+        method: 'POST',
+        body: formData
+    })
+        .then(checkResponse)
+        .then(res => {
+            return res.json();
+        })
+        .catch(handleError);
+}
+
 const getCampaign = (campaignId) => {
     return fetch(API_BASE + `/campaigns/${campaignId}`)
         .then(checkResponse)
@@ -94,6 +120,30 @@ const getUser = (userId) => {
         })
         .then(user => {
             return user;
+        })
+        .catch(handleError);
+}
+
+const getUserIcon = (userId) => {
+    return fetch(API_BASE + `/users/${userId}/icon`)
+        .then(checkResponse)
+        .then(res => {
+            return res.blob();
+        }).then(blob => {
+            const imageURL = URL.createObjectURL(blob);
+            return imageURL;
+        })
+        .catch(handleError);
+}
+
+const updateUser = (userId, formData) => {
+    return fetch(API_BASE + `/users/${userId}`, {
+        method: 'PUT',
+        body: formData
+    })
+        .then(checkResponse)
+        .then(res => {
+            return res.json();
         })
         .catch(handleError);
 }
@@ -125,6 +175,18 @@ const joinCampaign = (userId, joinCode) => {
         .then(checkResponse)
         .then(res => {
             return res.json();
+        })
+        .catch(handleError);
+}
+
+const getCampaignBanner = (campaignId) => {
+    return fetch(API_BASE + `/campaigns/${campaignId}/banner`)
+        .then(checkResponse)
+        .then(res => {
+            return res.blob();
+        }).then(blob => {
+            const imageURL = URL.createObjectURL(blob);
+            return imageURL;
         })
         .catch(handleError);
 }
@@ -172,12 +234,17 @@ const updateNote = (noteId, campaignId, title, content, tags, sharedWith) => {
 export default {
     login,
     signUp,
+    updateUser,
+    logout,
     getCurrentUser,
+    getUserIcon,
     getUserCampaigns,
+    createCampaign,
     getCampaign,
     getUser,
     getCampaignNotesByUser,
     joinCampaign,
+    getCampaignBanner,
     createNote,
     updateNote
 }

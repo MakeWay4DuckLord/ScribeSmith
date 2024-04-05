@@ -12,6 +12,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./api/src:/app/src
+      - ./api/static:/app/static
     environment:
       - PORT=80
     env_file:
