@@ -1,0 +1,97 @@
+
+.create-campaign {
+    display: flex;
+    flex-direction: column;
+    height: 90%;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #494251;
+    border-radius: 5px;
+    padding: 30px;
+    width: 60%;
+}
+
+.create-campaign input {
+    background-color: #38323e;
+    color: white;
+    width: 100%;
+}
+
+.create-campaign input, .create-campaign textarea {
+    margin-bottom: 5px;
+}
+
+.create-campaign textarea {
+    background-color: #38323e;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    /* TODO: find the overall input rule that gives border radius
+    and add this to that instead of hardcoding it anywhere with a textarea */
+
+    width: 100%;
+}
+
+.create-campaign form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 70%;
+}
+
+.create-campaign label {
+    align-self: flex-start;
+}
+
+.create-campaign input[type="submit"] {
+    margin-top: 15px;
+    background-color: rgb(155, 111, 203);
+}
+
+.create-campaign h1 {
+    color: rgb(255, 216, 97);
+    /* position: absolute;
+    top: 30%;
+    left: 28%; */
+    margin: 0;
+}
+
+@media (max-width: 770px) {
+    .create-campaign h1 {
+        font-size: 40px;
+        top: 29%;
+        left: 18%;
+    }
+
+    .create-campaign form {
+        width: 100%;
+    }
+    
+}
+
+@media (max-width: 450px) {
+
+    .create-campaign {
+        height: initial;
+        margin-top: 15px;
+    }
+
+    .create-box {
+        display: block;
+        background-color: inherit;
+        padding: 0;
+    }
+
+    .create-campaign h1 {
+        font-size: 30px;
+        position: inherit;
+        margin-bottom: 15px;
+    }
+}
