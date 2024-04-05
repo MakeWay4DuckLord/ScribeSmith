@@ -75,13 +75,16 @@ router.get('/users/current', TokenMiddleware, (req,res) => {
 //retrieve a user by id
 router.get('/users/:userId', TokenMiddleware, (req, res) => {
     const userId = req.params.userId;
-    const user = users[userId];
+    // const user = users[userId];
 
-    if (user) {
-        res.json(user);
-    } else {
-        res.status(404).json({ "error": "User not found" });
-    }
+    UserDAO.getUserById(userId).then(user => {
+        if (user) {
+            res.json(user);
+        } else {
+            res.status(404).json({ "error": "User not found" });
+        }
+    })
+    
 });
 
 //Update a User
