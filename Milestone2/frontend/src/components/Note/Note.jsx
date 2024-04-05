@@ -113,15 +113,15 @@ export default function Note({note}) {
                     setIsOwner(false);
                 }
                 if(isOwner) {
+                    let newUsers = [];
                     api.getCampaign(campaignId).then(cpn => {
-                        for(let i = 0; i < cpn.userIds.length; i++) {                            
-                            api.getUser(cpn.userIds[i]).then(user => {
-                                users[i] = user;
+                        let userIds = [cpn.ownerId, ...cpn.userIds];
+                        for(let i = 0; i < userIds.length; i++) {                            
+                            api.getUser(userIds[i]).then(user => {
+                                newUsers[i] = user;
                             })
                         }
-                        api.getUser(cpn.ownerId).then(gm => {
-                            users[users.length] = gm;
-                        });
+                        setUsers(newUsers);
                     });
                 }
             }
@@ -129,7 +129,7 @@ export default function Note({note}) {
             // navigate("/login");
         });
         console.log("Note useEffect");
-    },[note, users]);
+    },[note]);
  
     return (
     <Container>
