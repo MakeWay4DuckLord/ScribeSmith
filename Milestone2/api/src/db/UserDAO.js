@@ -55,33 +55,6 @@ function createUser(user) {
     
 }
 
-// function createNewUser(email, password) {
-//     return new Promise((resolve, reject) => {
-//         const user = Object.values(users).find(user => user.email === email);
-
-//         if (user) { //email is already being used
-//             reject({ code: 409, message: "Email already in use" });
-
-//         } else { //email is not being used - create user
-//             const salt = crypto.randomBytes(32).toString('hex');
-
-//             crypto.pbkdf2(password, salt, hashingRounds, keyLen, 'sha512', (err, hashedPassword) => {
-
-//                 if (err) {
-//                     reject({ code: 500, message: "Error hashing password" });
-
-//                 } else {
-//                     const newUser = {
-//                         hashedPassword: hashedPassword.toString('hex'),
-//                         salt: salt
-//                     };
-//                     resolve(newUser);
-//                 }
-//             });
-//         }
-//     });
-// }
-
 function getUserById(userId) {
     return db.query('SELECT * FROM user WHERE usr_id=?', [userId]).then(({ results }) => {
         if (results[0]) {
@@ -89,7 +62,6 @@ function getUserById(userId) {
         }
     });
 }
-
 
 function getFilteredUser(user) {
     console.log(user);
