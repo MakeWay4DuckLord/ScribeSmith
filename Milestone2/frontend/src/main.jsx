@@ -19,6 +19,7 @@ import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import UserSettings from './pages/user-settings/UserSettings.jsx';
 import { userSettingsAction } from './pages/user-settings/formAction.jsx';
+import { createCampaignAction } from './pages/create-campaign/formAction.js';
 
 const router = createBrowserRouter([
   {
@@ -51,7 +52,8 @@ const router = createBrowserRouter([
       },
       {
         path: "create-campaign",
-        element: <CreateCampaign />
+        element: <CreateCampaign />,
+        action: createCampaignAction
       },
       {
         path: "campaigns/:campaignId",

@@ -88,6 +88,18 @@ const getUserCampaigns = (userId) => {
         .catch(handleError);
 }
 
+const createCampaign = (formData) => {
+    return fetch(API_BASE + `/campaigns`, {
+        method: 'POST',
+        body: formData
+    })
+        .then(checkResponse)
+        .then(res => {
+            return res.json();
+        })
+        .catch(handleError);
+}
+
 const getCampaign = (campaignId) => {
     return fetch(API_BASE + `/campaigns/${campaignId}`)
         .then(checkResponse)
@@ -167,6 +179,18 @@ const joinCampaign = (userId, joinCode) => {
         .catch(handleError);
 }
 
+const getCampaignBanner = (campaignId) => {
+    return fetch(API_BASE + `/campaigns/${campaignId}/banner`)
+        .then(checkResponse)
+        .then(res => {
+            return res.blob();
+        }).then(blob => {
+            const imageURL = URL.createObjectURL(blob);
+            return imageURL;
+        })
+        .catch(handleError);
+}
+
 const createNote = (campaignId, title, content, tags, sharedWith) => {
     return fetch(API_BASE + `/campaigns/${campaignId}/notes`, {
         method: 'POST',
@@ -215,10 +239,12 @@ export default {
     getCurrentUser,
     getUserIcon,
     getUserCampaigns,
+    createCampaign,
     getCampaign,
     getUser,
     getCampaignNotesByUser,
     joinCampaign,
+    getCampaignBanner,
     createNote,
     updateNote
 }
