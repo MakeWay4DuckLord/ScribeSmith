@@ -3,3 +3,4 @@ node_modules
 *.log
 *.gz
 .env
+Milestone2/.env

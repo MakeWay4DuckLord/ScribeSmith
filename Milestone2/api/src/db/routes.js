@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const users = require('./data/users');
+const users = require('./data/users'); // goal is to get rid of these
 const campaigns = require('./data/campaigns');
 const notes = require('./data/notes');
 const path = require('path');
@@ -7,6 +7,7 @@ const path = require('path');
 const {TokenMiddleware, generateToken, removeToken} = require('../middleware/TokenMiddleware');
 const upload = require('../middleware/multerConfig');
 const UserDAO = require('./UserDAO');
+const CampaignDAO = require('./CampaignDAO');
 
 // Authenticate a User
 router.post('/authenticate', (req, res) => {
@@ -37,34 +38,13 @@ router.post('/users/logout', (req,  res) => {
 
 //Add a user
 router.post('/users', (req, res) => {
-    const firstName = req.body.firstName;
-    const lastName = req.body.lastName;
-    const email = req.body.email;
-    const password = req.body.password;
-
-    if(firstName && lastName && email && password) {
-        UserDAO.createNewUser(email, password).then(results => {
-            const newUser = {
-                "id": Object.keys(users).length + 1,
-                "first_name": firstName,
-                "last_name": lastName,
-                "email": email,
-                "icon": "",
-                "tags": [],
-                "salt": results.salt,
-                "password": results.hashedPassword,
-            }
-            const usersNewId = Object.keys(users).length + 1;
-            users[usersNewId] = newUser;
-
-            res.json({success: true});
-        }).catch(err => {
-            console.log(err);
-            res.status(err.code).json({error: err.message});
-        });
-    } else {
-        res.status(400).json({error: "All fields must be filled out."});
-    }
+    let user = req.body;
+    UserDAO.createUser(user).then(newUser => {
+        res.json(newUser);
+    }).catch(err => {
+        console.log(err);
+        res.status(err.code).json({error: err.message});
+    });
 });
 
 //Getting the currently authenticated user
@@ -75,15 +55,16 @@ router.get('/users/current', TokenMiddleware, (req,res) => {
 //retrieve a user by id
 router.get('/users/:userId', TokenMiddleware, (req, res) => {
     const userId = req.params.userId;
-    const user = users[userId];
-
-    if (user) {
-        res.json(user);
-    } else {
-        res.status(404).json({ "error": "User not found" });
-    }
+    UserDAO.getUserById(userId).then(user => {
+        if (user) {
+            res.json(user);
+        } else {
+            res.status(404).json({ "error": "User not found" });
+        }
+    })
 });
 
+// TODO: add database to this
 //Update a User
 //User has the ability to update their first/last name, their profile image icon, and leave campaigns
 router.put('/users/:userId', TokenMiddleware, upload, (req, res) => {
@@ -150,30 +131,28 @@ router.put('/users/:userId', TokenMiddleware, upload, (req, res) => {
 //Retrieve a user's profile icon
 router.get('/users/:userId/icon', TokenMiddleware, (req, res) => {
     const userId = req.params.userId;
-    const user = users[userId];
 
-    if(!user) {
-        res.status(404).json({ "error": "User not found" });
-        return;
-    }
-    const filePath = path.join(__dirname, '..', '..', user.icon);
-    res.sendFile(filePath);
+    UserDAO.getUserById(userId).then(user => {
+        if (user) {
+            const filePath = path.join(__dirname, '..', '..', user.icon);
+            res.sendFile(filePath);
+        } else {
+            res.status(404).json({ "error": "User not found" });
+        }
+    })
 });
 
 //Retrieve a user's campaigns
+// TODO: should we take the userId out of the url?
+// seems like it should only be current user
 router.get('/users/:userId/campaigns', TokenMiddleware, upload, (req, res) => {
-    const userId = parseInt(req.params.userId);
-
-    console.log(campaigns);
-    const results = Object.values(campaigns).filter(campaign => campaign.userIds.includes(userId) || campaign.ownerId === userId);
-
-    let campaignArray = [];
-    results.forEach(campaign => {
-        campaignArray.push(campaign);
+    const userId = req.params.userId;
+    CampaignDAO.getCampaignsByUser(userId).then(campaigns => {
+        res.json(campaigns);
     });
-    res.json(campaignArray);
 });
 
+// TODO
 //Join a user to a campaign
 router.put('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
     const userId = parseInt(req.params.userId);
@@ -208,6 +187,7 @@ router.put('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
     res.status(200).json({"message": "success"});
 });
 
+// TODO
 //create a campaign
 router.post('/campaigns', TokenMiddleware, upload, (req, res) => {
     // request body should include name, description, banner
@@ -236,27 +216,35 @@ router.post('/campaigns', TokenMiddleware, upload, (req, res) => {
 
 //Retrieve a campaign by id
 router.get('/campaigns/:campaignId', TokenMiddleware, (req, res) => {
-    const campaignId = parseInt(req.params.campaignId);
-    const campaign = campaigns[campaignId];
-    if (campaign) {
-        res.json(campaign);
-    } else {
-        res.status(404).json({ "error": "Campaign not found" });
-    }
+    const campaignId = req.params.campaignId;
+    CampaignDAO.getCampaignById(campaignId).then(campaign => {
+        if (campaign) {
+            res.json(campaign);
+        } else {
+            res.status(404).json({ "error": "Campaign not found" });
+        }
+    })
+    // const campaignId = parseInt(req.params.campaignId);
+    // const campaign = campaigns[campaignId];
+    // if (campaign) {
+    //     res.json(campaign);
+    // } else {
+    //     res.status(404).json({ "error": "Campaign not found" });
+    // }
 });
 
 //Retrieve a campaign's banner
 router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
     const campaignId = req.params.campaignId;
-    const campaign = campaigns[campaignId];
 
-    if(!campaign) {
-        res.status(404).json({ "error": "Campaign not found" });
-        return;
-    }
-
-    const filePath = path.join(__dirname, '..', '..', campaign.banner);
-    res.sendFile(filePath);
+    CampaignDAO.getCampaignById(campaignId).then(campaign => {
+        if (campaign) {
+            const filePath = path.join(__dirname, '..', '..', campaign.banner);
+            res.sendFile(filePath);
+        } else {
+            res.status(404).json({ "error": "Campaign not found" });
+        }
+    })
 });
 
 //remove a player from a campaign
