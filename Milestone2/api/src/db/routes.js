@@ -195,23 +195,28 @@ router.post('/campaigns', TokenMiddleware, upload, (req, res) => {
     // owner is the current auth'd user? but req body for NOW
     // userIds and tags are empty at the start
     const newCampaign = {};
-    newCampaign.id = Math.max(...Object.keys(campaigns)) + 1;
+    //newCampaign.id = Math.max(...Object.keys(campaigns)) + 1;
     newCampaign.joinCode = makeJoinCode(5);
-    while (Object.values(campaigns).find(campaign => campaign.joinCode == newCampaign.joinCode) != undefined) {
-        newCampaign.joinCode = makeJoinCode(5);
-    }
 
-    // TODO: make sure all fields are validated!
-    newCampaign.ownerId = parseInt(req.body.ownerId);
+    // TODO: see if we can fix the join code maker.
+    // right now it just makes a random one and hopes that it isn't already in use
+
+    newCampaign.ownerId = parseInt(req.user.userId);
+    console.log("USER ID USED " + req.user.userId);
     newCampaign.name = req.body.name;
     newCampaign.description = req.body.description;
     newCampaign.banner = req.file.path;
-    newCampaign.userIds = [];
-    newCampaign.tags = [];
 
-    campaigns[newCampaign.id] = newCampaign;
+    //campaigns[newCampaign.id] = newCampaign;
+    CampaignDAO.createCampaign(newCampaign).then(campaign => {
+        res.json(campaign.joinCode);
+    }).catch(err => {
+        console.log(err);
+        res.status(err.code).json({error: err.message});
+    });
+
     // return success or failure response
-    res.status(200).json(newCampaign.joinCode);
+    // res.status(200).json(newCampaign.joinCode);
 });
 
 //Retrieve a campaign by id
@@ -224,13 +229,6 @@ router.get('/campaigns/:campaignId', TokenMiddleware, (req, res) => {
             res.status(404).json({ "error": "Campaign not found" });
         }
     })
-    // const campaignId = parseInt(req.params.campaignId);
-    // const campaign = campaigns[campaignId];
-    // if (campaign) {
-    //     res.json(campaign);
-    // } else {
-    //     res.status(404).json({ "error": "Campaign not found" });
-    // }
 });
 
 //Retrieve a campaign's banner
@@ -345,17 +343,6 @@ router.get('/campaigns/:campaignId/notes/users/:userId', TokenMiddleware, (req, 
 
     res.json(results);
 
-});
-
-//get notes by creator and campaign and tags
-router.get('/campaigns/:campaignId/notes/users/:userId/tags/:tagString', (req, res) => {
-    // TODO: this url seems a little fucked up but if i don't put
-    // tags as a url parameter then it has to go in the body
-    // which is supposed to be empty
-    // soooooooooooooooo
-
-    // NOT DOING THIS ONE currently bc declan has pitched
-    // that we filter by tags in frontend instead
 });
 
 //get all tags a user has used in a campaign

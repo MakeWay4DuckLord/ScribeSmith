@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS `campaign` (
   `cpn_description` varchar(1200),
   `cpn_join_code` char(5),
   PRIMARY KEY (`cpn_id`),
+  CONSTRAINT `U_CPN_JOIN_CODE` UNIQUE (`cpn_join_code`),
   CONSTRAINT `FK_CPN_USR` FOREIGN KEY (`cpn_owner_id`) REFERENCES user(`usr_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
