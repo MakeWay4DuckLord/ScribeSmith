@@ -10,27 +10,30 @@ const keyLen = 64
 module.exports = {
     getUserByCredentials: (email, password) => {
         return new Promise((resolve, reject) => {
-            const user = Object.values(users).find(user => user.email == email);
-            if (user) { // we found our user
-                crypto.pbkdf2(password, user.salt, hashingRounds, keyLen, 'sha512', (err, derivedKey) => {
-                    if (err) { //problem computing digest, like hash function not available
-                        reject({ code: 400, message: "Error: " + err });
-                    }
 
-                    const digest = derivedKey.toString('hex');
-                    if (user.password == digest) {
-                        resolve(getFilteredUser(user));
-                    }
-                    else {
-                        reject({ code: 401, message: "Invalid email or password" });
-                    }
-                });
-            }
-            else { // if no user with provided email
+            db.query('SELECT * FROM user WHERE usr_email=?', [email]).then(({ results }) => {
+                const user = new User(results[0]);
+                if (user) { // we found our user
+                    crypto.pbkdf2(password, user.salt, hashingRounds, keyLen, 'sha512', (err, derivedKey) => {
+                        if (err) { //problem computing digest, like hash function not available
+                            reject({ code: 400, message: "Error: " + err });
+                        }
 
-                reject({ code: 401, message: "Invalid email or password" });
-            }
-        })
+                        const digest = derivedKey.toString('hex');
+                        if (user.password == digest) {
+                            resolve(getFilteredUser(user));
+                        }
+                        else {
+                            reject({ code: 401, message: "Invalid email or password" });
+                        }
+                    });
+                }
+                else { // if no user with provided email
+
+                    reject({ code: 401, message: "Invalid email or password" });
+                }
+            })
+        });
 
     },
 
