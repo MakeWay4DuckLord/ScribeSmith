@@ -4,36 +4,36 @@ const campaigns = require('./data/campaigns');
 const notes = require('./data/notes');
 const path = require('path');
 
-const {TokenMiddleware, generateToken, removeToken} = require('../middleware/TokenMiddleware');
+const { TokenMiddleware, generateToken, removeToken } = require('../middleware/TokenMiddleware');
 const upload = require('../middleware/multerConfig');
 const UserDAO = require('./UserDAO');
 const CampaignDAO = require('./CampaignDAO');
 
 // Authenticate a User
 router.post('/authenticate', (req, res) => {
-    if(req.body.email && req.body.password) {
+    if (req.body.email && req.body.password) {
         UserDAO.getUserByCredentials(req.body.email, req.body.password).then(user => {
-          let result = {
-            user: user
-          }
-    
-          generateToken(req, res, user);
-    
-          res.json(result);
+            let result = {
+                user: user
+            }
+
+            generateToken(req, res, user);
+
+            res.json(result);
         }).catch(err => {
-          console.log(err);
-          res.status(err.code).json({error: err.message});
+            console.log(err);
+            res.status(err.code).json({ error: err.message });
         });
-      }
-      else {
-        res.status(401).json({error: 'Not authenticated'});
-      }
+    }
+    else {
+        res.status(401).json({ error: 'Not authenticated' });
+    }
 });
 
 //Logout the current authenticated user
-router.post('/users/logout', (req,  res) => {
-    removeToken(req, res);  
-    res.json({success: true});
+router.post('/users/logout', (req, res) => {
+    removeToken(req, res);
+    res.json({ success: true });
 });
 
 //Add a user
@@ -43,12 +43,12 @@ router.post('/users', (req, res) => {
         res.json(newUser);
     }).catch(err => {
         console.log(err);
-        res.status(err.code).json({error: err.message});
+        res.status(err.code).json({ error: err.message });
     });
 });
 
 //Getting the currently authenticated user
-router.get('/users/current', TokenMiddleware, (req,res) => {
+router.get('/users/current', TokenMiddleware, (req, res) => {
     res.json(req.user);
 });
 
@@ -64,6 +64,7 @@ router.get('/users/:userId', TokenMiddleware, (req, res) => {
     })
 });
 
+// TODO: remove userId from params here!!
 // TODO: add database to this
 //Update a User
 //User has the ability to update their first/last name, their profile image icon, and leave campaigns
@@ -71,7 +72,7 @@ router.put('/users/:userId', TokenMiddleware, upload, (req, res) => {
     const userId = req.params.userId;
     const user = users[userId];
 
-    if(!user) {
+    if (!user) {
         res.status(404).json({ "error": "User not found" });
         return;
     }
@@ -80,7 +81,7 @@ router.put('/users/:userId', TokenMiddleware, upload, (req, res) => {
     const lastName = req.body.lastName;
     const selectedCampaigns = JSON.parse(req.body.selectedCampaigns);
 
-    if(!(firstName) || !(lastName)) {
+    if (!(firstName) || !(lastName)) {
         res.status(400).json({ "error": "Not all fields filled out" });
         return;
     }
@@ -89,7 +90,7 @@ router.put('/users/:userId', TokenMiddleware, upload, (req, res) => {
     if (!req.file) { //no image was uploaded
         imageURL = user.icon;
     } else {
-        imageURL = `${req.file.path}`; 
+        imageURL = `${req.file.path}`;
     }
 
     const updatedUser = {
@@ -98,34 +99,40 @@ router.put('/users/:userId', TokenMiddleware, upload, (req, res) => {
         last_name: lastName,
         email: user.email,
         icon: imageURL,
-        tags: user.tags,
+        // tags: user.tags,
         salt: user.salt,
         password: user.password,
     }
-
-    users[user.userId] = updatedUser; //update in "Database"
-
-    const filteredUser = {
-        userId: updatedUser.userId,
-        firstName: updatedUser.first_name,
-        lastName: updatedUser.last_name,
-        email: updatedUser.email,
-    }
-
+    
     //remove user from campaigns
     selectedCampaigns.forEach(campaignId => {
-        if (!campaigns[campaignId]) {
-            res.status(404).json({ "error": "Campaign not found" });
-            return;
-        }
+        // if (!campaigns[campaignId]) {
+        //     res.status(404).json({ "error": "Campaign not found" });
+        //     return;
+        // }
 
-        campaigns[campaignId].userIds = campaigns[campaignId].userIds.filter(id => id != userId);
+        // campaigns[campaignId].userIds = campaigns[campaignId].userIds.filter(id => id != userId);
+        UserDAO.removeUserFromCampaign(userId, campaignId).catch(error => {
+            console.log("this method wasn't supposed to throw an error, how did you get here.");
+        });
     });
 
-    //update the token with the new user info
-    removeToken(req, res);
-    generateToken(req, res, filteredUser);
-    res.json(filteredUser);
+    UserDAO.updateUser(updatedUser).then(userReturn => {
+        const filteredUser = {
+            userId: userReturn.userId,
+            firstName: userReturn.first_name,
+            lastName: userReturn.last_name,
+            email: userReturn.email,
+        }
+        //update the token with the new user info
+        removeToken(req, res);
+        generateToken(req, res, filteredUser);
+        res.json(filteredUser);
+    }).catch(err => {
+        console.log(err);
+        res.status(err.code).json({ error: err.message });
+    });
+
 });
 
 //Retrieve a user's profile icon
@@ -171,8 +178,8 @@ router.put('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
     }
     //check if a user is already in a campaign
     console.log(campaign["userIds"]);
-    if(campaign["userIds"].includes(userId)) {
-        res.status(400).json({"error": "You have already joined this campaign."});
+    if (campaign["userIds"].includes(userId)) {
+        res.status(400).json({ "error": "You have already joined this campaign." });
         return;
     }
 
@@ -184,7 +191,7 @@ router.put('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
     (users[userId]).tags[campaign.id] = [];
 
     // return success or failure response
-    res.status(200).json({"message": "success"});
+    res.status(200).json({ "message": "success" });
 });
 
 // TODO
@@ -212,7 +219,7 @@ router.post('/campaigns', TokenMiddleware, upload, (req, res) => {
         res.json(campaign.joinCode);
     }).catch(err => {
         console.log(err);
-        res.status(err.code).json({error: err.message});
+        res.status(err.code).json({ error: err.message });
     });
 
     // return success or failure response
@@ -261,7 +268,7 @@ router.delete('/campaigns/:campaignId/users/:userId', TokenMiddleware, (req, res
     }
     campaign.userIds.splice(index, 1);
 
-    res.status(200).json({"message": "success"});
+    res.status(200).json({ "message": "success" });
 
 });
 
@@ -278,7 +285,7 @@ router.patch('/campaigns/:campaignId/description', TokenMiddleware, (req, res) =
         return;
     }
     campaign.description = req.body.description;
-    res.status(200).json({"message": "success"});
+    res.status(200).json({ "message": "success" });
 });
 
 //update campaign tags
@@ -294,7 +301,7 @@ router.patch('/campaigns/:campaignId/tags', TokenMiddleware, (req, res) => {
         return;
     }
     campaign.tags = req.body.tags;
-    res.status(200).json({"message": "success"});
+    res.status(200).json({ "message": "success" });
 });
 
 //update banner image
@@ -310,7 +317,7 @@ router.patch('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
         return;
     }
     campaign.banner = req.body.banner;
-    res.status(200).json({"message": "success"});
+    res.status(200).json({ "message": "success" });
 });
 
 //get notes by creator and campaign (could this be removed?)
@@ -333,7 +340,7 @@ router.get('/campaigns/:campaignId/notes/users/:userId', TokenMiddleware, (req, 
         return;
     }
 
-    if(!campaign.userIds.includes(userId) && campaign.ownerId !== userId) {
+    if (!campaign.userIds.includes(userId) && campaign.ownerId !== userId) {
         res.status(401).json({ "error": "Not authorized to view this campaign's notes" });
         return;
     }

@@ -55,8 +55,24 @@ function createUser(user) {
     
 }
 
+function updateUser(user) {
+    return db.query(`UPDATE user
+    SET usr_first_name=?, usr_last_name=?, usr_icon=?
+    WHERE usr_id=?;`, [user.first_name, user.last_name, user.icon, user.userId]).then(({results}) => {
+        //console.log("RESULTS", results);
+        return user;
+    });
+}
+
+// SHOULD THIS ALSO DELETE NOTES??? for now it doesnt
+function removeUserFromCampaign(userId, campaignId) {
+    return db.query('DELETE FROM campaign_user WHERE cpu_cpn_id=? AND cpu_usr_id=?;', [campaignId, userId]).then(({results}) => {
+        return results; // ?????
+    })
+}
+
 function getUserById(userId) {
-    return db.query('SELECT * FROM user WHERE usr_id=?', [userId]).then(({ results }) => {
+    return db.query('SELECT * FROM user WHERE usr_id=?;', [userId]).then(({ results }) => {
         if (results[0]) {
             return new User(results[0]);
         }
@@ -76,6 +92,7 @@ function getFilteredUser(user) {
 module.exports = {
     getUserByCredentials,
     createUser,
-    // createNewUser,
+    updateUser,
+    removeUserFromCampaign,
     getUserById
 };
