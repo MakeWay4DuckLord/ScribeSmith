@@ -157,25 +157,24 @@ router.get('/users/:userId/campaigns', TokenMiddleware, upload, (req, res) => {
 // TODO - remove userId from this url
 //Join a user to a campaign
 router.put('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
-    // const userId = parseInt(req.params.userId);
-    // const user = users[userId];
-    // if (!user) {
-    //     res.status(404).json({ "error": "User not found" });
-    //     return;
-    // }
 
     // get campaign join code from request body
     const joinCode = req.body.joinCode;
+    const userId = req.params.userId;
     //const campaign = Object.values(campaigns).find(campaign => campaign.joinCode == joinCode);
 
-    // TODO! COME BACK HERE LATER
-
-    // CampaignDAO.getCampaignByJoinCode(joinCode).then(campaign => {
-    //     if (!campaign) {
-    //         res.status(404).json({ "error": "Campaign not found" });
-    //         return;
-    //     }
-    // })
+    CampaignDAO.getCampaignByJoinCode(joinCode).then(campaign => {
+        if (!campaign) {
+            res.status(404).json({ "error": "Campaign not found" });
+            return;
+        }
+        // ????
+        CampaignDAO.joinUserToCampaign(userId, campaign.id).then((result) => {
+            res.status(200).json(result);
+        }).catch(err => {
+            res.status(err.code).json({ error: err.message });
+        });
+    });
     
     //check if a user is already in a campaign
     // console.log(campaign["userIds"]);
@@ -187,12 +186,8 @@ router.put('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
     // add userid to campaign list of userIds
     //(campaigns[campaign.id]).userIds.push(userId);
 
-    // update user's list of used tags to have a spot for this one
-    console.log(users[userId]);
-    (users[userId]).tags[campaign.id] = [];
-
     // return success or failure response
-    res.status(200).json({ "message": "success" });
+    
 });
 
 // TODO
