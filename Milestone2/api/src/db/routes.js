@@ -103,15 +103,9 @@ router.put('/users/:userId', TokenMiddleware, upload, (req, res) => {
         salt: user.salt,
         password: user.password,
     }
-    
+
     //remove user from campaigns
     selectedCampaigns.forEach(campaignId => {
-        // if (!campaigns[campaignId]) {
-        //     res.status(404).json({ "error": "Campaign not found" });
-        //     return;
-        // }
-
-        // campaigns[campaignId].userIds = campaigns[campaignId].userIds.filter(id => id != userId);
         UserDAO.removeUserFromCampaign(userId, campaignId).catch(error => {
             console.log("this method wasn't supposed to throw an error, how did you get here.");
         });
@@ -155,36 +149,43 @@ router.get('/users/:userId/icon', TokenMiddleware, (req, res) => {
 router.get('/users/:userId/campaigns', TokenMiddleware, upload, (req, res) => {
     const userId = req.params.userId;
     CampaignDAO.getCampaignsByUser(userId).then(campaigns => {
+        
         res.json(campaigns);
     });
 });
 
-// TODO
+// TODO - remove userId from this url
 //Join a user to a campaign
 router.put('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
-    const userId = parseInt(req.params.userId);
-    const user = users[userId];
-    if (!user) {
-        res.status(404).json({ "error": "User not found" });
-        return;
-    }
+    // const userId = parseInt(req.params.userId);
+    // const user = users[userId];
+    // if (!user) {
+    //     res.status(404).json({ "error": "User not found" });
+    //     return;
+    // }
 
     // get campaign join code from request body
     const joinCode = req.body.joinCode;
-    const campaign = Object.values(campaigns).find(campaign => campaign.joinCode == joinCode);
-    if (!campaign) {
-        res.status(404).json({ "error": "Campaign not found" });
-        return;
-    }
+    //const campaign = Object.values(campaigns).find(campaign => campaign.joinCode == joinCode);
+
+    // TODO! COME BACK HERE LATER
+
+    // CampaignDAO.getCampaignByJoinCode(joinCode).then(campaign => {
+    //     if (!campaign) {
+    //         res.status(404).json({ "error": "Campaign not found" });
+    //         return;
+    //     }
+    // })
+    
     //check if a user is already in a campaign
-    console.log(campaign["userIds"]);
-    if (campaign["userIds"].includes(userId)) {
-        res.status(400).json({ "error": "You have already joined this campaign." });
-        return;
-    }
+    // console.log(campaign["userIds"]);
+    // if (campaign["userIds"].includes(userId)) {
+    //     res.status(400).json({ "error": "You have already joined this campaign." });
+    //     return;
+    // }
 
     // add userid to campaign list of userIds
-    (campaigns[campaign.id]).userIds.push(userId);
+    //(campaigns[campaign.id]).userIds.push(userId);
 
     // update user's list of used tags to have a spot for this one
     console.log(users[userId]);

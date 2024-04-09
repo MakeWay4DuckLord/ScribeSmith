@@ -8,6 +8,12 @@ function getCampaignsByUser(userId) {
     });
 }
 
+function getTagsByCampaignId(campaignId) {
+    return db.query('SELECT * FROM campaign_tag JOIN tag ON cpt_tag_id=tag_id WHERE cpt_cpn_id=?;', [campaignId]).then(({results}) => {
+        return results.map(tag => new Tag(tag));
+    })
+}
+
 function getCampaignById(campaignId) {
     return db.query(`SELECT
     c.cpn_id,
@@ -47,5 +53,6 @@ function createCampaign(campaign) {
 module.exports = {
     getCampaignsByUser,
     getCampaignById,
+    getTagsByCampaignId,
     createCampaign
 };
