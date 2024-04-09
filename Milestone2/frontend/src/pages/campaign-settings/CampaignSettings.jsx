@@ -9,17 +9,15 @@ export default function CampaignSettings() {
     const [campaign, setCampaign] = useState(null);
     const [players, setPlayers] = useState([]);
     const [error, setError] = useState(null);
-    const { id }= useParams();
+    const { campaignId }= useParams();
 
     useEffect(() => {
-        api.getCampaign(id).then(campaign => {
+        api.getCampaign(campaignId).then(campaign => {
             setCampaign(campaign);
 
             if (campaign && campaign.userIds.length !== 0) {
                 Promise.all( //wait for all the promises from the api calls to resolve
-                    campaign.userIds.map(userId =>
-                      api.getUser(userId)
-                  )).then(userArr => {
+                    campaign.userIds.map(userId => api.getUser(userId))).then(userArr => {
                     setPlayers(userArr);
                 }).catch(err => {
                     setError(true);
@@ -29,7 +27,7 @@ export default function CampaignSettings() {
         .catch(err => {
             setError(true);
         })
-    }, [id, campaign, players]);
+    }, [campaignId]);
 
     return (
         <>
