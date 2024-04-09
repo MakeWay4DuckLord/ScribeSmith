@@ -232,6 +232,8 @@ router.get('/campaigns/:campaignId', TokenMiddleware, (req, res) => {
     const campaignId = req.params.campaignId;
     CampaignDAO.getCampaignById(campaignId).then(campaign => {
         if (campaign) {
+            campaign.tags = JSON.parse(campaign.tags);
+            campaign.userIds = JSON.parse(campaign.userIds);
             res.json(campaign);
         } else {
             res.status(404).json({ "error": "Campaign not found" });
