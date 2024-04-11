@@ -8,6 +8,7 @@ const { TokenMiddleware, generateToken, removeToken } = require('../middleware/T
 const upload = require('../middleware/multerConfig');
 const UserDAO = require('./UserDAO');
 const CampaignDAO = require('./CampaignDAO');
+const NoteDAO = require('./NoteDAO');
 
 // Authenticate a User
 router.post('/authenticate', (req, res) => {
@@ -275,7 +276,7 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
 // });
 
 // update cpn description, tags, image
-router.put('/campaigns/:campiagnId/settings', TokenMiddleware, (req, res) => {
+router.put('/campaigns/:campaignId/settings', TokenMiddleware, (req, res) => {
     console.log("campaign settings put received", req.body);
 });
 
@@ -327,36 +328,38 @@ router.put('/campaigns/:campiagnId/settings', TokenMiddleware, (req, res) => {
 //     res.status(200).json({ "message": "success" });
 // });
 
-//get notes by creator and campaign (could this be removed?)
-router.get('/campaigns/:campaignId/notes/users/:userId', TokenMiddleware, (req, res) => {
+//get VIEWABLE notes by campaign
+router.get('/campaigns/:campaignId/notes', TokenMiddleware, (req, res) => {
     // note - this request will always need to filter out non-viewable notes
     // based on authentication
-    const campaignId = parseInt(req.params.campaignId);
-    const campaign = campaigns[campaignId];
-    if (!campaign) {
-        res.status(404).json({ "error": "Campaign not found" });
-        return;
-    }
+    const userId = req.user.userId;
+    console.log("retrieved userId", userId);
+    const campaignId = req.params.campaignId;
 
-    // user id check - unclear if necessary.
-    // will probably get changed out when we add authentication anyway so w/e
-    const userId = parseInt(req.params.userId);
-    const user = users[userId];
-    if (!user) {
-        res.status(404).json({ "error": "User not found" });
-        return;
-    }
+    NoteDAO.getViewableNotesByCampaign(userId, campaignId).then(notes => {
+        res.json(notes);
+    });
 
-    if (!campaign.userIds.includes(userId) && campaign.ownerId !== userId) {
-        res.status(401).json({ "error": "Not authorized to view this campaign's notes" });
-        return;
-    }
+});
 
+//get VIEWABLE notes by creator and campaign
+router.get('/campaigns/:campaignId/notes/users/:userId', TokenMiddleware, (req, res) => {
+    // one of many routes that lost a 404 for campaign not found- TODO - talk with
+    // group members about whether that is needed
 
-    const results = Object.values(notes).filter(note => (note.campaignId == campaignId) && (note.userId == userId));
+    // note - this request will always need to filter out non-viewable notes
+    // based on authentication
+    const userId = req.user.userId;
+    console.log("retrieved userId", userId);
+    const campaignId = req.params.campaignId;
+    const authorId = req.params.userId;
 
-    res.json(results);
-
+    console.log("getting", userId, authorId, campaignId);
+    
+    NoteDAO.getViewableNotesByAuthorByCampaign(userId, authorId, campaignId).then(notes => {
+        console.log("got", notes);
+        res.json(notes);
+    });
 });
 
 //get all tags a user has used in a campaign
