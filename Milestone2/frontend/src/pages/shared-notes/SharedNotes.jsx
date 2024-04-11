@@ -30,8 +30,8 @@ export default function SharedNotes() {
                 //         setError(err);
                 //     });
                 // }
-                api.getCampaignNotes(campaignId).then(notes => {
-                    // notes = notes.filter(note => note.sharedWith.includes(currentUser.id))
+                api.getCampaignSharedNotes(campaignId).then(notes => {
+                    //notes = notes.filter(note => note.sharedWith.includes(currentUser.id));
                     setNotes(notes);
                 }).catch(err => {
                     setError(err);

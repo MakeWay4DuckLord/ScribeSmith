@@ -337,6 +337,24 @@ router.get('/campaigns/:campaignId/notes', TokenMiddleware, (req, res) => {
     const campaignId = req.params.campaignId;
 
     NoteDAO.getViewableNotesByCampaign(userId, campaignId).then(notes => {
+        console.log("got", notes);
+        res.json(notes);
+    });
+
+});
+
+//get SHARED notes by campaign (shitty version)
+router.get('/campaigns/:campaignId/notes/shared', TokenMiddleware, (req, res) => {
+    // note - this request will always need to filter out non-viewable notes
+    // based on authentication
+    const userId = req.user.userId;
+    console.log("retrieved userId", userId);
+    const campaignId = req.params.campaignId;
+
+    NoteDAO.getViewableNotesByCampaign(userId, campaignId).then(notes => {
+        console.log("got", notes);
+        notes = notes.filter(note => note.sharedWith.includes(userId));
+        console.log("filtered", notes);
         res.json(notes);
     });
 

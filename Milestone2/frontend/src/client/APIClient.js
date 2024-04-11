@@ -148,9 +148,9 @@ const updateUser = (userId, formData) => {
         .catch(handleError);
 }
 
-const getCampaignNotes = (campaignId) => {
+const getCampaignSharedNotes = (campaignId) => {
     // /campaigns/:campaignId/notes/users/:userId
-    return fetch(API_BASE + `/campaigns/${campaignId}/notes`)
+    return fetch(API_BASE + `/campaigns/${campaignId}/notes/shared`)
         .then(checkResponse)
         .then(res => {
             return res.json();
@@ -255,7 +255,7 @@ export default {
     createCampaign,
     getCampaign,
     getUser,
-    getCampaignNotes,
+    getCampaignSharedNotes,
     getCampaignNotesByUser,
     joinCampaign,
     getCampaignBanner,
