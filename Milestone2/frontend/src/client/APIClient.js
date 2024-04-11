@@ -149,7 +149,6 @@ const updateUser = (userId, formData) => {
 }
 
 const getCampaignSharedNotes = (campaignId) => {
-    // /campaigns/:campaignId/notes/users/:userId
     return fetch(API_BASE + `/campaigns/${campaignId}/notes/shared`)
         .then(checkResponse)
         .then(res => {
@@ -162,7 +161,6 @@ const getCampaignSharedNotes = (campaignId) => {
 }
 
 const getCampaignNotesByUser = (campaignId, userId) => {
-    // /campaigns/:campaignId/notes/users/:userId
     return fetch(API_BASE + `/campaigns/${campaignId}/notes/users/${userId}`)
         .then(checkResponse)
         .then(res => {

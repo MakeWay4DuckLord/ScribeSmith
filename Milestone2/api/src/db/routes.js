@@ -328,20 +328,20 @@ router.put('/campaigns/:campaignId/settings', TokenMiddleware, (req, res) => {
 //     res.status(200).json({ "message": "success" });
 // });
 
-//get VIEWABLE notes by campaign
-router.get('/campaigns/:campaignId/notes', TokenMiddleware, (req, res) => {
-    // note - this request will always need to filter out non-viewable notes
-    // based on authentication
-    const userId = req.user.userId;
-    console.log("retrieved userId", userId);
-    const campaignId = req.params.campaignId;
+// //get VIEWABLE notes by campaign
+// router.get('/campaigns/:campaignId/notes', TokenMiddleware, (req, res) => {
+//     // note - this request will always need to filter out non-viewable notes
+//     // based on authentication
+//     const userId = req.user.userId;
+//     console.log("retrieved userId", userId);
+//     const campaignId = req.params.campaignId;
 
-    NoteDAO.getViewableNotesByCampaign(userId, campaignId).then(notes => {
-        console.log("got", notes);
-        res.json(notes);
-    });
+//     NoteDAO.getViewableNotesByCampaign(userId, campaignId).then(notes => {
+//         console.log("got", notes);
+//         res.json(notes);
+//     });
 
-});
+// });
 
 //get SHARED notes by campaign (shitty version)
 router.get('/campaigns/:campaignId/notes/shared', TokenMiddleware, (req, res) => {
