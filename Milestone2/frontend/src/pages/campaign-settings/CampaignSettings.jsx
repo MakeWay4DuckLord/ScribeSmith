@@ -34,7 +34,7 @@ export default function CampaignSettings() {
             <div className="campaign-settings">
                 <h1>CAMPAIGN SETTINGS</h1>
                 <div className="settings-box">
-                    <form method="post" encType="multipart/form-data">
+                    <form method="put" encType="multipart/form-data">
                         <h2>{campaign && campaign.name}</h2>
                         {/* name description banner */}
                         
