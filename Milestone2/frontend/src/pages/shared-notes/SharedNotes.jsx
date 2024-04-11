@@ -17,19 +17,25 @@ export default function SharedNotes() {
     useEffect(() => {
         api.getCurrentUser().then(currentUser => {
             api.getCampaign(campaignId).then(cpn => {
-                const userids = [cpn.ownerId, ...cpn.userIds];
-                console.log(userids)
-                for(let i = 0; i < userids.length; i++) {
-                    const id = userids[i];
-                    console.log(id)
-                    //this will be replaced with an endpoint that does filtering with sql queries in the backend
-                    api.getCampaignNotesByUser(campaignId, id).then(notes => {
-                        notes.filter(note => currentUser.id === note.userId || note.sharedWith.includes(currentUser.id));
-                        setNotes([...myNotes, ...notes]);
-                    }).catch(err => {
-                        setError(err);
-                    });
-                }
+                // const userids = [cpn.ownerId, ...cpn.userIds];
+                // console.log(userids)
+                // for(let i = 0; i < userids.length; i++) {
+                //     const id = userids[i];
+                //     console.log(id)
+                //     //this will be replaced with an endpoint that does filtering with sql queries in the backend
+                //     api.getCampaignNotesByUser(campaignId, id).then(notes => {
+                //         // notes.filter(note => currentUser.id === note.userId || note.sharedWith.includes(currentUser.id));
+                //         setNotes([...myNotes, ...notes]);
+                //     }).catch(err => {
+                //         setError(err);
+                //     });
+                // }
+                api.getCampaignNotes(campaignId).then(notes => {
+                    // notes = notes.filter(note => note.sharedWith.includes(currentUser.id))
+                    setNotes(notes);
+                }).catch(err => {
+                    setError(err);
+                });
             })
 
             api.getCampaign(campaignId).then(cpn => {

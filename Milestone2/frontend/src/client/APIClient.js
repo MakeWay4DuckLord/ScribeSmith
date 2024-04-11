@@ -148,6 +148,19 @@ const updateUser = (userId, formData) => {
         .catch(handleError);
 }
 
+const getCampaignNotes = (campaignId) => {
+    // /campaigns/:campaignId/notes/users/:userId
+    return fetch(API_BASE + `/campaigns/${campaignId}/notes`)
+        .then(checkResponse)
+        .then(res => {
+            return res.json();
+        })
+        .then(notes => {
+            return notes;
+        })
+        .catch(handleError);
+}
+
 const getCampaignNotesByUser = (campaignId, userId) => {
     // /campaigns/:campaignId/notes/users/:userId
     return fetch(API_BASE + `/campaigns/${campaignId}/notes/users/${userId}`)
@@ -242,6 +255,7 @@ export default {
     createCampaign,
     getCampaign,
     getUser,
+    getCampaignNotes,
     getCampaignNotesByUser,
     joinCampaign,
     getCampaignBanner,
