@@ -400,7 +400,7 @@ router.get('/users/:userId/tags/campaigns/:campaignId', TokenMiddleware, (req, r
 
 //create a note
 router.post('/campaigns/:campaignId/notes', TokenMiddleware, (req, res) => {
-    console.log("post request received");
+    console.log("post request received", req.body);
     //console.log(req.body);
     //console.log(req.user.userId);
     const note = req.body;

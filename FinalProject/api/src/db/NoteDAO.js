@@ -55,19 +55,16 @@ addSharesToNotes = (notes) => {
 };
 
 getOrInsertTagId = (tagText) => {
+    console.log("trying to process tag", tagText);
     return new Promise((resolve, reject) => {
-        db.query('SELECT tag_id FROM tag WHERE tag_text = ?', [tagText], (err, results) => {
-            if (err) {
-                reject(err);
-            } else if (results.length > 0) {
-                resolve(results[0].id);
+        db.query('SELECT tag_id FROM tag WHERE tag_text = ?', [tagText]).then(({ results }) => {
+            if (results.length > 0) {
+                console.log("tag id found", results[0].tag_id);
+                resolve(results[0].tag_id);
             } else {
-                db.query('INSERT INTO tag (tag_text) VALUES (?)', [tagText], (err, results) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(results.insertId); // Return the id of the newly inserted tag
-                    }
+                db.query('INSERT INTO tag (tag_text) VALUES (?)', [tagText]).then(({ results }) => {
+                    console.log("inserting tag");
+                    resolve(results.insertId); // Return the id of the newly inserted tag
                 });
             }
         })
@@ -76,12 +73,10 @@ getOrInsertTagId = (tagText) => {
 
 tagNote = (note, tagIds) => {
     const valuePairs = tagIds.map(tagId => [note.id, tagId]);
-    db.query('INSERT INTO note_tag (note_id, tag_id) VALUES ?', [valuePairs], (err, results) => {
-        if (err) {
-            reject(err);
-        } else {
-            resolve(note);
-        }
+    console.log("inserting", valuePairs);
+    return db.query('INSERT INTO note_tag (ntg_note_id, ntg_tag_id) VALUES ?', [valuePairs]).then(({results}) => {
+        // TODO: err checking here
+        return note;
     });
 };
 
@@ -118,7 +113,7 @@ function createNote(note) {
     let p = new Promise((resolve, reject) => {
         db.query('INSERT INTO note (note_owner_id, note_campaign_id, note_title, note_text) VALUES (?, ?, ?, ?)',
             [note.ownerId, note.campaignId, note.title, note.content]).then(({ results }) => {
-                
+
                 note.id = results.insertId;
 
                 // need to promise.all to make sure all tags are in the tags table
@@ -130,11 +125,11 @@ function createNote(note) {
                     tagPromises.push(getOrInsertTagId(tag));
                 });
 
-                console.log("buh?");
-
                 Promise.all(tagPromises).then(tagIds => {
-                    tagNote(note.id, tagIds);
-                    resolve(note); // ????
+                    console.log("tag promises resolved, tag ids", tagIds);
+                    tagNote(note, tagIds).then(note => {
+                        resolve(note); // ????
+                    });
                 });
 
                 // resolve(note);
