@@ -14,6 +14,7 @@ function getTagsByCampaignId(campaignId) {
     })
 }
 
+// TODO - please fix
 function getCampaignById(campaignId) {
     return db.query(`SELECT
     c.cpn_id,
@@ -51,7 +52,7 @@ function getCampaignByJoinCode(joinCode) {
 
 function joinUserToCampaign(userId, campaignId) {
     // DO WE NEED TO STOP DMS FROM JOINING THEIR OWN CAMPAIGNS???
-    // not doing that rn because difficult... but like..
+    // not doing that rn because difficult... but like.. TODO
     return db.query('INSERT INTO campaign_user VALUES (?, ?);', [campaignId, userId]).then(() => {
         return {message: "success"};
     }

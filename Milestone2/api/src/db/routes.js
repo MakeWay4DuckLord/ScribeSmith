@@ -390,10 +390,17 @@ router.post('/campaigns/:campaignId/notes', TokenMiddleware, (req, res) => {
     console.log("post request received");
     //console.log(req.body);
     //console.log(req.user.userId);
-    const newNote = req.body;
-    newNote.userId = req.user.userId;
-    newNote.campaignId = req.params.campaignId;
-    console.log(newNote);
+    const note = req.body;
+    note.ownerId = req.user.userId;
+    note.campaignId = req.params.campaignId;
+    
+    NoteDAO.createNote(note).then(newNote => {
+        console.log(newNote);
+        res.json(newNote);
+    }).catch(err => {
+        console.log(err);
+        res.status(err.code).json({ error: err.message });
+    });
 });
 
 // TODO: this may also need more complicated authentication
