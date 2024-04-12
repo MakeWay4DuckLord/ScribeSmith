@@ -12,6 +12,7 @@ import {
 import { FaTrash } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+
 import api from "../../client/APIClient";
 
 
@@ -59,6 +60,8 @@ export default function Note({note}) {
 
     const[renaming, setRenaming] = useState(false);
 
+    const [icon, setIcon] = useState(null);
+    
     const addTag = () => {
         if(tags.includes(newTag)) {
             return;
@@ -125,7 +128,6 @@ export default function Note({note}) {
 
     useEffect(() => {
         api.getCurrentUser().then(currentUser => {
-            console.log(currentUser)
             if(note) {
                 if(openNote != note && editor && editor.isDirty()) {
                     console.log("ope, whoopsie doopsie. you just lost all the change");
@@ -134,6 +136,11 @@ export default function Note({note}) {
                 setSharedWith([...note.sharedWith]);
                 setTitle(note.title);
                 setTags(note.tags);
+
+                //set the user icon of the open note
+                api.getUserIcon(note.userId).then(icon => {
+                    setIcon(icon);
+                });
 
                 // setOpenNote({"title": title, "content": note.content, "tags": tags, "sharedWith": sharedWith, "campaignId": campaignId, "userId": note.userId})
 
@@ -149,10 +156,13 @@ export default function Note({note}) {
                     let newUsers = [];
                     api.getCampaign(campaignId).then(cpn => {
                         let userIds = [cpn.ownerId, ...cpn.userIds];
-                        for(let i = 0; i < userIds.length; i++) {                            
-                            api.getUser(userIds[i]).then(user => {
-                                newUsers[i] = user;
-                            })
+                        for(let i = 0; i < userIds.length; i++) {
+                            if(userIds[i]) {
+                                api.getUser(userIds[i]).then(user => {
+                                    newUsers[i] = user;
+                                })
+                            }                            
+                            
                         }
                         setUsers(newUsers);
                     });
@@ -167,7 +177,7 @@ export default function Note({note}) {
     return (
     <Container>
         <header>
-            <img className="icon" src="https://robohash.org/veniamdoloresenim.png?size=64x64&set=set1" alt="user icon" />
+            <Avatar className="icon" alt="User icon"  src={icon} />
             <h2 onClick={() => setRenaming(isOwner)} name="title">{title}</h2> 
             {/* TODO editable header, im thinking if you click the title, it opens a dialogue to rename the note */}
         </header>

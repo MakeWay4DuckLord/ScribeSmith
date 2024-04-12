@@ -40,8 +40,13 @@ router.post('/users/logout', (req, res) => {
 //Add a user
 router.post('/users', (req, res) => {
     let user = req.body;
+    if(!user.email || !user.firstName || !user.lastName || !user.password) {
+        res.status(404).json({error: "Please fill out all fields"});
+        return;
+    }
+
     UserDAO.createUser(user).then(newUser => {
-        res.json(newUser);
+        res.json({message: "Successfully created user."});
     }).catch(err => {
         console.log(err);
         res.status(err.code).json({ error: err.message });
@@ -73,61 +78,63 @@ router.put('/users/:userId', TokenMiddleware, upload, (req, res) => {
     const userId = req.params.userId;
     const user = users[userId];
 
-    if (!user) {
-        res.status(404).json({ "error": "User not found" });
-        return;
-    }
-
-    const firstName = req.body.firstName;
-    const lastName = req.body.lastName;
-    const selectedCampaigns = JSON.parse(req.body.selectedCampaigns);
-
-    if (!(firstName) || !(lastName)) {
-        res.status(400).json({ "error": "Not all fields filled out" });
-        return;
-    }
-
-    let imageURL = "";
-    if (!req.file) { //no image was uploaded
-        imageURL = user.icon;
-    } else {
-        imageURL = `${req.file.path}`;
-    }
-
-    const updatedUser = {
-        userId: user.userId,
-        first_name: firstName,
-        last_name: lastName,
-        email: user.email,
-        icon: imageURL,
-        // tags: user.tags,
-        salt: user.salt,
-        password: user.password,
-    }
-
-    //remove user from campaigns
-    selectedCampaigns.forEach(campaignId => {
-        UserDAO.removeUserFromCampaign(userId, campaignId).catch(error => {
-            console.log("this method wasn't supposed to throw an error, how did you get here.");
-        });
-    });
-
-    UserDAO.updateUser(updatedUser).then(userReturn => {
-        const filteredUser = {
-            userId: userReturn.userId,
-            firstName: userReturn.first_name,
-            lastName: userReturn.last_name,
-            email: userReturn.email,
+    UserDAO.getUserById(userID).then(user => {
+        if(!user) {
+            res.status(409).json({"error": "User does not exist"});
+            return;
         }
-        //update the token with the new user info
-        removeToken(req, res);
-        generateToken(req, res, filteredUser);
-        res.json(filteredUser);
-    }).catch(err => {
-        console.log(err);
-        res.status(err.code).json({ error: err.message });
-    });
 
+        const firstName = req.body.firstName;
+        const lastName = req.body.lastName;
+        const selectedCampaigns = JSON.parse(req.body.selectedCampaigns);
+
+        if (!(firstName) || !(lastName)) {
+            res.status(400).json({ "error": "Not all fields filled out" });
+            return;
+        }
+
+        let imageURL = "";
+        if (!req.file) { //no image was uploaded
+            imageURL = user.icon;
+        } else {
+            imageURL = `${req.file.path}`;
+        }
+
+        const updatedUser = {
+            userId: user.userId,
+            first_name: firstName,
+            last_name: lastName,
+            email: user.email,
+            icon: imageURL,
+            // tags: user.tags,
+            salt: user.salt,
+            password: user.password,
+        }
+
+        //remove user from campaigns
+        selectedCampaigns.forEach(campaignId => {
+            UserDAO.removeUserFromCampaign(userId, campaignId).catch(error => {
+                console.log("this method wasn't supposed to throw an error, how did you get here.");
+            });
+        });
+
+        UserDAO.updateUser(updatedUser).then(userReturn => {
+            const filteredUser = {
+                userId: userReturn.userId,
+                firstName: userReturn.first_name,
+                lastName: userReturn.last_name,
+                email: userReturn.email,
+            }
+            //update the token with the new user info
+            removeToken(req, res);
+            generateToken(req, res, filteredUser);
+            res.json(filteredUser);
+        }).catch(err => {
+            console.log(err);
+            res.status(err.code).json({ error: err.message });
+        });
+
+    });
 });
 
 //Retrieve a user's profile icon
@@ -136,8 +143,12 @@ router.get('/users/:userId/icon', TokenMiddleware, (req, res) => {
 
     UserDAO.getUserById(userId).then(user => {
         if (user) {
-            const filePath = path.join(__dirname, '..', '..', user.icon);
-            res.sendFile(filePath);
+            if(!user.icon) {
+                res.json({message: "No icon for this user"});
+            } else {
+                const filePath = path.join(__dirname, '..', '..', user.icon);
+                res.sendFile(filePath);
+            }            
         } else {
             res.status(404).json({ "error": "User not found" });
         }
@@ -150,7 +161,7 @@ router.get('/users/:userId/icon', TokenMiddleware, (req, res) => {
 router.get('/users/:userId/campaigns', TokenMiddleware, upload, (req, res) => {
     const userId = req.params.userId;
     CampaignDAO.getCampaignsByUser(userId).then(campaigns => {
-        
+        console.log(campaigns);
         res.json(campaigns);
     });
 });
@@ -213,7 +224,7 @@ router.post('/campaigns', TokenMiddleware, upload, (req, res) => {
 
     //campaigns[newCampaign.id] = newCampaign;
     CampaignDAO.createCampaign(newCampaign).then(campaign => {
-        res.json(campaign.joinCode);
+        res.json(newCampaign.joinCode);
     }).catch(err => {
         console.log(err);
         res.status(err.code).json({ error: err.message });
@@ -276,8 +287,9 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
 // });
 
 // update cpn description, tags, image
-router.put('/campaigns/:campaignId/settings', TokenMiddleware, (req, res) => {
+router.put('/campaigns/:campaignId/settings', TokenMiddleware, upload, (req, res) => {
     console.log("campaign settings put received", req.body);
+    res.json({"message": "success"});
 });
 
 // //update campaign description

@@ -19,6 +19,7 @@ input {
   border-radius: 5px;
   border-style: none;
   padding: 10px;
+  color: white;
 }
 
 input:focus {

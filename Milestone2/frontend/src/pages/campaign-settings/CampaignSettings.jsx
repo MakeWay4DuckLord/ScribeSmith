@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Form, useParams, useNavigate } from "react-router-dom";
 import "./campaignSettings.css";
 import api from "../../client/APIClient";
 import { useEffect, useState } from "react";
@@ -10,39 +10,55 @@ export default function CampaignSettings() {
     const [players, setPlayers] = useState([]);
     const [error, setError] = useState(null);
     const { campaignId }= useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
-        api.getCampaign(campaignId).then(campaign => {
-            setCampaign(campaign);
-
-            if (campaign && campaign.userIds.length !== 0) {
-                Promise.all( //wait for all the promises from the api calls to resolve
-                    campaign.userIds.map(userId => api.getUser(userId))).then(userArr => {
-                    setPlayers(userArr);
-                }).catch(err => {
+        api.getCurrentUser().then(currUser => {
+            api.getCampaign(campaignId).then(campaign => {
+                setCampaign(campaign);
+                if(campaign.ownerId !== currUser.userId) { //user not the GM, they cannot view the settings
                     setError(true);
-                });
-            }
-        })
-        .catch(err => {
-            setError(true);
-        })
+                }
+
+                if (campaign && !campaign.userIds.includes(null)) {
+                    Promise.all( //wait for all the promises from the api calls to resolve
+                        campaign.userIds.map(userId => api.getUser(userId))).then(userArr => {
+                        setPlayers(userArr);
+                    }).catch(err => {
+                        setError(true);
+                    });
+                }                
+            })
+            .catch(err => {
+                setError(true);
+            });
+        }).catch(() => { //user not authorized
+            navigate("/login");
+        });
+        
     }, [campaignId]);
+
+    if(error) {
+        return(<h1>Error: You are not authorized to view this page.</h1>);
+    }
 
     return (
         <>
             <div className="campaign-settings">
                 <h1>CAMPAIGN SETTINGS</h1>
                 <div className="settings-box">
-                    <form method="put" encType="multipart/form-data">
+                    {console.log(campaignId)}
+                    <Form method="post" action={`/campaigns/${campaignId}/settings`} encType="multipart/form-data">
                         <h2>{campaign && campaign.name}</h2>
+                        <h3>Join Code: {campaign && campaign.joinCode}</h3>
                         {/* name description banner */}
-                        
+                        <input type="hidden" name="campaignId" value={campaignId} />
+
                         <label htmlFor="description">Description:</label>
-                        <textarea name="description" rows="5" defaultValue={campaign && campaign.description}required></textarea>
+                        <textarea name="description" rows="5" defaultValue={campaign && campaign.description} required></textarea>
 
                         <label htmlFor="banner">Banner:</label>
-                        <input type="file" name="img-upload" id="img-upload-input" defaultValue={campaign && campaign.banner} required />
+                        <input type="file" name="img-upload" id="img-upload-input" />
                         
                         {/* Players */}
                         <label htmlFor="players">Players:</label>
@@ -66,7 +82,7 @@ export default function CampaignSettings() {
 
                         <input type="submit" value="Save" />
                         
-                    </form>
+                    </Form>
                 </div>
             </div>
         </>

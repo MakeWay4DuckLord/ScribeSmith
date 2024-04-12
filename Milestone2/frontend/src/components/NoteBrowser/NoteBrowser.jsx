@@ -78,7 +78,7 @@ export default function NoteBrowser({title, notes, campaignTags}) {
 
     useEffect(() => {
 
-        console.log(selectedTags, searchedTags, [...selectedTags,...searchedTags]);
+        //console.log(selectedTags, searchedTags, [...selectedTags,...searchedTags]);
         if(notes.length !== 0) {
             //filter for notes that have all of the selected tags            
             setFilteredNotes(notes.filter(note => [...selectedTags, ...searchedTags].filter(tag => !note.tags.includes(tag)).length == 0));
@@ -90,12 +90,10 @@ export default function NoteBrowser({title, notes, campaignTags}) {
             // }
                 
             //TODO consider adding a way to switch between and vs or filtering
-        
             setOpenNote(notes[0]);
         } else {
             setOpenNote(null);
         }
-        console.log(campaignTags);
     }, [notes, selectedTags, searchedTags, campaignTags]);
 
 
@@ -125,7 +123,7 @@ export default function NoteBrowser({title, notes, campaignTags}) {
                 <div className='note-container'>
                     {filteredNotes.map(note => (
                         <div onClick={()=>{updateNote(note)}} key={note.id}>
-                            <NotePreview  id={note.id} title={note.title} content={note.content} tags={note.tags}/>
+                            <NotePreview  noteId={note.id} ownerId={note.userId} title={note.title} content={note.content} tags={note.tags}/>
                         </div>
                     ))}
 
