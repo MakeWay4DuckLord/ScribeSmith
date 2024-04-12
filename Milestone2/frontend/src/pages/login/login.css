@@ -33,6 +33,7 @@
 .login-page input {
     width: 100%;
     background-color: #494251;
+    color: white;
 }
 
 .login-page input[type="submit"] {

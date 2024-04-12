@@ -36,6 +36,10 @@
     display: flex;
 }
 
+.notePreviewComponent .icon {
+    margin-right: 10px;
+}
+
 .notePreviewComponent .tagContainer .tag-component {
     max-height: 12px;
     /* don't like hard coding size, but it looked bad, TODO make better */

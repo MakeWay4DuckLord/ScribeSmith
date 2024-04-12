@@ -2,6 +2,7 @@ const API_BASE = '/api';
 function checkResponse(res) {
     if (!res.ok) {
         return res.json().then(error => {
+            console.log("ERROR");
             throw error.error;
         })
     }
@@ -68,6 +69,7 @@ const signUp = (firstName, lastName, email, password) => {
 }
 
 const getCurrentUser = () => {
+
     return fetch(API_BASE + '/users/current')
         .then(checkResponse)
         .then(res => {
@@ -128,7 +130,12 @@ const getUserIcon = (userId) => {
     return fetch(API_BASE + `/users/${userId}/icon`)
         .then(checkResponse)
         .then(res => {
-            return res.blob();
+            if(null) { 
+                return null
+            } else {
+                return res.blob();
+            }
+            
         }).then(blob => {
             const imageURL = URL.createObjectURL(blob);
             return imageURL;

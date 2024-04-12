@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "./campaignSettings.css";
 import api from "../../client/APIClient";
 import { useEffect, useState } from "react";
@@ -10,24 +10,39 @@ export default function CampaignSettings() {
     const [players, setPlayers] = useState([]);
     const [error, setError] = useState(null);
     const { campaignId }= useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
-        api.getCampaign(campaignId).then(campaign => {
-            setCampaign(campaign);
-
-            if (campaign && campaign.userIds.length !== 0) {
-                Promise.all( //wait for all the promises from the api calls to resolve
-                    campaign.userIds.map(userId => api.getUser(userId))).then(userArr => {
-                    setPlayers(userArr);
-                }).catch(err => {
+        api.getCurrentUser().then(currUser => {
+            api.getCampaign(campaignId).then(campaign => {
+                setCampaign(campaign);
+                console.log(currUser);
+                console.log(campaign);
+                if(campaign.ownerId !== currUser.id) { //user not the GM, they cannot view the settings
                     setError(true);
-                });
-            }
-        })
-        .catch(err => {
-            setError(true);
-        })
+                }
+
+                if (campaign && campaign.userIds.length !== 0) {
+                    Promise.all( //wait for all the promises from the api calls to resolve
+                        campaign.userIds.map(userId => api.getUser(userId))).then(userArr => {
+                        setPlayers(userArr);
+                    }).catch(err => {
+                        setError(true);
+                    });
+                }                
+            })
+            .catch(err => {
+                setError(true);
+            });
+        }).catch(() => { //user not authorized
+            navigate("/login");
+        });
+        
     }, [campaignId]);
+
+    if(error) {
+        return(<h1>Error: You are not authorized to view this page.</h1>);
+    }
 
     return (
         <>
