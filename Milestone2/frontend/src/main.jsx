@@ -20,6 +20,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import UserSettings from './pages/user-settings/UserSettings.jsx';
 import { userSettingsAction } from './pages/user-settings/formAction.jsx';
 import { createCampaignAction } from './pages/create-campaign/formAction.js';
+import { campaignSettingsAction } from './pages/campaign-settings/formAction.js';
 
 const router = createBrowserRouter([
   {
@@ -62,6 +63,7 @@ const router = createBrowserRouter([
       {
         path: "campaigns/:campaignId/settings",
         element: <CampaignSettings />,
+        action: campaignSettingsAction
       },
       {
         path: "campaigns/:campaignId/my-notes",

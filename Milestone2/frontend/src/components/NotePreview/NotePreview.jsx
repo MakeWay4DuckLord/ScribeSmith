@@ -1,23 +1,31 @@
 import Tag from "../Tag/Tag";
 import { useEffect, useState } from "react";
 import './notePreview.css';
+import api from "../../client/APIClient";
+import Avatar from '@mui/material/Avatar';
 
 
-export default function NotePreview({id, title, content, tags}) {
-    const [noteTags, setTags] = useState(tags);
+export default function NotePreview({nodeId, ownerId, title, content, tags}) {
+    const [icon, setIcon] = useState(null);
+    useEffect(() => {
+        api.getUserIcon(ownerId).then(icon => {
+            setIcon(icon);
+        });
+    }, [])
+    
 
     return (
         <>
         <div className="notePreviewComponent">
             <header>
-                <img className="icon" src="https://robohash.org/veniamdoloresenim.png?size=64x64&set=set1" alt="user icon" />
+                <Avatar className="icon" alt="User icon"  src={icon} />
                 <h2>{title}</h2>
                 <time>1hr ago</time>
             </header>
             
-            <p>{content}</p>
+            <p dangerouslySetInnerHTML={{ __html: content }}></p>
             <div className="tagContainer">
-                {noteTags.map((tag, index) => (
+                {tags.map((tag, index) => (
                     <Tag key={index} content={tag}/>
                 ))}
             </div>

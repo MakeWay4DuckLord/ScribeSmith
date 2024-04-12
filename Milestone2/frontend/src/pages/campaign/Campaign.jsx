@@ -11,6 +11,7 @@ import './campaign.css';
 //TODO: Only show settings if the user who is logged in is the owener of the campaign
 export default function Campaign() {
     const [campaign, setCampaign] = useState({});
+    const [isGM, setIsGM] = useState(false);
     const [banner, setBanner] = useState(null);
     const [owner, setOwner] = useState("");
     const [error, setError] = useState("");
@@ -21,12 +22,16 @@ export default function Campaign() {
         api.getCurrentUser().then(currentUser => { //get the current user
             api.getCampaign(campaignId).then(campaign => {
 
-                if(campaign.userIds && campaign.userIds.includes(currentUser.userId) || campaign.ownerId == currentUser.userId) { //check if current user is authorized
+                if(campaign.userIds && campaign.userIds.includes(currentUser.userId) || campaign.ownerId === currentUser.userId) { //check if current user is authorized
                     setCampaign(campaign);
     
                     if (campaign.ownerId !== undefined) {
                         api.getUser(campaign.ownerId).then(user => {
                             setOwner(`${user.first_name} ${user.last_name}`);
+
+                            if(currentUser.userId === campaign.ownerId) {
+                                setIsGM(true);
+                            }
                         });
                     }
 
@@ -73,11 +78,17 @@ export default function Campaign() {
                         <h3>Shared Notes</h3>
                     </Link>
 
-                    <Link to={`/campaigns/${campaign.id}/settings`} className="nav-container">
+                    {(isGM) ? 
+                        <Link to={`/campaigns/${campaign.id}/settings`} className="nav-container">
                         <IoMdSettings  className="icon" />
                         <h3>Settings</h3>
+                        </Link>
+                        :
+                        <></>
+                    }
+                    
 
-                    </Link>
+                    
                 </div>
             </main>
         </div>
