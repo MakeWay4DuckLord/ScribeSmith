@@ -287,8 +287,9 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
 // });
 
 // update cpn description, tags, image
-router.put('/campaigns/:campaignId/settings', TokenMiddleware, (req, res) => {
+router.put('/campaigns/:campaignId/settings', TokenMiddleware, upload, (req, res) => {
     console.log("campaign settings put received", req.body);
+    res.json({"message": "success"});
 });
 
 // //update campaign description

@@ -249,6 +249,18 @@ const updateNote = (noteId, campaignId, title, content, tags, sharedWith) => {
         .catch(handleError);
 }
 
+const updateCampaign = (campaignId, formData) => {
+    return fetch(API_BASE + `/campaigns/${campaignId}/settings`, {
+        method: 'PUT',
+        body: formData
+        })
+        .then(checkResponse)
+        .then(res => {
+            return res.json();
+        })
+        .catch(handleError);
+}
+
 export default {
     login,
     signUp,
@@ -265,5 +277,6 @@ export default {
     joinCampaign,
     getCampaignBanner,
     createNote,
-    updateNote
+    updateNote,
+    updateCampaign
 }
