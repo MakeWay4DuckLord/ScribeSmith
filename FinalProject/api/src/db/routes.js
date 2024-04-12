@@ -78,7 +78,8 @@ router.put('/users/:userId', TokenMiddleware, upload, (req, res) => {
     const userId = req.params.userId;
     const user = users[userId];
 
-    UserDAO.getUserById(userID).then(user => {
+
+    UserDAO.getUserById(userId).then(user => {
         if(!user) {
             res.status(409).json({"error": "User does not exist"});
             return;
@@ -241,7 +242,6 @@ router.get('/campaigns/:campaignId', TokenMiddleware, (req, res) => {
         if (campaign) {
             campaign.tags = JSON.parse(campaign.tags);
             campaign.userIds = JSON.parse(campaign.userIds);
-
             res.json(campaign);
         } else {
             res.status(404).json({ "error": "Campaign not found" });
