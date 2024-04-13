@@ -78,7 +78,7 @@ router.put('/users/:userId', TokenMiddleware, upload, (req, res) => {
     const userId = req.params.userId;
     const user = users[userId];
 
-    UserDAO.getUserById(userID).then(user => {
+    UserDAO.getUserById(userId).then(user => {
         if(!user) {
             res.status(409).json({"error": "User does not exist"});
             return;
