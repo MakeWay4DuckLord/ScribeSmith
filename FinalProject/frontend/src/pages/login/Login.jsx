@@ -1,10 +1,20 @@
-import { Form, Link, useActionData } from "react-router-dom";
+import { Form, Link, useActionData, useNavigate } from "react-router-dom";
 import "./login.css"
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
+import api from "../../client/APIClient";
 
 export default function Login() {
     const data = useActionData();
+    const navigate = useNavigate();
+
+    //check if user is logged in already
+    api.getCurrentUser().then(user => {
+        //user is logged in
+        navigate("/");
+    }).catch(() => {
+        //user is not logged in, do nothing
+    });
     
     return (
         <div className="login-page" action="/login">

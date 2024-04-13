@@ -39,7 +39,6 @@ function getCampaignById(campaignId) {
     c.cpn_id = ?;`, [campaignId]).then(({ results }) => {
         console.log(results);
         if (results[0]) {
-            console.log("AAAAAA: ", results[0]);
             return new Campaign(results[0]);
         }
     });

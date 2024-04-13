@@ -14,14 +14,13 @@ import Note from './components/Note/Note.jsx';
 import { joinCampaignAction } from './pages/join-campaign/formAction.jsx';
 import { loginAction } from './pages/login/formAction.jsx';
 import { signUpAction } from './pages/sign-up/formAction.jsx';
+import '../index.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import UserSettings from './pages/user-settings/UserSettings.jsx';
 import { userSettingsAction } from './pages/user-settings/formAction.jsx';
 import { createCampaignAction } from './pages/create-campaign/formAction.js';
 import { campaignSettingsAction } from './pages/campaign-settings/formAction.js';
-
-import '../index.css'
 
 const router = createBrowserRouter([
   {

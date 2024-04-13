@@ -4,25 +4,13 @@ self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(STATIC_CACHE_NAME).then(cache => {
             return cache.addAll([
-                //campaign
-                '/src/pages/campaign/campaign.css',
-                '/src/pages/campaign/Campaign.jsx',
-                //campaigns
-                '/src/pages/campaigns/campaigns.css',
-                '/src/pages/campaigns/Campaigns.jsx',
-                //login
-                '/src/pages/login/login.css',
+                '/',
+                '/index.html',
+                '/src/main.jsx',
+                '/index.css',
                 '/src/pages/login/Login.jsx',
-                '/src/pages/login/formAction.jsx',
-                //myNotes
-                '/src/pages/my-notes/myNotes.css',
-                '/src/pages/my-notes/MyNotes.jsx',
-                //offline
-                '/src/pages/offline/offline.css',
-                '/src/pages/offline/offline.jsx',
-                //sharedNotes
-                '/src/pages/shared-notes/sharedNotes.css',
-                '/src/pages/SharedNotes.jsx'
+                '/src/pages/login/login.css',
+                '/src/pages/login'
             ]);
         })
     );
