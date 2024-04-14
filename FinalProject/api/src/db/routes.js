@@ -416,12 +416,26 @@ router.post('/campaigns/:campaignId/notes', TokenMiddleware, (req, res) => {
     });
 });
 
-// TODO: this may also need more complicated authentication
 // maybe pass ownerId as a parameter...? yeah i think that would work
 //update a note
 router.put('/campaigns/:campaignId/notes/:noteId', TokenMiddleware, (req, res) => {
     console.log("put request received");
-    console.log(req.body);
+    const note = {
+        id: req.params.noteId,
+        title: req.body.title,
+        content: req.body.content,
+        tags: req.body.tags,
+        sharedWith: req.body.sharedWith
+    };
+    console.log(note);
+    NoteDAO.updateNote(note, req.user.userId).then(updatedNote => {
+        //console.log(updatedNote);
+        res.json(updatedNote);
+    }).catch(err => {
+        console.log(err);
+        res.status(err.code).json({ error: err.message });
+    });
+    // do we need to do anything with campaign id???
 });
 
 module.exports = router;
