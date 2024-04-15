@@ -46,28 +46,6 @@ export default defineConfig({
         start_url:"/login",
         orientation:'portrait'
       },
-    //   workbox: {
-    //     // defining cached files formats
-    //     globPatterns: ["**/*.{js,css,html,ico,png,svg,webmanifest}"],
-    //     runtimeCaching: [
-    //       {
-    //         urlPattern: ({ url }) => {
-    //           return url.pathname.startsWith("/api");
-    //         },
-    //         handler: "NetworkFirst",
-    //         options: {
-    //           cacheName: "api-cache",
-    //           cacheableResponse: {
-    //             statuses: [0, 200],
-    //           },
-    //         },
-    //       },
-    //     ],
-    //     additionalManifestEntries: [
-    //       {url: '/offline.html', revision: null}
-    //     ],
-    //     navigateFallback: "/offline.html",
-    //  } 
     })
   ],
   server: {
