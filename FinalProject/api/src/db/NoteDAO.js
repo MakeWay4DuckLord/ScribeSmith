@@ -158,6 +158,7 @@ function createNote(note) {
 function updateNote(note, userId) {
     // retrieve note, make sure it exists, make sure user is the owner
     let p = new Promise((resolve, reject) => {
+        console.log("the note we're using id from is", note);
         db.query('SELECT * FROM note WHERE note_id=?;', [note.id]).then((result) => {
             if(result.results.length == 0) {
                 reject({code: 404, message: "Note not found."});
@@ -175,7 +176,7 @@ function updateNote(note, userId) {
     p = p.then((note) => {
         return db.query(`UPDATE note
         SET note_title=?, note_text=?
-        WHERE note_id=?;`, [note.title, note.content, userId]).then(({results}) => {
+        WHERE note_id=?;`, [note.title, note.content, note.id]).then(({results}) => {
             return note;
         });
     });
@@ -208,13 +209,13 @@ function updateNote(note, userId) {
         }
     });
 
-    p = p.then((note) => {
+    p = p.then(() => {
         return db.query('DELETE FROM note_user WHERE ntu_note_id=?;', [note.id]).then(({results}) => {
             return note;
         });
     });
 
-    p = p.then(note => {
+    p = p.then(() => {
         // might refactor this out later (TODO)
         if (note.sharedWith.length > 0) {
             const valuePairs = note.sharedWith.map(userId => [note.id, userId]);

@@ -427,7 +427,7 @@ router.put('/campaigns/:campaignId/notes/:noteId', TokenMiddleware, (req, res) =
         tags: req.body.tags,
         sharedWith: req.body.sharedWith
     };
-    console.log(note);
+    console.log("putting", note);
     NoteDAO.updateNote(note, req.user.userId).then(updatedNote => {
         //console.log(updatedNote);
         res.json(updatedNote);

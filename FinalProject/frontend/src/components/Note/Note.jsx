@@ -105,7 +105,8 @@ export default function Note({note}) {
         if(openNote.id == -1) {
             api.createNote(campaignId, title, editor.getContent(), tags, sharedWith);
         } else {
-            api.updateNote(openNote.id, campaignId, openNote.title, editor.getContent(), openNote.tags, sharedWith);
+            console.log("open note id", openNote.id);
+            api.updateNote(openNote.id, campaignId, title, editor.getContent(), tags, sharedWith);
         }
 
 
