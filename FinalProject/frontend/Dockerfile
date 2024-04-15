@@ -12,4 +12,4 @@ RUN npm run build
 
 ENV PORT 80
 
-ENTRYPOINT [ "npm", "run", "dev"]
+ENTRYPOINT [ "npm", "run", "preview"]
