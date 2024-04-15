@@ -3,6 +3,7 @@ const users = require('./data/users'); // goal is to get rid of these
 const campaigns = require('./data/campaigns');
 const notes = require('./data/notes');
 const path = require('path');
+const fs = require('fs');
 
 const { TokenMiddleware, generateToken, removeToken } = require('../middleware/TokenMiddleware');
 const upload = require('../middleware/multerConfig');
@@ -145,10 +146,18 @@ router.get('/users/:userId/icon', TokenMiddleware, (req, res) => {
         if (user) {
             if(!user.icon) {
                 res.json({message: "No icon for this user"});
-            } else {
+            } else { 
                 const filePath = path.join(__dirname, '..', '..', user.icon);
-                res.sendFile(filePath);
-            }            
+                fs.readFile(filePath, 'utf-8', (err) => {
+                    if (err) {
+                        // File doesn't exist or is not accessible
+                        res.json(null);
+                    } else {
+                        // File exists, send it
+                        res.sendFile(filePath);
+                    }
+                });
+            }
         } else {
             res.status(404).json({ "error": "User not found" });
         }
@@ -255,7 +264,15 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
     CampaignDAO.getCampaignById(campaignId).then(campaign => {
         if (campaign) {
             const filePath = path.join(__dirname, '..', '..', campaign.banner);
-            res.sendFile(filePath);
+                fs.readFile(filePath, 'utf-8', (err) => {
+                    if (err) {
+                        // File doesn't exist or is not accessible
+                        res.json(null);
+                    } else {
+                        // File exists, send it
+                        res.sendFile(filePath);
+                    }
+                });
         } else {
             res.status(404).json({ "error": "Campaign not found" });
         }

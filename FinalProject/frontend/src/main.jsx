@@ -21,6 +21,7 @@ import UserSettings from './pages/user-settings/UserSettings.jsx';
 import { userSettingsAction } from './pages/user-settings/formAction.jsx';
 import { createCampaignAction } from './pages/create-campaign/formAction.js';
 import { campaignSettingsAction } from './pages/campaign-settings/formAction.js';
+import Offline from './pages/offline/Offline.jsx';
 
 const router = createBrowserRouter([
   {
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
         action: createCampaignAction
       },
       {
+        path: "/offline",
+        element: <Offline />
+      },
+      {
         path: "campaigns/:campaignId",
         element: <Campaign />,
       },
@@ -72,8 +77,8 @@ const router = createBrowserRouter([
       {
         path: "campaigns/:campaignId/shared-notes",
         element: <SharedNotes />
-      },   
-         
+      },  
+               
       // {
       //   path: "campaigns/:campaignId/shared-notes",
       //   element: <SharedNotes />

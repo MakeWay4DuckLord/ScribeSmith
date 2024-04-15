@@ -10,8 +10,20 @@ function checkResponse(res) {
 }
 
 function handleError(error) {
-    console.log("ERROR", error);
+    if(typeof error === TypeError && error.message === "Failed to fetch") {
+        window.location.href = "/offline";
+        return;
+    }
     throw error;
+}
+
+function checkOffline(res) {
+    if(res.isOffline) {
+        window.location.href = "/offline";
+        return;
+    } else {
+        return res;
+    }
 }
 
 const login = (email, password) => {
@@ -30,6 +42,10 @@ const login = (email, password) => {
         .then(res => {
             return res.json();
         })
+        .then(checkOffline)
+        .then(res => {
+            return res;
+        })
         .catch(handleError)
 }
 
@@ -43,6 +59,10 @@ const logout = () => {
     .then(checkResponse)
     .then(res => {
         return res.json();
+    })
+    .then(checkOffline)
+        .then(res => {
+            return res;
     })
     .catch(handleError)
 }
@@ -61,11 +81,15 @@ const signUp = (firstName, lastName, email, password) => {
                 password: password
             })
     })
-        .then(checkResponse)
-        .then(res => {
-            return res.json();
-        })
-        .catch(handleError)
+    .then(checkResponse)
+    .then(res => {
+        return res.json();
+    })
+    .then(checkOffline)
+    .then(res => {
+        return res;
+    })
+    .catch(handleError)
 }
 
 const getCurrentUser = () => {
@@ -74,6 +98,10 @@ const getCurrentUser = () => {
         .then(checkResponse)
         .then(res => {
             return res.json();
+        })
+        .then(checkOffline)
+        .then(res => {
+            return res;
         })
         .catch(handleError)
 }
@@ -87,6 +115,10 @@ const getUserCampaigns = (userId) => {
         .then(campaigns => {
             return campaigns;
         })
+        .then(checkOffline)
+        .then(res => {
+            return res;
+        })
         .catch(handleError);
 }
 
@@ -98,6 +130,10 @@ const createCampaign = (formData) => {
         .then(checkResponse)
         .then(res => {
             return res.json();
+        })
+        .then(checkOffline)
+        .then(res => {
+            return res;
         })
         .catch(handleError);
 }
@@ -111,6 +147,10 @@ const getCampaign = (campaignId) => {
         .then(campaign => {
             return campaign;
         })
+        .then(checkOffline)
+        .then(res => {
+            return res;
+        })
         .catch(handleError);
 }
 
@@ -122,6 +162,10 @@ const getUser = (userId) => {
         })
         .then(user => {
             return user;
+        })
+        .then(checkOffline)
+        .then(res => {
+            return res;
         })
         .catch(handleError);
 }
@@ -152,6 +196,10 @@ const updateUser = (userId, formData) => {
         .then(res => {
             return res.json();
         })
+        .then(checkOffline)
+        .then(res => {
+            return res;
+        })
         .catch(handleError);
 }
 
@@ -164,6 +212,10 @@ const getCampaignSharedNotes = (campaignId) => {
         .then(notes => {
             return notes;
         })
+        .then(checkOffline)
+        .then(res => {
+            return res;
+        })
         .catch(handleError);
 }
 
@@ -175,6 +227,10 @@ const getCampaignNotesByUser = (campaignId, userId) => {
         })
         .then(notes => {
             return notes;
+        })
+        .then(checkOffline)
+        .then(res => {
+            return res;
         })
         .catch(handleError);
 }
@@ -193,6 +249,10 @@ const joinCampaign = (userId, joinCode) => {
         .then(checkResponse)
         .then(res => {
             return res.json();
+        })
+        .then(checkOffline)
+        .then(res => {
+            return res;
         })
         .catch(handleError);
 }
@@ -226,6 +286,10 @@ const createNote = (campaignId, title, content, tags, sharedWith) => {
         .then(res => {
             return res.json();
         })
+        .then(checkOffline)
+        .then(res => {
+            return res;
+        })
         .catch(handleError);
 }
 
@@ -246,6 +310,10 @@ const updateNote = (noteId, campaignId, title, content, tags, sharedWith) => {
         .then(res => {
             return res.json();
         })
+        .then(checkOffline)
+        .then(res => {
+            return res;
+        })
         .catch(handleError);
 }
 
@@ -257,6 +325,10 @@ const updateCampaign = (campaignId, formData) => {
         .then(checkResponse)
         .then(res => {
             return res.json();
+        })
+        .then(checkOffline)
+        .then(res => {
+            return res;
         })
         .catch(handleError);
 }
