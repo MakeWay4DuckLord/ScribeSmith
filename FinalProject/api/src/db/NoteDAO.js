@@ -73,8 +73,8 @@ getOrInsertTagId = (tagText) => {
 
 tagNote = (note, tagIds) => {
     const valuePairs = tagIds.map(tagId => [note.id, tagId]);
-    console.log("inserting", valuePairs);
-    return db.query('INSERT INTO note_tag (ntg_note_id, ntg_tag_id) VALUES ?', [valuePairs]).then(({results}) => {
+    //console.log("inserting", valuePairs);
+    return db.query('INSERT INTO note_tag (ntg_note_id, ntg_tag_id) VALUES ?', [valuePairs]).then(({ results }) => {
         // TODO: err checking here
         return note;
     });
@@ -113,27 +113,120 @@ function createNote(note) {
     let p = new Promise((resolve, reject) => {
         db.query('INSERT INTO note (note_owner_id, note_campaign_id, note_title, note_text) VALUES (?, ?, ?, ?)',
             [note.ownerId, note.campaignId, note.title, note.content]).then(({ results }) => {
-
                 note.id = results.insertId;
+                return note;
+            }).then(note => {
+                if (note.tags.length > 0) {
+                    // need to promise.all to make sure all tags are in the tags table
+                    const tagPromises = [];
 
-                // need to promise.all to make sure all tags are in the tags table
-                const tagPromises = [];
-
-                // for each tag
-                note.tags.forEach(tag => {
-                    // this array will resolve to an array of TAG IDs
-                    tagPromises.push(getOrInsertTagId(tag));
-                });
-
-                Promise.all(tagPromises).then(tagIds => {
-                    console.log("tag promises resolved, tag ids", tagIds);
-                    tagNote(note, tagIds).then(note => {
-                        resolve(note); // ????
+                    // for each tag
+                    note.tags.forEach(tag => {
+                        // this array will resolve to an array of TAG IDs
+                        tagPromises.push(getOrInsertTagId(tag));
                     });
-                });
 
-                // resolve(note);
+                    return Promise.all(tagPromises).then(tagIds => {
+                        console.log("tag promises resolved, tag ids", tagIds);
+                        tagNote(note, tagIds).then(note => {
+                            return note; // ????
+                        });
+                    });
+                } else {
+                    return note;
+                }
+            }).then(note => {
+                // might refactor this out later (TODO)
+                if (note.sharedWith.length > 0) {
+                    const valuePairs = note.sharedWith.map(userId => [note.id, userId]);
+                    console.log("inserting into note_user", valuePairs);
+                    return db.query('INSERT INTO note_user (ntu_note_id, ntu_usr_id) VALUES ?', [valuePairs]).then(({ results }) => {
+                        // TODO: err checking here
+                        return note;
+                    });
+                } else {
+                    return note;
+                }
+            }).then(note => {
+                resolve(note);
             });
+    });
+
+    return p;
+}
+
+function updateNote(note, userId) {
+    // retrieve note, make sure it exists, make sure user is the owner
+    let p = new Promise((resolve, reject) => {
+        console.log("the note we're using id from is", note);
+        db.query('SELECT * FROM note WHERE note_id=?;', [note.id]).then((result) => {
+            if(result.results.length == 0) {
+                reject({code: 404, message: "Note not found."});
+            } else if (result.results[0].note_owner_id != userId) {
+                reject({code: 401, message: "You are not authorized to edit this note."});
+            } else {
+                resolve(note);
+            }
+        }).catch((err) => {
+            reject({ code: 500, message: err });
+        });
+    });
+
+    // TODO- see how this affects the previous rejects...?
+    p = p.then((note) => {
+        return db.query(`UPDATE note
+        SET note_title=?, note_text=?
+        WHERE note_id=?;`, [note.title, note.content, note.id]).then(({results}) => {
+            return note;
+        });
+    });
+
+    p = p.then((note) => {
+        return db.query('DELETE FROM note_tag WHERE ntg_note_id=?;', [note.id]).then(({results}) => {
+            return note;
+        });
+    });
+
+    p = p.then(note => {
+        if (note.tags.length > 0) {
+            // need to promise.all to make sure all tags are in the tags table
+            const tagPromises = [];
+
+            // for each tag
+            note.tags.forEach(tag => {
+                // this array will resolve to an array of TAG IDs
+                tagPromises.push(getOrInsertTagId(tag));
+            });
+
+            return Promise.all(tagPromises).then(tagIds => {
+                console.log("tag promises resolved, tag ids", tagIds);
+                tagNote(note, tagIds).then(note => {
+                    return note; // ????
+                });
+            });
+        } else {
+            return note;
+        }
+    });
+
+    p = p.then(() => {
+        return db.query('DELETE FROM note_user WHERE ntu_note_id=?;', [note.id]).then(({results}) => {
+            return note;
+        });
+    });
+
+    p = p.then(() => {
+        // might refactor this out later (TODO)
+        if (note.sharedWith.length > 0) {
+            const valuePairs = note.sharedWith.map(userId => [note.id, userId]);
+            console.log("inserting into note_user", valuePairs);
+            return db.query('INSERT INTO note_user (ntu_note_id, ntu_usr_id) VALUES ?', [valuePairs]).then(({ results }) => {
+                // TODO: err checking here
+                return note;
+            });
+        } else {
+            return note;
+        }
     });
 
     return p;
@@ -142,5 +235,6 @@ function createNote(note) {
 module.exports = {
     getViewableNotesByCampaign,
     getViewableNotesByAuthorByCampaign,
-    createNote
+    createNote,
+    updateNote
 };

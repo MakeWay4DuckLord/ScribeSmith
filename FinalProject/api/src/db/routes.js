@@ -290,7 +290,28 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
 // update cpn description, tags, image
 router.put('/campaigns/:campaignId/settings', TokenMiddleware, upload, (req, res) => {
     console.log("campaign settings put received", req.body);
-    res.json({"message": "success"});
+    // DUMMY DATA!
+    // const fakeCampaign = {
+    //     "id": req.params.campaignId,
+    //     "userIdsToRemove": [3],
+    //     "name" : "new name",
+    //     "banner": "buh",
+    //     "description": "This is some dummy data that needs to be removed from backend",
+    //     //"joinCode": "1ABC3",
+    //     "tags": ["session1", "session2", "session3"]
+    // }
+    const campaign = {
+        id: req.params.campaignId,
+        userIdsToRemove: req.body.userIdsToRemove,
+        // name: req.body.name,
+        banner: req.body.banner,
+        description: req.body.description,
+        // joinCode: req.body.joinCode,
+        tags: req.body.tags
+    }
+    CampaignDAO.updateCampaign(campaign, req.user.userId).then(() => {
+        res.json({"message": "success"});
+    });
 });
 
 // //update campaign description
@@ -361,7 +382,6 @@ router.get('/campaigns/:campaignId/notes/shared', TokenMiddleware, (req, res) =>
     // note - this request will always need to filter out non-viewable notes
     // based on authentication
     const userId = req.user.userId;
-    console.log("retrieved userId", userId);
     const campaignId = req.params.campaignId;
 
     NoteDAO.getViewableNotesByCampaign(userId, campaignId).then(notes => {
@@ -370,7 +390,16 @@ router.get('/campaigns/:campaignId/notes/shared', TokenMiddleware, (req, res) =>
         console.log("filtered", notes);
         res.json(notes);
     });
+});
 
+
+// delete campaign
+router.delete('/campaigns/:campaignId', TokenMiddleware, (req, res) => {
+    const userId = req.user.userId;
+    const campaignId = req.params.campaignId;
+    CampaignDAO.deleteCampaign(campaignId, userId).then(() => {
+        res.json({message: "success?"});
+    });
 });
 
 //get VIEWABLE notes by creator and campaign
@@ -395,7 +424,7 @@ router.get('/campaigns/:campaignId/notes/users/:userId', TokenMiddleware, (req, 
 
 //get all tags a user has used in a campaign
 router.get('/users/:userId/tags/campaigns/:campaignId', TokenMiddleware, (req, res) => {
-
+    res.json(["someone tell me if you get this", "i thought this route was extinct"]);
 });
 
 //create a note
@@ -416,12 +445,25 @@ router.post('/campaigns/:campaignId/notes', TokenMiddleware, (req, res) => {
     });
 });
 
-// TODO: this may also need more complicated authentication
-// maybe pass ownerId as a parameter...? yeah i think that would work
 //update a note
 router.put('/campaigns/:campaignId/notes/:noteId', TokenMiddleware, (req, res) => {
     console.log("put request received");
-    console.log(req.body);
+    const note = {
+        id: req.params.noteId,
+        title: req.body.title,
+        content: req.body.content,
+        tags: req.body.tags,
+        sharedWith: req.body.sharedWith
+    };
+    console.log("putting", note);
+    NoteDAO.updateNote(note, req.user.userId).then(updatedNote => {
+        //console.log(updatedNote);
+        res.json(updatedNote);
+    }).catch(err => {
+        console.log(err);
+        res.status(err.code).json({ error: err.message });
+    });
+    // do we need to do anything with campaign id???
 });
 
 module.exports = router;
