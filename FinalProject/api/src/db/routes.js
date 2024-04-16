@@ -382,7 +382,6 @@ router.get('/campaigns/:campaignId/notes/shared', TokenMiddleware, (req, res) =>
     // note - this request will always need to filter out non-viewable notes
     // based on authentication
     const userId = req.user.userId;
-    console.log("retrieved userId", userId);
     const campaignId = req.params.campaignId;
 
     NoteDAO.getViewableNotesByCampaign(userId, campaignId).then(notes => {
@@ -391,7 +390,14 @@ router.get('/campaigns/:campaignId/notes/shared', TokenMiddleware, (req, res) =>
         console.log("filtered", notes);
         res.json(notes);
     });
+});
 
+router.delete('/campaigns/:campaignId', TokenMiddleware, (req, res) => {
+    const userId = req.user.userId;
+    const campaignId = req.params.campaignId;
+    NoteDAO.deleteCampaign(campaignId, userId).then(() => {
+        res.json({message: "success?"});
+    });
 });
 
 //get VIEWABLE notes by creator and campaign
@@ -437,7 +443,6 @@ router.post('/campaigns/:campaignId/notes', TokenMiddleware, (req, res) => {
     });
 });
 
-// maybe pass ownerId as a parameter...? yeah i think that would work
 //update a note
 router.put('/campaigns/:campaignId/notes/:noteId', TokenMiddleware, (req, res) => {
     console.log("put request received");

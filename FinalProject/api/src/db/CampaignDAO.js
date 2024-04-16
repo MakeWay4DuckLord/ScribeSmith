@@ -164,11 +164,16 @@ function updateCampaign(campaign, userId) {
         }).catch((err) => {
             reject({ code: 500, message: err });
         });
-
-
     });
 }
 
+function deleteCampaign(campaignId, userId) {
+    // delete all note-tag joins
+    // delete all notes
+    // delete all campaign-user joins
+    // delete all campaign-tag joins
+    // delete campaign
+}
 
 module.exports = {
     getCampaignsByUser,
@@ -177,5 +182,6 @@ module.exports = {
     getCampaignByJoinCode,
     joinUserToCampaign,
     createCampaign,
-    updateCampaign
+    updateCampaign,
+    deleteCampaign
 };
