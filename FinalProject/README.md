@@ -1,6 +1,10 @@
 # ScribeSmith
-## Group I: Milestone 2
 
+## Group I: Final Project
+
+### What is not done
+
+=======
 ### What is done
 
 ### What is not done
