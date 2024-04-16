@@ -13,7 +13,8 @@ self.addEventListener('install', event => {
       caches.open(STATIC_CACHE_NAME).then(cache => {
         return cache.addAll([
           '/offline',
-          '/offline.html'
+          'https://cdn.tiny.cloud/1/knfnarhktdvw0v5q8muzms71g5lgmhn6rkdv8bxytr7qhcl8/tinymce/6.8.3-25/skins/ui/oxide/content.min.css ',
+          'https://cdn.tiny.cloud/1/knfnarhktdvw0v5q8muzms71g5lgmhn6rkdv8bxytr7qhcl8/tinymce/6.8.3-25/skins/content/default/content.min.css',
         ]);
       })
     );
@@ -31,18 +32,6 @@ self.addEventListener('fetch', event => {
 
   // Treat API calls (to our API) differently
   if (requestUrl.origin === location.origin && requestUrl.pathname.startsWith('/api')) {
-    if (requestUrl.pathname === '/api/users/logout') {
-      event.respondWith(
-        caches.delete(STATIC_CACHE_NAME).then(function(deleted) {
-          if (deleted) {
-            return new Response('Cache deleted successfully');
-          } else {
-            return new Response('Cache deletion failed');
-          }
-        })
-      );
-    }
-
     // If we are here, we are intercepting a call to our API
     if (event.request.method === 'GET') {
       // Only intercept (and cache) GET API requests
