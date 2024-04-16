@@ -290,7 +290,19 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
 // update cpn description, tags, image
 router.put('/campaigns/:campaignId/settings', TokenMiddleware, upload, (req, res) => {
     console.log("campaign settings put received", req.body);
-    res.json({"message": "success"});
+    // DUMMY DATA!
+    const fakeCampaign = {
+        "id": req.params.campaignId,
+        "userIdsToRemove": [3],
+        "name" : "new name",
+        "banner": "buh",
+        "description": "This is some dummy data that needs to be removed from backend",
+        //"joinCode": "1ABC3",
+        "tags": ["session1", "session2", "session3"]
+    }
+    CampaignDAO.updateCampaign(fakeCampaign, req.user.userId).then(() => {
+        res.json({"message": "success"});
+    });
 });
 
 // //update campaign description
@@ -395,7 +407,7 @@ router.get('/campaigns/:campaignId/notes/users/:userId', TokenMiddleware, (req, 
 
 //get all tags a user has used in a campaign
 router.get('/users/:userId/tags/campaigns/:campaignId', TokenMiddleware, (req, res) => {
-
+    res.json(["someone tell me if you get this", "i thought this route was extinct"]);
 });
 
 //create a note
