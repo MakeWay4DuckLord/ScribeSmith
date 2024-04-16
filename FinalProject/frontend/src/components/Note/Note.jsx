@@ -26,15 +26,12 @@ function onSubmit(e) {
 }
 //{title: "New Note", content: "", tags: [], id:-1, campaignId:-1, sharedWith: []}
 export default function Note({note, saveCallback}) {
-    const[openNote, setOpenNote] = useState(note);
+    const[openNote, setOpenNote] = useState({});
     const[isOwner, setIsOwner] = useState(false);
     const {campaignId} = useParams();
 
     const[title, setTitle] = useState("New Note");
     const[newTitle, setNewTitle] = useState("");
-    
-    const[modified, setModified] = useState(false);
-    const[isNew, setIsNew] = useState(true);
     
     const[sharedWith, setSharedWith] = useState([]);
     const[users, setUsers] = useState([]);
@@ -88,7 +85,6 @@ export default function Note({note, saveCallback}) {
         setSharedWith([...newNote.sharedWith]);
         setTitle(newNote.title);
         setTags(newNote.tags)
-        
         api.getUserIcon(newNote.userId).then(icon => {
             setIcon(icon);
         });
@@ -110,7 +106,12 @@ export default function Note({note, saveCallback}) {
             //     updateNote(currentNote);
             // });
         } else {
-            api.updateNote(openNote.id, campaignId, title, editor.getContent(), tags, sharedWith);
+            api.updateNote(openNote.id, campaignId, title, editor.getContent(), tags, sharedWith).then(newNote => {
+                console.log(newNote);
+                    updateNote(newNote);
+                }
+            );
+
         }
         
         saveCallback();
@@ -138,9 +139,9 @@ export default function Note({note, saveCallback}) {
                     console.log("ope, whoopsie doopsie. you just lost all the change");
                 }
                 // if(note != openNote) {
-                    // console.log(openNote)
-                    updateNote(note);
-                    // console.log(openNote)
+                    // if(note.id == openNote.id) {
+                updateNote(note);
+                    // }
                 // }
                 if(note.userId == currentUser.userId) {
                     setIsOwner(true);
@@ -166,8 +167,10 @@ export default function Note({note, saveCallback}) {
                     });
                 }
             }
-        }).catch(() => {
-            // navigate("/login");
+        }).catch((error) => {
+            if(error.status == "401") {
+                navigate("/login");
+            }
         });
         console.log("Note useEffect");
     },[note]);
@@ -193,11 +196,12 @@ export default function Note({note, saveCallback}) {
     
     
             <Backdrop open={renaming} sx={{ color: 'white', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-                <Card variant="outlined" sx={{
-                    bgcolor: 'background.light', 
-                    color: 'white',
-                    my: 4,
-                    p: 4,}}>
+                <Card sx={{
+                        bgcolor: '#494251',
+                        color: 'white',
+                        my: 4,
+                        p: 4
+                    }}>
                     <CardContent>
                         <Typography>Enter a New Title</Typography>
                         <TextField placeholder={newTitle} onChange={(event) => setNewTitle(event.target.value)}> </TextField>
@@ -211,7 +215,7 @@ export default function Note({note, saveCallback}) {
     
                         <Button variant="outlined" onClick={() => {
                             setRenaming(false);
-                            setNewTilte("");
+                            setNewTitle("");
                         }}>Cancel</Button>
                     </CardActions>
                 </Card>
@@ -220,14 +224,13 @@ export default function Note({note, saveCallback}) {
             <TextEditor name="content" content={openNote.content} readOnly={!isOwner} editorCallback={setEditor}/>
     
     
-            <Backdrop open={tagsOpen} sx={{ color: 'white', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-                <Card variant="outlined" sx={{
-                    bgcolor: 'background.light', 
-                    color: 'white',
-                    my: 4,
-                    p: 4,
-                    
-                }}>
+            <Backdrop open={tagsOpen} sx={{zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+                <Card sx={{
+                        bgcolor: '#494251',
+                        color: 'white',
+                        my: 4,
+                        p: 4
+                    }}>
                     <CardContent className='tags'>
                         {/* <div name="tags" className="tagContainer"> */}
                         <List dense>
@@ -258,10 +261,15 @@ export default function Note({note, saveCallback}) {
             </Backdrop>
     
             <Backdrop
-                sx={{ color: 'white', bgcolor:'black', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                sx={{ color: 'white', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                 open={shareOpen}
             >
-                <Card sx={{bgcolor: 'background.light', color: 'white'}}>
+                <Card sx={{
+                        bgcolor: '#494251',
+                        color: 'white',
+                        my: 4,
+                        p: 4
+                    }}>
                     <CardContent>
                         <List>
                             {users.map(user => {

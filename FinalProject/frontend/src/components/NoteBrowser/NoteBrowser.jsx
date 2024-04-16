@@ -30,7 +30,7 @@ export default function NoteBrowser({title, notes, campaignTags, saveCallback}) 
     // const[tags, setTags] = useState(campaignTags);
     // const[searchBar, setSearchBar] = useState("");\
     const[newNote, setNewNote] = useState({});
-    const[newNoteTitle, setNewNoteTitle] = useState("New Note")
+    // const[newNoteTitle, setNewNoteTitle] = useState("New Note")
 
     const[createNoteDialogue, setCreateNoteDialogue] = useState(false);
 
@@ -78,7 +78,6 @@ export default function NoteBrowser({title, notes, campaignTags, saveCallback}) 
     //         searchBar.value += ` ${tag} `;
     //     }
     // }
-
     const DisplayNote = () => {
         if(openNote) {
             // <Note note={openIndex == -1 ? {id: -1} : filteredNotes[openIndex]} saveCallback={saveCallback} />
@@ -87,7 +86,6 @@ export default function NoteBrowser({title, notes, campaignTags, saveCallback}) 
             )
         } else {
             return (
-                <Container>
                     <Card>
                         <CardContent>
                             Select a note from the browser or create a new note.
@@ -96,38 +94,6 @@ export default function NoteBrowser({title, notes, campaignTags, saveCallback}) 
                             <Button variant="contained" className="friendly-button" onClick={() => {setCreateNoteDialogue(true)}}>Create New Note</Button>
                         </CardActions>
                     </Card>
-                    <Backdrop open={createNoteDialogue} sx={{zIndex: (theme) => theme.zIndex.drawer + 1, bgcolor:"#494251" }}>
-                        <Card variant="outlined">
-                    <CardContent>
-                        <Typography>Enter a title for your new note:</Typography>
-                        <TextField id="new-note-title-field" placeholder={newNoteTitle} onChange={(event) => {
-                            setNewNoteTitle(event.target.value);
-                        }}> </TextField>
-                    </CardContent>
-                    <CardActions>
-                        <Button variant="contained" onClick={() => {
-                            
-                            // setTitle(newTitle);
-                            // setTags([]);
-                            // setSharedWith([]);
-
-                            api.createNote(campaignId, newNoteTitle, "", ["tag", "tag2"], []).then(currentNote => {
-                                setOpenNote(currentNote)
-                                setCreateNoteDialogue(false);
-                                saveCallback();
-                            });
-
-
-                            }}> Create Note </Button>
-    
-                        <Button variant="outlined" onClick={() => {
-                            setCreateNoteDialogue(false);
-                            setNewNoteTitle("");
-                        }}>Cancel</Button>
-                    </CardActions>
-                </Card>
-            </Backdrop>
-                </Container>
             )
         }
     }
@@ -137,7 +103,19 @@ export default function NoteBrowser({title, notes, campaignTags, saveCallback}) 
         if(notes.length !== 0) {
             //filter for notes that have all of the selected tags            
             setFilteredNotes(notes.filter(note => [...selectedTags, ...searchedTags].filter(tag => !note.tags.includes(tag)).length == 0));
-            
+            if(title == "Shared Notes" && !openNote) {
+                setOpenNote(filteredNotes[0]);
+            }
+
+            if(openNote && !notes.includes(openNote)) {
+                    for(let i = 0; i < notes.length; i++) {
+                        const currentNote = notes[i];
+                        if(currentNote.id == openNote.id) {
+                            setOpenNote(currentNote);
+                            break;
+                        }
+                    }
+            }
             // filter notes that have any of the selected tags
             // setFilteredNotes(notes);
             // if(selectedTags.length > 0){
@@ -172,9 +150,6 @@ export default function NoteBrowser({title, notes, campaignTags, saveCallback}) 
                     ))}
                 <FaCirclePlus className='addTagIcon' />
                 </div>
-
-                <Button variant="contained" onClick={createNewNote}>Create New Note</Button>
-
                 <div className='note-container'>
                     {filteredNotes.map(note => (
                         <div onClick={()=>{updateNote(note)}} key={note.id}>
@@ -191,6 +166,40 @@ export default function NoteBrowser({title, notes, campaignTags, saveCallback}) 
             <main>
                 <DisplayNote />
             </main>
+
+            <Backdrop open={createNoteDialogue} sx={{zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+                        <Card variant="outlined" sx={{
+                            bgcolor:"#494251",
+                            my: 4,
+                            p: 4,
+                        }}>
+                    <CardContent>
+                        <Typography>Enter a title for your new note:</Typography>
+                        <TextField id="new-note-title-field" placeholder="New Note" onChange={(event) => setNewNoteTitle(event.target.value)}> </TextField>
+                    </CardContent>
+                    <CardActions>
+                        <Button variant="contained" onClick={() => {
+                            let newTitle = document.querySelector("#new-note-title-field").value;                            
+                            // setTitle(newTitle);
+                            // setTags([]);
+                            // setSharedWith([]);
+
+                            api.createNote(campaignId, newTitle, "", [], []).then(currentNote => {
+                                setOpenNote(currentNote)
+                                setCreateNoteDialogue(false);
+                                saveCallback();
+                            });
+
+
+                            }}> Create Note </Button>
+    
+                        <Button variant="outlined" onClick={() => {
+                            setCreateNoteDialogue(false);
+                            setNewNoteTitle("");
+                        }}>Cancel</Button>
+                    </CardActions>
+                </Card>
+            </Backdrop>
         </div>
     );
 }

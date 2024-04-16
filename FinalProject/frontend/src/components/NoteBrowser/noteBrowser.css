@@ -19,6 +19,14 @@
     align-items: center;
 }
 
+.noteBrowser .note-container {
+    overflow-y: scroll;
+    /* max-height: 50%; */
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
 .noteBrowser aside {
     overflow-y: scroll;
     padding: 20px;
@@ -64,3 +72,4 @@
     z-index: 1;
     color: black;
 }
+

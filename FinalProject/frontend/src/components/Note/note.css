@@ -14,3 +14,8 @@ Backdrop {
 #note-component Button:hover {
     background-color: #7c59a2;
 }
+
+
+.lightCard {
+    background-color: #494251;
+}
