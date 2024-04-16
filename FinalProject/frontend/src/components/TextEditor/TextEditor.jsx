@@ -46,8 +46,8 @@ export default function TextEditor({content, readOnly, editorCallback}) {
                     automatic_uploads: true,
                     
                     //created a TinyMCE skin at http://skin.tiny.cloud/t5/
-                    content_css: SKINS_PATH + 'content/scribesmith-dark/content.css', //css for the rich text content of the editor
-                    skin_url: SKINS_PATH + 'ui/scribesmith-dark', //directory of css for the ui of the editor
+                  //  content_css: SKINS_PATH + 'content/scribesmith-dark/content.css', //css for the rich text content of the editor
+                   // skin_url: SKINS_PATH + 'ui/scribesmith-dark', //directory of css for the ui of the editor
                     
                     readonly: readOnly,
 
