@@ -77,6 +77,7 @@ export default function NoteBrowser({title, notes, campaignTags}) {
     // }
 
     useEffect(() => {
+
         //console.log(selectedTags, searchedTags, [...selectedTags,...searchedTags]);
         if(notes.length !== 0) {
             //filter for notes that have all of the selected tags            
