@@ -21,7 +21,7 @@ export default function Campaign() {
     useEffect(() => {
         api.getCurrentUser().then(currentUser => { //get the current user
             api.getCampaign(campaignId).then(campaign => {
-
+                console.log(campaign);
                 if(campaign.userIds && campaign.userIds.includes(currentUser.userId) || campaign.ownerId === currentUser.userId) { //check if current user is authorized
                     setCampaign(campaign);
     
