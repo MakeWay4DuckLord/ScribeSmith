@@ -139,7 +139,7 @@ function updateCampaign(campaign, userId) {
     
                 return Promise.all(tagPromises).then(tagIds => {
                     console.log("tag promises resolved, tag ids", tagIds);
-                    addCampaignTags(campaign, tagIds).then(() => {
+                    return addCampaignTags(campaign, tagIds).then(() => {
                         return campaign; // ????
                     });
                 });
@@ -147,10 +147,15 @@ function updateCampaign(campaign, userId) {
                 return campaign;
             }
         }).then((campaign) => {
+            console.log("deleting users from", campaign);
             if (campaign.userIdsToRemove && campaign.userIdsToRemove.length > 0) {
-                return db.query('DELETE FROM campaign_user WHERE cpu_user_id IN (?);', [campaign.userIdsToRemove]).then(({results}) => {
+                console.log("querying!");
+                return db.query('DELETE FROM campaign_user WHERE cpu_usr_id IN (?);', [campaign.userIdsToRemove]).then(({results}) => {
+                    console.log("query complete");
                     return campaign;
-                })
+                }).catch(err => {
+                    console.log(err);
+                });
             } else {
                 return campaign;
             }
