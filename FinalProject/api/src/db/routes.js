@@ -392,10 +392,12 @@ router.get('/campaigns/:campaignId/notes/shared', TokenMiddleware, (req, res) =>
     });
 });
 
+
+// delete campaign
 router.delete('/campaigns/:campaignId', TokenMiddleware, (req, res) => {
     const userId = req.user.userId;
     const campaignId = req.params.campaignId;
-    NoteDAO.deleteCampaign(campaignId, userId).then(() => {
+    CampaignDAO.deleteCampaign(campaignId, userId).then(() => {
         res.json({message: "success?"});
     });
 });

@@ -168,11 +168,63 @@ function updateCampaign(campaign, userId) {
 }
 
 function deleteCampaign(campaignId, userId) {
+    // CHECK AUTHENTICATION
     // delete all note-tag joins
+    // delete all note-user joins
     // delete all notes
     // delete all campaign-user joins
     // delete all campaign-tag joins
     // delete campaign
+    return new Promise((resolve, reject) => {
+        db.query('SELECT * FROM campaign WHERE cpn_id=?;', [campaignId]).then((result) => {
+            if (result.results.length == 0) {
+                reject({ code: 404, message: "Note not found." });
+            } else if (result.results[0].cpn_owner_id != userId) {
+                reject({ code: 401, message: "You are not authorized to delete this campaign." });
+            } else {
+                return campaignId;
+            }
+        }).then((campaignId) => {
+            return db.query('DELETE note_tag FROM note_tag JOIN note ON ntg_note_id=note_id WHERE note_campaign_id=?;', [campaignId]).then(() => {
+                return campaignId;
+            }).catch((err) => {
+                reject({ code: 500, message: err });
+            });
+        }).then((campaignId) => {
+            return db.query('DELETE note_user FROM note_user JOIN note ON ntu_note_id=note_id WHERE note_campaign_id=?;', [campaignId]).then(() => {
+                return campaignId;
+            }).catch((err) => {
+                reject({ code: 500, message: err });
+            });
+        }).then((campaignId) => {
+            return db.query('DELETE FROM note WHERE note_campaign_id=?;', [campaignId]).then(() => {
+                return campaignId;
+            }).catch((err) => {
+                reject({ code: 500, message: err });
+            });
+        }).then((campaignId) => {
+            return db.query('DELETE FROM campaign_user WHERE cpu_cpn_id=?;', [campaignId]).then(() => {
+                return campaignId;
+            }).catch((err) => {
+                reject({ code: 500, message: err });
+            });
+        }).then((campaignId) => {
+            return db.query('DELETE FROM campaign_tag WHERE cpt_cpn_id=?;', [campaignId]).then(() => {
+                return campaignId;
+            }).catch((err) => {
+                reject({ code: 500, message: err });
+            });
+        }).then((campaignId) => {
+            return db.query('DELETE FROM campaign WHERE cpn_id=?;', [campaignId]).then(() => {
+                return campaignId;
+            }).catch((err) => {
+                reject({ code: 500, message: err });
+            });
+        }).then((campaignId) => {
+            resolve(campaignId);
+        })
+    });
+    
 }
 
 module.exports = {
