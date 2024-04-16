@@ -291,16 +291,25 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
 router.put('/campaigns/:campaignId/settings', TokenMiddleware, upload, (req, res) => {
     console.log("campaign settings put received", req.body);
     // DUMMY DATA!
-    const fakeCampaign = {
-        "id": req.params.campaignId,
-        "userIdsToRemove": [3],
-        "name" : "new name",
-        "banner": "buh",
-        "description": "This is some dummy data that needs to be removed from backend",
-        //"joinCode": "1ABC3",
-        "tags": ["session1", "session2", "session3"]
+    // const fakeCampaign = {
+    //     "id": req.params.campaignId,
+    //     "userIdsToRemove": [3],
+    //     "name" : "new name",
+    //     "banner": "buh",
+    //     "description": "This is some dummy data that needs to be removed from backend",
+    //     //"joinCode": "1ABC3",
+    //     "tags": ["session1", "session2", "session3"]
+    // }
+    const campaign = {
+        id: req.params.campaignId,
+        userIdsToRemove: req.body.userIdsToRemove,
+        // name: req.body.name,
+        banner: req.body.banner,
+        description: req.body.description,
+        // joinCode: req.body.joinCode,
+        tags: req.body.tags
     }
-    CampaignDAO.updateCampaign(fakeCampaign, req.user.userId).then(() => {
+    CampaignDAO.updateCampaign(campaign, req.user.userId).then(() => {
         res.json({"message": "success"});
     });
 });
