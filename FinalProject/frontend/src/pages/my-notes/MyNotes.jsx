@@ -13,14 +13,23 @@ export default function MyNotes() {
     const[campaignTags, setCampaignTags] = useState([]);
     const {campaignId} = useParams();
     const [error, setError] = useState("");
+    const [refresh, setRefresh] = useState(true);
+
+    const saveCallback = () => {
+        console.log("save callback");
+        setRefresh(true);
+    }
 
     useEffect(() => {
         api.getCurrentUser().then(currentUser => {
-            api.getCampaignNotesByUser(campaignId, currentUser.userId).then(notes => {
-                setNotes(notes);
-            }).catch(err => {
-                setError(err);
-            });
+            if(refresh){
+                setRefresh(false);
+                api.getCampaignNotesByUser(campaignId, currentUser.userId).then(notes => {
+                    setNotes(notes);
+                }).catch(err => {
+                    setError(err);
+                });
+            }
 
             api.getCampaign(campaignId).then(cpn => {
                 setCampaignTags(cpn.tags); //this may need to change now that we are using sql
@@ -30,7 +39,7 @@ export default function MyNotes() {
         }).catch(() => { //user not authenticated
             navigate("/login");
         });
-    }, [campaignId]);
+    }, [campaignId, refresh]);
                 
 
     if(error !== "") {
@@ -40,7 +49,7 @@ export default function MyNotes() {
 
     return(
         <div className='myNotes'>
-        <NoteBrowser title='My Notes' notes={myNotes} campaignTags={campaignTags}/>
+            <NoteBrowser title='My Notes' notes={myNotes} campaignTags={campaignTags} saveCallback={saveCallback}/>
         </div>
     );
 }

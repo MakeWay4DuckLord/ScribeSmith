@@ -10,7 +10,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 import Avatar from '@mui/material/Avatar';
-
+import Container from '@mui/material/Container';
 export default function Header() {
     const [currentUser, setCurrentUser] = useState(null);
     const [userIcon, setUserIcon] = useState(null);

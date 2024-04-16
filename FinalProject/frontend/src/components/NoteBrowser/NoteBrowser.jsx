@@ -9,7 +9,8 @@ import TextEditor from '../TextEditor/TextEditor';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Campaign from '../../pages/campaign/Campaign';
-import { Button } from '@mui/material';
+import { Button, Container, Card, CardActions, CardContent, Backdrop, Typography, TextField } from '@mui/material';
+
 
 
 // function getSearchedTags() {
@@ -19,28 +20,30 @@ import { Button } from '@mui/material';
 // }
 
 
-export default function NoteBrowser({title, notes, campaignTags}) {
-    const[openNote, setOpenNote] = useState({title: "New Note", content: "", tags: []});
+export default function NoteBrowser({title, notes, campaignTags, saveCallback}) {
+    const[openIndex, setOpenIndex] = useState(-1);
+    const[openNote, setOpenNote] = useState(null);
     const[filteredNotes, setFilteredNotes] = useState([]);
     const[selectedTags, setSelectedTags] = useState([]);
     const[searchedTags, setSearchedTags] = useState([]);
     const{campaignId} = useParams();
     // const[tags, setTags] = useState(campaignTags);
     // const[searchBar, setSearchBar] = useState("");\
+    const[newNote, setNewNote] = useState({});
+    const[newNoteTitle, setNewNoteTitle] = useState("New Note")
 
-    function newNote() {
+    const[createNoteDialogue, setCreateNoteDialogue] = useState(false);
+
+    //TODO
+    function createNewNote() {
         api.getCurrentUser().then(user => {
-            updateNote({title: "New Note", userId: user.userId, content: "", tags: [], id:-1, campaignId, sharedWith: []});
+            setNewNote({title: "New Note", userId: user.userId, content: "", tags: [], id:-1, campaignId, sharedWith: []});
         })
     }
     
     function updateNote(note) { 
+        // setOpenIndex(filteredNotes.indexOf(note));
         setOpenNote(note);
-    }
-
-    const changeCallback = (content) => {
-        openNote.content = content;
-
     }
 
     function tagOnClick(tag) {
@@ -76,6 +79,59 @@ export default function NoteBrowser({title, notes, campaignTags}) {
     //     }
     // }
 
+    const DisplayNote = () => {
+        if(openNote) {
+            // <Note note={openIndex == -1 ? {id: -1} : filteredNotes[openIndex]} saveCallback={saveCallback} />
+            return (
+                <Note note={openNote} saveCallback={saveCallback}/>
+            )
+        } else {
+            return (
+                <Container>
+                    <Card>
+                        <CardContent>
+                            Select a note from the browser or create a new note.
+                        </CardContent>
+                        <CardActions>
+                            <Button variant="contained" className="friendly-button" onClick={() => {setCreateNoteDialogue(true)}}>Create New Note</Button>
+                        </CardActions>
+                    </Card>
+                    <Backdrop open={createNoteDialogue} sx={{zIndex: (theme) => theme.zIndex.drawer + 1, bgcolor:"#494251" }}>
+                        <Card variant="outlined">
+                    <CardContent>
+                        <Typography>Enter a title for your new note:</Typography>
+                        <TextField id="new-note-title-field" placeholder={newNoteTitle} onChange={(event) => {
+                            setNewNoteTitle(event.target.value);
+                        }}> </TextField>
+                    </CardContent>
+                    <CardActions>
+                        <Button variant="contained" onClick={() => {
+                            
+                            // setTitle(newTitle);
+                            // setTags([]);
+                            // setSharedWith([]);
+
+                            api.createNote(campaignId, newNoteTitle, "", ["tag", "tag2"], []).then(currentNote => {
+                                setOpenNote(currentNote)
+                                setCreateNoteDialogue(false);
+                                saveCallback();
+                            });
+
+
+                            }}> Create Note </Button>
+    
+                        <Button variant="outlined" onClick={() => {
+                            setCreateNoteDialogue(false);
+                            setNewNoteTitle("");
+                        }}>Cancel</Button>
+                    </CardActions>
+                </Card>
+            </Backdrop>
+                </Container>
+            )
+        }
+    }
+
     useEffect(() => {
         //console.log(selectedTags, searchedTags, [...selectedTags,...searchedTags]);
         if(notes.length !== 0) {
@@ -89,9 +145,9 @@ export default function NoteBrowser({title, notes, campaignTags}) {
             // }
                 
             //TODO consider adding a way to switch between and vs or filtering
-            setOpenNote(notes[0]);
+            // setOpenNote(notes[0]);
         } else {
-            setOpenNote(null);
+            // setOpenNote(null);
         }
     }, [notes, selectedTags, searchedTags, campaignTags]);
 
@@ -117,7 +173,7 @@ export default function NoteBrowser({title, notes, campaignTags}) {
                 <FaCirclePlus className='addTagIcon' />
                 </div>
 
-                <Button variant="contained" onClick={newNote}>Create New Note</Button>
+                <Button variant="contained" onClick={createNewNote}>Create New Note</Button>
 
                 <div className='note-container'>
                     {filteredNotes.map(note => (
@@ -133,7 +189,7 @@ export default function NoteBrowser({title, notes, campaignTags}) {
                 </div>
             </aside>
             <main>
-                <Note note={openNote} />
+                <DisplayNote />
             </main>
         </div>
     );

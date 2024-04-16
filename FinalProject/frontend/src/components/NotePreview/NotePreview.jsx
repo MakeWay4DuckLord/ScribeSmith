@@ -5,7 +5,7 @@ import api from "../../client/APIClient";
 import Avatar from '@mui/material/Avatar';
 
 
-export default function NotePreview({nodeId, ownerId, title, content, tags}) {
+export default function NotePreview({noteId, ownerId, title, content, tags}) {
     const [icon, setIcon] = useState(null);
     useEffect(() => {
         api.getUserIcon(ownerId).then(icon => {
