@@ -2,7 +2,7 @@
 .campaign-settings {
     display: flex;
     flex-direction: column;
-    height: 90%;
+    margin: 30px;
     align-items: center;
     justify-content: center;
 }
@@ -14,28 +14,27 @@
     background-color: #494251;
     border-radius: 5px;
     padding: 30px;
-    width: 60%;
+    
+}
+
+.campaign-settings main {
+    width: 50%;
 }
 
 .campaign-settings input {
     background-color: #38323e;
-    font-size: 20px;
     color: white;
     width: 100%;
 }
 
 .campaign-settings textarea {
     background-color: #38323e;
-    font-size: 20px;
     border: none;
 
 
     color: white;
     border-radius: 5px;
     padding: 10px;
-    /* TODO: find the overall input rule that gives border radius
-    and add this to that instead of hardcoding it anywhere with a textarea */
-
     width: 100%;
 }
 
@@ -43,15 +42,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 70%;
 }
 
 .campaign-settings label {
     align-self: flex-start;
-}
-
-.campaign-settings input[type="file"] {
-    font-size: 20px;
+    margin-top: 15px;
 }
 
 .campaign-settings input[type="submit"] {
@@ -61,10 +56,24 @@
 
 .campaign-settings h1 {
     color: rgb(255, 216, 97);
-    /* position: absolute;
-    top: 30%;
-    left: 28%; */
     margin: 0;
+}
+
+.campaign-settings .players-container {
+    width: 100%;
+}
+
+.campaign-settings .player {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    
+}
+
+.campaign-settings .tags {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 @media (max-width: 770px) {
