@@ -2,7 +2,7 @@
 .campaign-settings {
     display: flex;
     flex-direction: column;
-    height: 90%;
+    margin: 30px;
     align-items: center;
     justify-content: center;
 }
@@ -14,28 +14,25 @@
     background-color: #494251;
     border-radius: 5px;
     padding: 30px;
-    width: 60%;
+    
+}
+
+.campaign-settings main {
+    width: 50%;
 }
 
 .campaign-settings input {
     background-color: #38323e;
-    font-size: 20px;
     color: white;
     width: 100%;
 }
 
 .campaign-settings textarea {
     background-color: #38323e;
-    font-size: 20px;
     border: none;
-
-
     color: white;
     border-radius: 5px;
     padding: 10px;
-    /* TODO: find the overall input rule that gives border radius
-    and add this to that instead of hardcoding it anywhere with a textarea */
-
     width: 100%;
 }
 
@@ -43,15 +40,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 70%;
 }
 
 .campaign-settings label {
     align-self: flex-start;
-}
-
-.campaign-settings input[type="file"] {
-    font-size: 20px;
+    margin-top: 15px;
 }
 
 .campaign-settings input[type="submit"] {
@@ -59,22 +52,102 @@
     background-color: rgb(155, 111, 203);
 }
 
-.campaign-settings h1 {
+.campaign-settings .title {
     color: rgb(255, 216, 97);
-    /* position: absolute;
-    top: 30%;
-    left: 28%; */
     margin: 0;
 }
+
+.settings-box h1 {
+    margin: 10px;
+}
+
+.campaign-settings .players-container {
+    width: 100%;
+}
+
+.campaign-settings .player {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    
+}
+
+.campaign-settings .tagButton {
+    margin-top: 10px;
+    background-color: #201a25;
+    color: white;
+    border: white 1px solid;
+}
+
+.campaign-settings .tags {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0 .newTag {
+    display: flex;
+    align-items: center;
+}
+
+div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0 .addNewTag {
+    background-color: #201a25;
+    border-radius: 5px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin: 15px;
+    padding: 10px;
+}
+
+div.MuiDialog-root.MuiModal-root.css-126xj0f .newTag button {
+    background-color: #38323e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.MuiDialog-root.MuiModal-root.css-126xj0f .tagContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.campaign-settings .deleteButton {
+    background-color: #bd3939;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    border-style: none;
+    width: 100%;
+    margin-top: 20px;
+}
+
+div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0  .cancel, div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0 .confirmDelete {
+    border-radius: 5px;
+    padding: 10px;
+    border-style: none;
+    margin: 20px 10px;
+}
+
+div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0  .cancel {
+    background-color: #626262;
+}
+
+div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0 .confirmDelete {
+    background-color: #bd3939;
+    color: white;
+}
+
 
 @media (max-width: 770px) {
     .campaign-settings h1 {
         font-size: 40px;
-        top: 29%;
-        left: 18%;
+        text-align: center;
     }
 
-    .campaign-settings form {
+    .campaign-settings main {
         width: 100%;
     }
     
@@ -93,7 +166,7 @@
         padding: 0;
     }
 
-    .campaign-settings h1 {
+    .campaign-settings title {
         font-size: 30px;
         position: inherit;
         margin-bottom: 15px;

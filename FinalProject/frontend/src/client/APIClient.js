@@ -333,6 +333,17 @@ const updateCampaign = (campaignId, formData) => {
         .catch(handleError);
 }
 
+const deleteCampaign = (campaignId) => {
+    return fetch(API_BASE + `/campaigns/${campaignId}`, {
+        method: 'DELETE'
+        })
+        .then(checkResponse)
+        .then(res => {
+            return res.json();
+        })
+        .catch(handleError);
+}
+
 export default {
     login,
     signUp,
@@ -350,5 +361,6 @@ export default {
     getCampaignBanner,
     createNote,
     updateNote,
-    updateCampaign
+    updateCampaign,
+    deleteCampaign
 }

@@ -264,7 +264,10 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
 
     CampaignDAO.getCampaignById(campaignId).then(campaign => {
         if (campaign) {
-            const filePath = path.join(__dirname, '..', '..', campaign.banner);
+            if(!campaign.banner) {
+                res.json({message: "No banner for this user"});
+            } else {
+                const filePath = path.join(__dirname, '..', '..', campaign.banner);
                 fs.readFile(filePath, 'utf-8', (err) => {
                     if (err) {
                         // File doesn't exist or is not accessible
@@ -274,6 +277,8 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
                         res.sendFile(filePath);
                     }
                 });
+            }
+            
         } else {
             res.status(404).json({ "error": "Campaign not found" });
         }
@@ -306,8 +311,27 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
 
 // update cpn description, tags, image
 router.put('/campaigns/:campaignId/settings', TokenMiddleware, upload, (req, res) => {
-    console.log("campaign settings put received", req.body);
-    res.json({"message": "success"});
+    const campaignBanner = req.file && req.file.path ? req.file.path : null;
+
+    const campaign = {
+        id: req.params.campaignId,
+        userIdsToRemove: JSON.parse(req.body.userIdsToRemove),
+        // name: req.body.name,
+        banner: campaignBanner,
+        description: req.body.description,
+        // joinCode: req.body.joinCode,
+        tags: JSON.parse(req.body.tags)
+    }
+
+    CampaignDAO.updateCampaign(campaign, req.user.userId)
+        .then(() => {
+            res.json({"message": "success"});
+        })
+        .catch(err => {
+            // Handle the error here
+            console.error("Error updating campaign:", err);
+            res.status(500).json({"error": "An error occurred while updating the campaign."});
+        });
 });
 
 // //update campaign description
@@ -378,7 +402,6 @@ router.get('/campaigns/:campaignId/notes/shared', TokenMiddleware, (req, res) =>
     // note - this request will always need to filter out non-viewable notes
     // based on authentication
     const userId = req.user.userId;
-    console.log("retrieved userId", userId);
     const campaignId = req.params.campaignId;
 
     NoteDAO.getViewableNotesByCampaign(userId, campaignId).then(notes => {
@@ -387,7 +410,16 @@ router.get('/campaigns/:campaignId/notes/shared', TokenMiddleware, (req, res) =>
         console.log("filtered", notes);
         res.json(notes);
     });
+});
 
+
+// delete campaign
+router.delete('/campaigns/:campaignId', TokenMiddleware, (req, res) => {
+    const userId = req.user.userId;
+    const campaignId = req.params.campaignId;
+    CampaignDAO.deleteCampaign(campaignId, userId).then(() => {
+        res.json({message: "success?"});
+    });
 });
 
 //get VIEWABLE notes by creator and campaign
@@ -412,12 +444,12 @@ router.get('/campaigns/:campaignId/notes/users/:userId', TokenMiddleware, (req, 
 
 //get all tags a user has used in a campaign
 router.get('/users/:userId/tags/campaigns/:campaignId', TokenMiddleware, (req, res) => {
-
+    res.json(["someone tell me if you get this", "i thought this route was extinct"]);
 });
 
 //create a note
 router.post('/campaigns/:campaignId/notes', TokenMiddleware, (req, res) => {
-    console.log("post request received");
+    console.log("post request received", req.body);
     //console.log(req.body);
     //console.log(req.user.userId);
     const note = req.body;
@@ -433,12 +465,25 @@ router.post('/campaigns/:campaignId/notes', TokenMiddleware, (req, res) => {
     });
 });
 
-// TODO: this may also need more complicated authentication
-// maybe pass ownerId as a parameter...? yeah i think that would work
 //update a note
 router.put('/campaigns/:campaignId/notes/:noteId', TokenMiddleware, (req, res) => {
     console.log("put request received");
-    console.log(req.body);
+    const note = {
+        id: req.params.noteId,
+        title: req.body.title,
+        content: req.body.content,
+        tags: req.body.tags,
+        sharedWith: req.body.sharedWith
+    };
+    console.log("putting", note);
+    NoteDAO.updateNote(note, req.user.userId).then(updatedNote => {
+        //console.log(updatedNote);
+        res.json(updatedNote);
+    }).catch(err => {
+        console.log(err);
+        res.status(err.code).json({ error: err.message });
+    });
+    // do we need to do anything with campaign id???
 });
 
 module.exports = router;
