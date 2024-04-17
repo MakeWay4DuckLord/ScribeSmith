@@ -329,57 +329,10 @@ router.put('/campaigns/:campaignId/settings', TokenMiddleware, upload, (req, res
         .catch(err => {
             // Handle the error here
             console.error("Error updating campaign:", err);
-            res.status(500).json({ "error": "An error occurred while updating the campaign." });
+            res.status(err.code).json({ error: err.message });
         });
 });
 
-// //update campaign description
-// router.patch('/campaigns/:campaignId/description', TokenMiddleware, (req, res) => {
-//     const campaignId = parseInt(req.params.campaignId);
-//     const campaign = campaigns[campaignId];
-//     if (!campaign) {
-//         res.status(404).json({ "error": "Campaign not found" });
-//         return;
-//     }
-//     if (req.body.description == undefined || req.body.description == "") {
-//         res.status(400).json({ "error": "Invalid description" });
-//         return;
-//     }
-//     campaign.description = req.body.description;
-//     res.status(200).json({ "message": "success" });
-// });
-
-// //update campaign tags
-// router.patch('/campaigns/:campaignId/tags', TokenMiddleware, (req, res) => {
-//     const campaignId = parseInt(req.params.campaignId);
-//     const campaign = campaigns[campaignId];
-//     if (!campaign) {
-//         res.status(404).json({ "error": "Campaign not found" });
-//         return;
-//     }
-//     if (req.body.tags == undefined || !Array.isArray(req.body.tags)) {
-//         res.status(400).json({ "error": "Invalid tags list" });
-//         return;
-//     }
-//     campaign.tags = req.body.tags;
-//     res.status(200).json({ "message": "success" });
-// });
-
-// //update banner image
-// router.patch('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
-//     const campaignId = parseInt(req.params.campaignId);
-//     const campaign = campaigns[campaignId];
-//     if (!campaign) {
-//         res.status(404).json({ "error": "Campaign not found" });
-//         return;
-//     }
-//     if (req.body.banner == undefined || req.body.banner == "") {
-//         res.status(400).json({ "error": "Invalid banner image link" });
-//         return;
-//     }
-//     campaign.banner = req.body.banner;
-//     res.status(200).json({ "message": "success" });
-// });
 
 // //get VIEWABLE notes by campaign
 // router.get('/campaigns/:campaignId/notes', TokenMiddleware, (req, res) => {

@@ -82,7 +82,9 @@ function updateUser(user) {
     WHERE usr_id=?;`, [user.first_name, user.last_name, user.icon, user.userId]).then(({results}) => {
         //console.log("RESULTS", results);
         return user;
-    });
+    }).catch(err => {
+        reject({code: err.code, message: err.message});
+    });;
 }
 
 // SHOULD THIS ALSO DELETE NOTES??? for now it doesnt

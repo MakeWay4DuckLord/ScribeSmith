@@ -117,6 +117,12 @@ function createCampaign(campaign) {
                 getCampaignById(results.insertId).then(campaign => {
                     resolve(campaign);
                 });
+            }).catch(err => {
+                if (err.code == 'ER_DUP_ENTRY') {
+                    reject({code: 400, message: "Join code already in use. Please try again."});
+                } else {
+                    reject({code: err.code, message: err.message});
+                }
             });
     });
 }
@@ -125,9 +131,9 @@ function updateCampaign(campaign, userId) {
     return new Promise((resolve, reject) => {
         db.query('SELECT * FROM campaign WHERE cpn_id=?;', [campaign.id]).then((result) => {
             if (result.results.length == 0) {
-                reject({ code: 404, message: "Note not found." });
+                reject({ code: 404, message: "Campaign not found." });
             } else if (result.results[0].cpn_owner_id != userId) {
-                reject({ code: 401, message: "You are not authorized to edit this note." });
+                reject({ code: 401, message: "You are not authorized to edit this campaign." });
             } else {
                 //return new Campaign(results[0])
                 return campaign;
