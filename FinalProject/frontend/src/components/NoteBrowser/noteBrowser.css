@@ -1,17 +1,8 @@
 .noteBrowser {
-    display: grid;
-    grid-template-columns: 50% 50%;
+    display: flex;
+    /* grid-template-columns: 50% 50%; */
     overflow-y: hidden;
     height: 90%;
-}
-
-.noteBrowser Button {
-    background-color: #9b6fcb;
-    color: white;
-}
-
-.noteBrowser Button:hover {
-    background-color: #7c59a2;
 }
 
 .noteBrowser .tagList {

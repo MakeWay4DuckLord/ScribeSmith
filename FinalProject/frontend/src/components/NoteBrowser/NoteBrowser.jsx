@@ -9,7 +9,7 @@ import TextEditor from '../TextEditor/TextEditor';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Campaign from '../../pages/campaign/Campaign';
-import { Button, Container, Card, CardActions, CardContent, Backdrop, Typography, TextField } from '@mui/material';
+import { Button, Box, Container, Card, CardActions, CardContent, Backdrop, Typography, TextField, Drawer } from '@mui/material';
 
 
 
@@ -33,6 +33,9 @@ export default function NoteBrowser({title, notes, campaignTags, saveCallback}) 
     // const[newNoteTitle, setNewNoteTitle] = useState("New Note")
 
     const[createNoteDialogue, setCreateNoteDialogue] = useState(false);
+
+    const[browserOpen, setBrowserOpen] = useState(false);
+
 
     //TODO
     function createNewNote() {
@@ -130,47 +133,72 @@ export default function NoteBrowser({title, notes, campaignTags, saveCallback}) 
         }
     }, [notes, selectedTags, searchedTags, campaignTags]);
 
+    const drawerContents = (
+            <Box sx={{
+                bgcolor: 'background.main',
+                px: 2,
+                py: 4,
+                }}>
+                {/* TODO styling in here */}
+                    <search>
+                        <input type="text" id="search-bar" placeholder='Search...' onChange={updateSearch}/>
+                        <IoIosSearch className='searchIcon' />
+                    </search>
+                    <div className='tagList'>
+                        {campaignTags.map(tag => (
+                            //this style thing is not ideal, i bet React could do something better
+                            <div onClick={()=>{tagOnClick(tag)}} key={campaignTags.indexOf(tag)} style={{
+                                backgroundColor: selectedTags.includes(tag) ? 'lightblue' : '', //placeholder, lightblue is kinda weird
+                                borderRadius: 5,
+                            }}>
+                                <Tag content={tag} />
+                            </div>
+                        ))}
+                    <FaCirclePlus className='addTagIcon' />
+                    </div>
+                    <div className='note-container'>
+                        {filteredNotes.map(note => (
+                            <div onClick={()=>{updateNote(note)}} key={note.id}>
+                                <NotePreview  noteId={note.id} ownerId={note.userId} title={note.title} content={note.content} tags={note.tags}/>
+                            </div>
+                        ))}
+
+                        {/* hard coded notes for testing and such */}
+                        {/* <Note id="1" title="Note Title" content="In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy." tags={["session1", "tag2"]}/>
+                        <Note id="2" title="Note Title" content="In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy." tags={["session2", "tag3"]}/> */}
+
+                    </div>
+                </Box>
+        );
+
 
     return(
         <div className='noteBrowser'>
-            <aside>
+            <Drawer variant='temporary' open={browserOpen} onClose={() => setBrowserOpen(false)} sx={
+                {
+                    display: { xs: 'block', md: 'none' },
+                }
+            }> 
+                {drawerContents}
+            </Drawer>
+            <Drawer variant='permanent' sx={
+                {
+                    display: { xs: 'none', md: 'block' },
+                }
+            }> 
+                {drawerContents}
+            </Drawer> 
+            <div >
+                <Button onClick={()=>setBrowserOpen(true)} variant="outlined">Open Browser</Button>
                 <h1>{title}</h1>
-                <search>
-                    <input type="text" id="search-bar" placeholder='Search...' onChange={updateSearch}/>
-                    <IoIosSearch className='searchIcon' />
-                </search>
-                <div className='tagList'>
-                    {campaignTags.map(tag => (
-                        //this style thing is not ideal, i bet React could do something better
-                        <div onClick={()=>{tagOnClick(tag)}} key={campaignTags.indexOf(tag)} style={{
-                            backgroundColor: selectedTags.includes(tag) ? 'lightblue' : '', //placeholder, lightblue is kinda weird
-                            borderRadius: 5,
-                        }}>
-                            <Tag content={tag} />
-                        </div>
-                    ))}
-                <FaCirclePlus className='addTagIcon' />
-                </div>
-                <div className='note-container'>
-                    {filteredNotes.map(note => (
-                        <div onClick={()=>{updateNote(note)}} key={note.id}>
-                            <NotePreview  noteId={note.id} ownerId={note.userId} title={note.title} content={note.content} tags={note.tags}/>
-                        </div>
-                    ))}
-
-                    {/* hard coded notes for testing and such */}
-                    {/* <Note id="1" title="Note Title" content="In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy." tags={["session1", "tag2"]}/>
-                    <Note id="2" title="Note Title" content="In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy." tags={["session2", "tag3"]}/> */}
-
-                </div>
-            </aside>
             <main>
                 <DisplayNote />
             </main>
+            </div>
 
             <Backdrop open={createNoteDialogue} sx={{zIndex: (theme) => theme.zIndex.drawer + 1 }}>
                         <Card variant="outlined" sx={{
-                            bgcolor:"#494251",
+                            bgcolor:"background.light",
                             my: 4,
                             p: 4,
                         }}>

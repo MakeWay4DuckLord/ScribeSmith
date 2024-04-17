@@ -4,18 +4,15 @@ import TextEditor from "../TextEditor/TextEditor";
 // import CardContent from '@mui/material/CardContent';
 // import Container from '@mui/material/Container';
 import {
-    Card,CardContent, CardActions, Container, 
-    Button, ButtonGroup, Backdrop, 
+    Card,CardContent, CardActions, Container, CardHeader,
+    Button, Backdrop, IconButton, 
     List, ListItemButton, ListItem, ListItemAvatar, ListItemText, ListItemIcon, Avatar, 
     Checkbox, TextField, Divider, Typography,
 } from '@mui/material';
 import { FaTrash } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
 import api from "../../client/APIClient";
-
-import "./note.css";
 
 
 
@@ -186,48 +183,45 @@ export default function Note({note, saveCallback}) {
     } else{
         return (
         <Container>
-            <header>
-                <Avatar className="icon" alt="User icon"  src={icon} />
-                <h2 onClick={() => setRenaming(isOwner)} name="title">{title}</h2> 
+
+            <Card variant="outlined" sx={{
+                bgcolor: 'background.light',
+                color: 'white',
+                my: 4,
+                p: 2,
+            }}>
+    
+            {/* <Button onClick={() => console.log(openNote)}>DEBUG</Button> */}
+            <CardHeader
+                avatar={
+                    <Avatar className="icon" alt="User icon"  src={icon} />
+                }
+                title={title}
+                // subtitle={{}} TODO make a subtitle. could be: list of tags, timestamp, user who wrote the note, etc
+                onClick={() => setRenaming(isOwner)}
+            />
+                {/* <Typography variant="h3" onClick={() => setRenaming(isOwner)} name="title">{title}</Typography>  */}
                 {/* TODO editable header, im thinking if you click the title, it opens a dialogue to rename the note */}
-            </header>
+            {/* </CardHeader> */}
+            <CardContent>
+                <TextEditor name="content" content={openNote.content} readOnly={!isOwner} editorCallback={setEditor}/>
+            </CardContent>
+            
+            <CardActions>
+                <Button variant="contained" disabled={!isOwner} onClick={() => setTagsOpen(true)}> Tags </Button>
+                <Button variant="contained" disabled={!isOwner} onClick={()=>{setShareOpen(true)}}>Share</Button>
+                <Button variant="contained" disabled={!isOwner} onClick={save}>Save</Button>
+            </CardActions>
+
+            </Card>
+
     
-            <Button onClick={() => console.log(openNote)}>DEBUG</Button>
     
     
-            <Backdrop open={renaming} sx={{ color: 'white', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+            <Backdrop open={tagsOpen} sx={{color: 'white', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
                 <Card sx={{
-                        bgcolor: '#494251',
-                        color: 'white',
-                        my: 4,
-                        p: 4
-                    }}>
-                    <CardContent>
-                        <Typography>Enter a New Title</Typography>
-                        <TextField placeholder={newTitle} onChange={(event) => setNewTitle(event.target.value)}> </TextField>
-                    </CardContent>
-                    <CardActions>
-                        <Button variant="contained" onClick={() => {
-                            setRenaming(false);
-                            setTitle(newTitle);
-                            setNewTitle("");
-                            }}> Update Title </Button>
-    
-                        <Button variant="outlined" onClick={() => {
-                            setRenaming(false);
-                            setNewTitle("");
-                        }}>Cancel</Button>
-                    </CardActions>
-                </Card>
-            </Backdrop>
-    
-            <TextEditor name="content" content={openNote.content} readOnly={!isOwner} editorCallback={setEditor}/>
-    
-    
-            <Backdrop open={tagsOpen} sx={{zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-                <Card sx={{
-                        bgcolor: '#494251',
-                        color: 'white',
+                        bgcolor: 'background.light',
+                        textcolor: 'white',
                         my: 4,
                         p: 4
                     }}>
@@ -260,12 +254,9 @@ export default function Note({note, saveCallback}) {
                 </Card>
             </Backdrop>
     
-            <Backdrop
-                sx={{ color: 'white', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={shareOpen}
-            >
+            <Backdrop sx={{ color: 'white', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={shareOpen}>
                 <Card sx={{
-                        bgcolor: '#494251',
+                        bgcolor: 'background.light',
                         color: 'white',
                         my: 4,
                         p: 4
@@ -302,13 +293,32 @@ export default function Note({note, saveCallback}) {
                 </Card>
             </Backdrop>
     
+            <Backdrop open={renaming} sx={{ color: 'white', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+                <Card sx={{
+                        bgcolor: '#494251',
+                        color: 'white',
+                        my: 4,
+                        p: 4
+                    }}>
+                    <CardContent>
+                        <Typography>Enter a New Title</Typography>
+                        <TextField placeholder={newTitle} onChange={(event) => setNewTitle(event.target.value)}> </TextField>
+                    </CardContent>
+                    <CardActions>
+                        <Button variant="contained" onClick={() => {
+                            setRenaming(false);
+                            setTitle(newTitle);
+                            setNewTitle("");
+                            }}> Update Title </Button>
     
-            <ButtonGroup>
-            <Button variant="contained" disabled={!isOwner} onClick={() => setTagsOpen(true)}> Tags </Button>
-            <Button variant="contained" disabled={!isOwner} onClick={()=>{setShareOpen(true)}}>Share</Button>
-            <Button variant="contained" disabled={!isOwner} onClick={save}>Save</Button>
-            </ButtonGroup>
-    
+                        <Button variant="outlined" onClick={() => {
+                            setRenaming(false);
+                            setNewTitle("");
+                        }}>Cancel</Button>
+                    </CardActions>
+                </Card>
+            </Backdrop>
+
         </Container>
         );
     }
