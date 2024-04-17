@@ -11,6 +11,10 @@ const keyLen = 64
 function getUserByCredentials(email, password) {
     return new Promise((resolve, reject) => {
         db.query('SELECT * FROM user WHERE usr_email=?', [email]).then(({ results }) => {
+            if(results.length === 0) {
+                reject({ code: 401, message: "Invalid email or password" });
+            }
+            
             const user = new User(results[0]);
             if (user) { // we found our user
                 crypto.pbkdf2(password, user.salt, hashingRounds, keyLen, 'sha512', (err, derivedKey) => {
