@@ -5,46 +5,27 @@ import NotePreview from "../../components/NotePreview/NotePreview";
 import Note from "../../components/Note/Note";
 import Tag from "../../components/Tag/Tag";
 import api from "../../client/APIClient";
-import TextEditor from '../TextEditor/TextEditor';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Campaign from '../../pages/campaign/Campaign';
-import { Button, Box, Container, Card, CardActions, CardContent, Backdrop, Typography, TextField, Drawer } from '@mui/material';
+import { SpeedDial, SpeedDialIcon, SpeedDialAction, Button, Box, IconButton, Container, Card, CardActions, CardContent, Backdrop, Typography, TextField, Drawer } from '@mui/material';
 
+import { GiBookshelf } from "react-icons/gi";
 
+export default function NoteBrowser({ title, notes, campaignTags, saveCallback }) {
+    const [openIndex, setOpenIndex] = useState(-1);
+    const [openNote, setOpenNote] = useState(null);
+    const [filteredNotes, setFilteredNotes] = useState([]);
+    const [selectedTags, setSelectedTags] = useState([]);
+    const [searchedTags, setSearchedTags] = useState([]);
+    const { campaignId } = useParams();
 
-// function getSearchedTags() {
-//         const tagArray = searchBar.split(" ").filter(tag => tag.charAt(0) == "#").map(tag => tag.substring(1));
-//         console.log(tagArray);
-//         return tagArray
-// }
+    const [createNoteDialogue, setCreateNoteDialogue] = useState(false);
 
+    const [browserOpen, setBrowserOpen] = useState(false);
 
-export default function NoteBrowser({title, notes, campaignTags, saveCallback}) {
-    const[openIndex, setOpenIndex] = useState(-1);
-    const[openNote, setOpenNote] = useState(null);
-    const[filteredNotes, setFilteredNotes] = useState([]);
-    const[selectedTags, setSelectedTags] = useState([]);
-    const[searchedTags, setSearchedTags] = useState([]);
-    const{campaignId} = useParams();
-    // const[tags, setTags] = useState(campaignTags);
-    // const[searchBar, setSearchBar] = useState("");\
-    const[newNote, setNewNote] = useState({});
-    // const[newNoteTitle, setNewNoteTitle] = useState("New Note")
+    const drawerWidth = 450;
 
-    const[createNoteDialogue, setCreateNoteDialogue] = useState(false);
-
-    const[browserOpen, setBrowserOpen] = useState(false);
-
-
-    //TODO
-    function createNewNote() {
-        api.getCurrentUser().then(user => {
-            setNewNote({title: "New Note", userId: user.userId, content: "", tags: [], id:-1, campaignId, sharedWith: []});
-        })
-    }
-    
-    function updateNote(note) { 
+    function updateNote(note) {
         // setOpenIndex(filteredNotes.indexOf(note));
         setOpenNote(note);
     }
@@ -52,7 +33,7 @@ export default function NoteBrowser({title, notes, campaignTags, saveCallback}) 
     function tagOnClick(tag) {
         console.log(tag);
         const index = selectedTags.indexOf(tag);
-        if(index > -1) {
+        if (index > -1) {
             const newSelectedTags = [...selectedTags];
             newSelectedTags.splice(index, 1);
             setSelectedTags(newSelectedTags);
@@ -64,151 +45,196 @@ export default function NoteBrowser({title, notes, campaignTags, saveCallback}) 
     function updateSearch(event) {
         const searchBar = event.target.value;
         // if(searchBar) {
-            if(searchBar.length == 0) {
-                setSearchedTags([]);
-            } else {
-                const tagArray = searchBar.split(" ").filter(tag => tag.charAt(0) == "#").map(tag => tag.substring(1));
-                setSearchedTags(tagArray);
-            }
-            console.log("selected tags: ", searchedTags);
-            // setSelectedTags([...searchedTags, ...selectedTags]);
-        // }
+        if (searchBar.length == 0) {
+            setSearchedTags([]);
+        } else {
+            const tagArray = searchBar.split(" ").filter(tag => tag.charAt(0) == "#").map(tag => tag.substring(1));
+            setSearchedTags(tagArray);
+        }
+        console.log("selected tags: ", searchedTags);
+
     }
 
-    // function tagOnClick(tag) {
-    //     let searchBar =  document.querySelector("#search-bar");
-    //     if(searchBar) {
-    //         searchBar.value += ` ${tag} `;
-    //     }
-    // }
     const DisplayNote = () => {
-        if(openNote) {
-            // <Note note={openIndex == -1 ? {id: -1} : filteredNotes[openIndex]} saveCallback={saveCallback} />
+        if (openNote) {
             return (
-                <Note note={openNote} saveCallback={saveCallback}/>
+                <Note note={openNote} saveCallback={saveCallback} newNoteCallback={() => setCreateNoteDialogue(true)}/>
+            )
+        } else if (title == "My Notes") {
+            return (
+                <Card sx={{
+                    bgcolor: 'background.light',
+                    m: 3,
+                    p: 3,
+                    color: 'white',
+                }}>
+                    <CardContent>
+                        Select a note from the browser or create a new note.
+                    </CardContent>
+                    <CardActions>
+                        <Button variant="contained" className="friendly-button" onClick={() => { setCreateNoteDialogue(true) }}>Create New Note</Button>
+                    </CardActions>
+                </Card>
             )
         } else {
             return (
-                    <Card>
-                        <CardContent>
-                            Select a note from the browser or create a new note.
-                        </CardContent>
-                        <CardActions>
-                            <Button variant="contained" className="friendly-button" onClick={() => {setCreateNoteDialogue(true)}}>Create New Note</Button>
-                        </CardActions>
-                    </Card>
-            )
+                <Card sx={{
+                    bgcolor: 'background.light',
+                    color: 'white',
+                    m: 3,
+                    p: 3,
+                }}>
+                    <CardContent>
+                        Select a note from the browser
+                    </CardContent>
+                </Card>
+            );
         }
     }
 
     useEffect(() => {
 
         //console.log(selectedTags, searchedTags, [...selectedTags,...searchedTags]);
-        if(notes.length !== 0) {
+        if (notes.length !== 0) {
             //filter for notes that have all of the selected tags            
             setFilteredNotes(notes.filter(note => [...selectedTags, ...searchedTags].filter(tag => !note.tags.includes(tag)).length == 0));
-            if(title == "Shared Notes" && !openNote) {
+            if (title == "Shared Notes" && !openNote) {
                 setOpenNote(filteredNotes[0]);
             }
 
-            if(openNote && !notes.includes(openNote)) {
-                    for(let i = 0; i < notes.length; i++) {
-                        const currentNote = notes[i];
-                        if(currentNote.id == openNote.id) {
-                            setOpenNote(currentNote);
-                            break;
-                        }
+            if (openNote && !notes.includes(openNote)) {
+                for (let i = 0; i < notes.length; i++) {
+                    const currentNote = notes[i];
+                    if (currentNote.id == openNote.id) {
+                        setOpenNote(currentNote);
+                        break;
                     }
+                }
             }
-            // filter notes that have any of the selected tags
-            // setFilteredNotes(notes);
-            // if(selectedTags.length > 0){
-            //     setFilteredNotes(notes.filter(note => selectedTags.filter(tag => note.tags.includes(tag)).length > 0));
-            // }
-                
-            //TODO consider adding a way to switch between and vs or filtering
-            // setOpenNote(notes[0]);
-        } else {
-            // setOpenNote(null);
         }
     }, [notes, selectedTags, searchedTags, campaignTags]);
 
     const drawerContents = (
+        <Box sx={{color:'white', fontFamily: 'Inter,system-ui,Avenir,Helvetica,Arial,sans-serif',
+            alignContent: 'center'
+        }}>
+            {/* TODO styling in here */}
+            {/* <Typography variant="h3" sx={{margin: '0 0 20px 0', textAlign: 'center', fontSize: '35px'}}>{title}</Typography> */}
+            <h1>{title}</h1>
             <Box sx={{
-                bgcolor: 'background.main',
-                px: 2,
-                py: 4,
+                color:'white',
+                w: 0.8,
+                alignContent: 'center',
+                padding: '5px',
+                marginBottom: '10px',
                 }}>
-                {/* TODO styling in here */}
-                    <search>
-                        <input type="text" id="search-bar" placeholder='Search...' onChange={updateSearch}/>
-                        <IoIosSearch className='searchIcon' />
-                    </search>
-                    <div className='tagList'>
-                        {campaignTags.map(tag => (
-                            //this style thing is not ideal, i bet React could do something better
-                            <div onClick={()=>{tagOnClick(tag)}} key={campaignTags.indexOf(tag)} style={{
-                                backgroundColor: selectedTags.includes(tag) ? 'lightblue' : '', //placeholder, lightblue is kinda weird
-                                borderRadius: 5,
-                            }}>
-                                <Tag content={tag} />
-                            </div>
-                        ))}
-                    <FaCirclePlus className='addTagIcon' />
+                <TextField variant="filled" color='secondary' id="search-bar" placeholder='Search...' onChange={updateSearch} 
+                sx={{
+                    w: 1, 
+                    bgcolor: 'white',
+                    color: 'black',
+                    p:'5px',
+                    }}
+                     />
+                <IoIosSearch className='searchIcon'style='width: '/>
+            </Box>
+            <Box class='tagList' sx={{flexDirection: 'column', alignItems:'center'}}>
+                {campaignTags.map(tag => (
+                    //this style thing is not ideal, i bet React could do something better
+                    <div onClick={() => { tagOnClick(tag) }} key={campaignTags.indexOf(tag)} style={{
+                        backgroundColor: selectedTags.includes(tag) ? 'lightblue' : '', //placeholder, lightblue is kinda weird
+                        borderRadius: 5,
+                    }}>
+                        <Tag content={tag} />
                     </div>
-                    <div className='note-container'>
-                        {filteredNotes.map(note => (
-                            <div onClick={()=>{updateNote(note)}} key={note.id}>
-                                <NotePreview  noteId={note.id} ownerId={note.userId} title={note.title} content={note.content} tags={note.tags}/>
-                            </div>
-                        ))}
+                ))}
+                <FaCirclePlus className='addTagIcon' />
+            </Box>
+            <div className='note-container'>
+                {filteredNotes.map(note => (
+                    <div onClick={() => { updateNote(note) }} key={note.id}>
+                        <NotePreview noteId={note.id} ownerId={note.userId} title={note.title} content={note.content} tags={note.tags} />
+                    </div>
+                ))}
 
-                        {/* hard coded notes for testing and such */}
-                        {/* <Note id="1" title="Note Title" content="In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy." tags={["session1", "tag2"]}/>
+                {/* hard coded notes for testing and such */}
+                {/* <Note id="1" title="Note Title" content="In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy." tags={["session1", "tag2"]}/>
                         <Note id="2" title="Note Title" content="In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy." tags={["session2", "tag3"]}/> */}
 
-                    </div>
-                </Box>
-        );
-
-
-    return(
-        <div className='noteBrowser'>
-            <Drawer variant='temporary' open={browserOpen} onClose={() => setBrowserOpen(false)} sx={
-                {
-                    display: { xs: 'block', md: 'none' },
-                }
-            }> 
-                {drawerContents}
-            </Drawer>
-            <Drawer variant='permanent' sx={
-                {
-                    display: { xs: 'none', md: 'block' },
-                }
-            }> 
-                {drawerContents}
-            </Drawer> 
-            <div >
-                <Button onClick={()=>setBrowserOpen(true)} variant="outlined">Open Browser</Button>
-                <h1>{title}</h1>
-            <main>
-                <DisplayNote />
-            </main>
             </div>
+        </Box>
+    );
 
-            <Backdrop open={createNoteDialogue} sx={{zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-                        <Card variant="outlined" sx={{
-                            bgcolor:"background.light",
-                            my: 4,
-                            p: 4,
-                        }}>
+
+    return (
+        <div className='noteBrowser'>
+            <Box
+                component="nav"
+                sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+                aria-label="note feed"
+            >
+
+                <Drawer variant='temporary' open={browserOpen} onClose={() => setBrowserOpen(false)}
+                    sx={{ display: { xs: 'block', md: 'none' } }}
+                    PaperProps={{
+                        sx: {
+                            backgroundColor: 'background.main',
+                            px: 2,
+                            py: 4,
+                        }
+                    }}
+                    children={drawerContents} />
+                <Drawer variant='permanent' sx={{
+                    display: { xs: 'none', md: 'block' },
+                }}
+                    PaperProps={{
+                        sx: {
+                            backgroundColor: 'background.main',
+                            px: 2,
+                            py: 4,
+                            marginTop: '60px',
+                            height: 'calc(100% - 60px)',
+                            zIndex: 98, //just below header
+                        }
+                    }}
+                    children={drawerContents}
+                />
+            </Box>
+            <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
+                <Button onClick={() => setBrowserOpen(true)} startIcon={<GiBookshelf className="icon" />} sx={{
+                    display: { xs: 'inline-block', md: 'none' }
+                }}>
+                    Open Note Browser
+                </Button>
+                <DisplayNote />
+                {/* <SpeedDial
+                    ariaLabel="SpeedDial basic example"
+                    sx={{ position: 'absolute', bottom: 16, right: 16 }}
+                    icon={<SpeedDialIcon />}
+                >
+                    {actions.map((action) => (
+                        <SpeedDialAction
+                            key={action.name}
+                            icon={action.icon}
+                            tooltipTitle={action.name}
+                        />
+                    ))}
+                </SpeedDial> */}
+            </Box>
+
+            <Backdrop open={createNoteDialogue} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+                <Card variant="outlined" sx={{
+                    bgcolor: "background.light",
+                    my: 4,
+                    p: 4,
+                }}>
                     <CardContent>
                         <Typography>Enter a title for your new note:</Typography>
                         <TextField id="new-note-title-field" placeholder="New Note" onChange={(event) => setNewNoteTitle(event.target.value)}> </TextField>
                     </CardContent>
                     <CardActions>
                         <Button variant="contained" onClick={() => {
-                            let newTitle = document.querySelector("#new-note-title-field").value;                            
+                            let newTitle = document.querySelector("#new-note-title-field").value;
                             // setTitle(newTitle);
                             // setTags([]);
                             // setSharedWith([]);
@@ -220,8 +246,8 @@ export default function NoteBrowser({title, notes, campaignTags, saveCallback}) 
                             });
 
 
-                            }}> Create Note </Button>
-    
+                        }}> Create Note </Button>
+
                         <Button variant="outlined" onClick={() => {
                             setCreateNoteDialogue(false);
                             setNewNoteTitle("");

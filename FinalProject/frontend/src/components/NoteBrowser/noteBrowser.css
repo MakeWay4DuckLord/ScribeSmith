@@ -1,6 +1,5 @@
 .noteBrowser {
     display: flex;
-    /* grid-template-columns: 50% 50%; */
     overflow-y: hidden;
     height: 90%;
 }
@@ -12,24 +11,23 @@
 
 .noteBrowser .note-container {
     overflow-y: scroll;
-    /* max-height: 50%; */
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
 }
 
-.noteBrowser aside {
+/* .noteBrowser aside {
     overflow-y: scroll;
     padding: 20px;
-}
+} */
 
-.noteBrowser h1 {
+/* .noteBrowser #noteBrowserTitle {
     font-size: 35px;
     text-align: center;
     margin: 0 0 20px 0;
-}
+} */
 
-.noteBrowser search {
+/* .noteBrowser #browserSearch {
     display: flex;
     background-color: white;
     border-radius: 5px;
@@ -38,7 +36,7 @@
     padding: 5px;
     margin-bottom: 10px;
     color: black;
-}
+} */
 
 .noteBrowser #search-bar {
     color: black;
@@ -48,19 +46,19 @@
     outline: black 1px solid;
 }
 
-.noteBrowser input {
+/* .noteBrowser input {
     width: 100%;
     font-size: 15px;
     padding: 5px
-}
+} */
 
 .noteBrowser input:focus {
     outline: none;
 }
 
 .noteBrowser .searchIcon {
-    font-size: 30px;
-    z-index: 1;
-    color: black;
+    /* font-size: 30px; */
+    /* z-index: 1; */
+    /* color: black; */
 }
 
