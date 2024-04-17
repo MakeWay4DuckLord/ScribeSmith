@@ -30,8 +30,6 @@
 .campaign-settings textarea {
     background-color: #38323e;
     border: none;
-
-
     color: white;
     border-radius: 5px;
     padding: 10px;
@@ -54,9 +52,13 @@
     background-color: rgb(155, 111, 203);
 }
 
-.campaign-settings h1 {
+.campaign-settings .title {
     color: rgb(255, 216, 97);
     margin: 0;
+}
+
+.settings-box h1 {
+    margin: 10px;
 }
 
 .campaign-settings .players-container {
@@ -71,9 +73,44 @@
     
 }
 
+.campaign-settings .tagButton {
+    margin-top: 10px;
+    background-color: #201a25;
+    color: white;
+}
+
 .campaign-settings .tags {
     display: flex;
     flex-wrap: wrap;
+}
+
+div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0 .newTag {
+    display: flex;
+    align-items: center;
+}
+
+div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0 .addNewTag {
+    background-color: #201a25;
+    border-radius: 5px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin: 15px;
+    padding: 10px;
+}
+
+div.MuiDialog-root.MuiModal-root.css-126xj0f .newTag button {
+    background-color: #38323e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.MuiDialog-root.MuiModal-root.css-126xj0f .tagContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 @media (max-width: 770px) {

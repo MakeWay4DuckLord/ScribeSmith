@@ -11,7 +11,7 @@ import Dialog, { DialogProps } from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-
+import TextField from '@mui/material/TextField';
 
 export default function CampaignSettings() {
     //used for tag pop up container 
@@ -21,6 +21,11 @@ export default function CampaignSettings() {
     const [players, setPlayers] = useState([]);
     const [error, setError] = useState(null);
     const [selectedUsers, setSelectedUsers] = useState([]);
+    const [currentTags, setCurrentTags] = useState([]);
+    const [tempTagsToDelete, setTempTagsToDelete] = useState([]);
+    const [isNewTagOpen, setIsNewTagOpen] = useState(false);
+    const [newTag, setNewTag] = useState(null);
+
     const { campaignId }= useParams();
     const navigate = useNavigate();
 
@@ -36,6 +41,7 @@ export default function CampaignSettings() {
                     Promise.all( //wait for all the promises from the api calls to resolve
                         campaign.userIds.map(userId => api.getUser(userId))).then(userArr => {
                         setPlayers(userArr);
+                        setCurrentTags(campaign.tags.filter(tag => tag !== null));
                     }).catch(err => {
                         setError(true);
                     });
@@ -64,6 +70,29 @@ export default function CampaignSettings() {
         setSelectedUsers(updatedSelectedUsers);
     }
 
+    const handleDeleteTagClick = (tagContent) => {
+        let updatedToDeleteTags = []
+        if(tempTagsToDelete.includes(tagContent)) { //tag wil be deleted
+            updatedToDeleteTags = tempTagsToDelete.filter(tag => tag !== tagContent);
+        } else { //undo button is pressed
+            updatedToDeleteTags = [...tempTagsToDelete, tagContent];
+        }
+        setTempTagsToDelete(updatedToDeleteTags);
+    }
+
+    const handleNewTagTextChange = (event) => {
+        setNewTag(event.target.value);
+    }
+
+    const addNewTag = () => {
+        if(newTag !== "") {
+            const updatedCurrentTags = [...currentTags, newTag];
+            setCurrentTags(updatedCurrentTags);
+        }
+        
+        setIsNewTagOpen(false);
+    }
+
     //used for campaign tag pop up
     const handleClickOpen = () => {
         setOpen(true);
@@ -71,13 +100,18 @@ export default function CampaignSettings() {
 
     const handleClose = () => {
         setOpen(false);
+
+        //delete all of the tags that the user selected
+        
+        const updatedCurrentTags = currentTags.filter(tag => !tempTagsToDelete.includes(tag));
+        setCurrentTags(updatedCurrentTags);
     };
     
     return (
         <>
             <div className="campaign-settings">
                 <main>
-                    <h1>CAMPAIGN SETTINGS</h1>
+                    <h1 className="title">CAMPAIGN SETTINGS</h1>
                     <div className="settings-box">
                         <Form method="post" action={`/campaigns/${campaignId}/settings`} encType="multipart/form-data">
                             <h1>{campaign && campaign.name}</h1>
@@ -102,18 +136,20 @@ export default function CampaignSettings() {
                                             :
                                             <FaTrash className="icon" onClick={() => handleDeleteUserClick(player.userId)} />}
                                     </div>
-                                ))}                              
+                                ))}              
                             </div>
 
 
                             {/* Tags */}
-                            <Button onClick={handleClickOpen}>Edit Campaign Tags</Button>
+                            <Button className="tagButton" onClick={handleClickOpen}>Edit Campaign Tags</Button>
                             <Dialog 
                                 onClose={handleClose}
                                 open={open}
                                 PaperProps={{
                                     style: {
-                                      backgroundColor: '#c0b5cb'
+                                      backgroundColor: '#c0b5cb',
+                                      width: "40%",
+                                      textAlign: "center"
                                     },
                                     scroll: "paper"
                                   }}>
@@ -122,19 +158,38 @@ export default function CampaignSettings() {
                                 </DialogTitle>
                                 <DialogContent>
                                 <DialogContentText>
-                                    {campaign && campaign.tags.map((tag, index) => (
-                                        <Tag content={tag} key={index}/>
-                                    ))}
+                                    
+                                        {campaign && currentTags.map((tag, index) => (
+                                            <div className="tagContainer">
+                                                <Tag content={tag} key={index}/>
+                                                {tempTagsToDelete.includes(tag) ? 
+                                                    <FaUndo className="icon" onClick={() => handleDeleteTagClick(tag)} /> 
+                                                    :
+                                                    <FaTrash className="icon" onClick={() => handleDeleteTagClick(tag)} />
+                                                }
+                                            </div>  
+                                        ))}
+                                        <button 
+                                            className="addNewTag"
+                                            type="button"
+                                            onClick={() => setIsNewTagOpen(isNewTagOpen ? false : true)}>
+                                                Add New Tag
+                                        </button>    
+                                        {isNewTagOpen ? 
+                                            <div className="newTag">
+                                                <TextField id="standard-basic" label="Tag Name" variant="standard" onChange={handleNewTagTextChange} />
+                                                <button type="button" onClick={addNewTag}>Add</button>
+                                            </div>
+                                            :
+                                            <></>
+                                        }         
+                                        
                                 </DialogContentText>
                                 </DialogContent>
                             </Dialog>
 
-                            <label htmlFor="tags">tags:</label>
-                            <div id="tags">
-                                {campaign && campaign.tags.map((tag, index) => (
-                                    <Tag content={tag} key={index}/>
-                                ))}
-                            </div>
+                            <input type="hidden" name="userIdsToRemove" value={JSON.stringify(selectedUsers)} />
+                            <input type="hidden" name="tags" value={JSON.stringify(currentTags)} />
 
                             <input type="submit" value="Save" />
                             

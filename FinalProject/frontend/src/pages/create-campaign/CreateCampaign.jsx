@@ -48,7 +48,7 @@ export default function CreateCampaign() {
                                 open={true}
                                 PaperProps={{
                                     style: {
-                                      backgroundColor: '#c0b5cb',
+                                      backgroundColor: 'rgb(155, 111, 203)',
                                       color: "white",
                                       textAlign: "center"
                                     },

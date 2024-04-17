@@ -264,7 +264,10 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
 
     CampaignDAO.getCampaignById(campaignId).then(campaign => {
         if (campaign) {
-            const filePath = path.join(__dirname, '..', '..', campaign.banner);
+            if(!campaign.banner) {
+                res.json({message: "No banner for this user"});
+            } else {
+                const filePath = path.join(__dirname, '..', '..', campaign.banner);
                 fs.readFile(filePath, 'utf-8', (err) => {
                     if (err) {
                         // File doesn't exist or is not accessible
@@ -274,6 +277,8 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
                         res.sendFile(filePath);
                     }
                 });
+            }
+            
         } else {
             res.status(404).json({ "error": "Campaign not found" });
         }
