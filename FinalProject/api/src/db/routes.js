@@ -185,30 +185,29 @@ router.put('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
     const userId = req.params.userId;
     //const campaign = Object.values(campaigns).find(campaign => campaign.joinCode == joinCode);
 
-    // CampaignDAO.getCampaignByJoinCode(joinCode).then(campaign => {
-    //     if (!campaign) {
-    //         res.status(404).json({ "error": "Campaign not found" });
-    //         return;
-    //     }
-    //     // ????
-    //     CampaignDAO.joinUserToCampaign(userId, campaign.id).then((result) => {
-    //         res.status(200).json(result);
-    //     }).catch(err => {
-
-    //         console.log("error code", err.code, "error message", err.message);
-    //         res.status(err.code).json({ error: err.message });
-    //         return;
-    //     });
-    // });
-
-
-    CampaignDAO.joinUserToCampaign(userId, campaign.id).then((result) => {
-        res.status(200).json(result);
-    }).catch(err => {
-        console.log("error code", err.code, "error message", err.message);
-        res.status(err.code).json({ error: err.message });
-        return;
+    CampaignDAO.getCampaignByJoinCode(joinCode).then(campaign => {
+        if (!campaign) {
+            res.status(404).json({ "error": "Campaign not found" });
+            return;
+        }
+        // ????
+        CampaignDAO.joinUserToCampaign(userId, campaign.id).then((result) => {
+            res.status(200).json(result);
+        }).catch(err => {
+            console.log("error code", err.code, "error message", err.message);
+            res.status(err.code).json({ error: err.message });
+            return;
+        });
     });
+
+
+    // CampaignDAO.joinUserToCampaign(userId, campaign.id).then((result) => {
+    //     res.status(200).json(result);
+    // }).catch(err => {
+    //     console.log("error code", err.code, "error message", err.message);
+    //     res.status(err.code).json({ error: err.message });
+    //     return;
+    // });
 
 });
 
