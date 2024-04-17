@@ -77,6 +77,7 @@
     margin-top: 10px;
     background-color: #201a25;
     color: white;
+    border: white 1px solid;
 }
 
 .campaign-settings .tags {
@@ -113,14 +114,40 @@ div.MuiDialog-root.MuiModal-root.css-126xj0f .newTag button {
     justify-content: space-between;
 }
 
+.campaign-settings .deleteButton {
+    background-color: #bd3939;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    border-style: none;
+    width: 100%;
+    margin-top: 20px;
+}
+
+div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0  .cancel, div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0 .confirmDelete {
+    border-radius: 5px;
+    padding: 10px;
+    border-style: none;
+    margin: 20px 10px;
+}
+
+div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0  .cancel {
+    background-color: #626262;
+}
+
+div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0 .confirmDelete {
+    background-color: #bd3939;
+    color: white;
+}
+
+
 @media (max-width: 770px) {
     .campaign-settings h1 {
         font-size: 40px;
-        top: 29%;
-        left: 18%;
+        text-align: center;
     }
 
-    .campaign-settings form {
+    .campaign-settings main {
         width: 100%;
     }
     
@@ -139,7 +166,7 @@ div.MuiDialog-root.MuiModal-root.css-126xj0f .newTag button {
         padding: 0;
     }
 
-    .campaign-settings h1 {
+    .campaign-settings title {
         font-size: 30px;
         position: inherit;
         margin-bottom: 15px;

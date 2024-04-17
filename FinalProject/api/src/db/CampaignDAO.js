@@ -117,6 +117,7 @@ function updateCampaign(campaign, userId) {
                 return campaign;
             }
         }).then((campaign) => {
+            console.log("CAMPAIGN!!!", campaign)
             return db.query(`UPDATE campaign
             SET cpn_description=?, cpn_banner=?
             WHERE cpn_id=?;`, [campaign.description, campaign.banner, campaign.id]).then(() => {

@@ -15,7 +15,9 @@ import TextField from '@mui/material/TextField';
 
 export default function CampaignSettings() {
     //used for tag pop up container 
-    const [open, setOpen] = useState(false);
+    const [tagOpen, setTagOpen] = useState(false);
+
+    const [deleteCampaignOpen, setDeleteCampaignOpen] = useState(false);
 
     const [campaign, setCampaign] = useState(null);
     const [players, setPlayers] = useState([]);
@@ -94,18 +96,32 @@ export default function CampaignSettings() {
     }
 
     //used for campaign tag pop up
-    const handleClickOpen = () => {
-        setOpen(true);
+    const handleClickTagOpen = () => {
+        setTagOpen(true);
     };
 
-    const handleClose = () => {
-        setOpen(false);
+    const handleTagClose = () => {
+        setTagOpen(false);
 
         //delete all of the tags that the user selected
         
         const updatedCurrentTags = currentTags.filter(tag => !tempTagsToDelete.includes(tag));
         setCurrentTags(updatedCurrentTags);
     };
+
+    const handleDeleteCampaignOpen = () => {
+        setDeleteCampaignOpen(true);
+    }
+
+    const handleDeleteCampaignClose = () => {
+        setDeleteCampaignOpen(false);
+    }
+
+    const handleDeleteCampaignClick = () => {
+        api.deleteCampaign(campaignId).then(() => {
+            navigate("/");
+        });
+    }
     
     return (
         <>
@@ -123,7 +139,7 @@ export default function CampaignSettings() {
                             <textarea name="description" rows="3" defaultValue={campaign && campaign.description} required></textarea>
 
                             <label htmlFor="banner">Banner:</label>
-                            <input type="file" name="img-upload" id="img-upload-input" />
+                            <input type="file" name="image" accept="image/*" id="img-upload-input" />
                             
                             {/* Players */}
                             <label htmlFor="players">Players:</label>
@@ -141,14 +157,13 @@ export default function CampaignSettings() {
 
 
                             {/* Tags */}
-                            <Button className="tagButton" onClick={handleClickOpen}>Edit Campaign Tags</Button>
+                            <Button className="tagButton" onClick={handleClickTagOpen}>Edit Campaign Tags</Button>
                             <Dialog 
-                                onClose={handleClose}
-                                open={open}
+                                onClose={handleTagClose}
+                                open={tagOpen}
                                 PaperProps={{
                                     style: {
                                       backgroundColor: '#c0b5cb',
-                                      width: "40%",
                                       textAlign: "center"
                                     },
                                     scroll: "paper"
@@ -192,6 +207,29 @@ export default function CampaignSettings() {
                             <input type="hidden" name="tags" value={JSON.stringify(currentTags)} />
 
                             <input type="submit" value="Save" />
+
+                            {/*Delete Campaign Functionality */}
+                            <button type="button" className="deleteButton" onClick={(handleDeleteCampaignOpen)}>Delete Campaign</button>
+                            <Dialog 
+                                onClose={handleDeleteCampaignClose}
+                                open={deleteCampaignOpen}
+                                PaperProps={{
+                                    style: {
+                                      backgroundColor: '#c0b5cb',
+                                      textAlign: "center"
+                                    },
+                                  }}>
+                                <DialogTitle>
+                                    Are you sure you want to delete {campaign && campaign.name}?
+                                </DialogTitle>
+                                <DialogContent>
+                                <DialogContentText>
+                                    <button type="button" className="cancel" onClick={handleDeleteCampaignClose}>No, Cancel</button>
+                                    <button type="button" className="confirmDelete"  onClick={handleDeleteCampaignClick}>Yes, Delete Campaign</button>
+                                </DialogContentText>
+                                </DialogContent>
+                            </Dialog>
+
                             
                         </Form>
                     </div>

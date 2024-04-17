@@ -311,29 +311,27 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
 
 // update cpn description, tags, image
 router.put('/campaigns/:campaignId/settings', TokenMiddleware, upload, (req, res) => {
-    console.log("campaign settings put received", req.body);
-    // DUMMY DATA!
-    // const fakeCampaign = {
-    //     "id": req.params.campaignId,
-    //     "userIdsToRemove": [3],
-    //     "name" : "new name",
-    //     "banner": "buh",
-    //     "description": "This is some dummy data that needs to be removed from backend",
-    //     //"joinCode": "1ABC3",
-    //     "tags": ["session1", "session2", "session3"]
-    // }
+    const campaignBanner = req.file && req.file.path ? req.file.path : null;
+
     const campaign = {
         id: req.params.campaignId,
-        userIdsToRemove: req.body.userIdsToRemove,
+        userIdsToRemove: JSON.parse(req.body.userIdsToRemove),
         // name: req.body.name,
-        banner: req.body.banner,
+        banner: campaignBanner,
         description: req.body.description,
         // joinCode: req.body.joinCode,
-        tags: req.body.tags
+        tags: JSON.parse(req.body.tags)
     }
-    CampaignDAO.updateCampaign(campaign, req.user.userId).then(() => {
-        res.json({"message": "success"});
-    });
+
+    CampaignDAO.updateCampaign(campaign, req.user.userId)
+        .then(() => {
+            res.json({"message": "success"});
+        })
+        .catch(err => {
+            // Handle the error here
+            console.error("Error updating campaign:", err);
+            res.status(500).json({"error": "An error occurred while updating the campaign."});
+        });
 });
 
 // //update campaign description
