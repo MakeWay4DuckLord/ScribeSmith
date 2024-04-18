@@ -86,8 +86,6 @@ function getCampaignByJoinCode(joinCode) {
 }
 
 function joinUserToCampaign(userId, campaignId) {
-    // DO WE NEED TO STOP DMS FROM JOINING THEIR OWN CAMPAIGNS???
-    // not doing that rn because difficult... but like.. TODO
     return new Promise((resolve, reject) => {
 
         db.query('SELECT * FROM campaign WHERE cpn_id=?;', [campaignId]).then((result) => {
@@ -95,17 +93,23 @@ function joinUserToCampaign(userId, campaignId) {
                 reject({ code: 404, message: "Campaign not found." });
             } else if (result.results[0].cpn_owner_id == userId) {
                 reject({ code: 400, message: "You are the owner of this campaign." });
+            } else {
+                db.query('INSERT INTO campaign_user VALUES (?, ?);', [campaignId, userId]).then(() => {
+                    resolve({ message: "success" });
+                }).catch(err => {
+                    if (err.code == 'ER_DUP_ENTRY') {
+                        reject({ code: 400, message: "You have already joined this campaign." });
+                    } else {
+                        reject({ code: err.code, message: err.message });
+                    }
+                });
             }
-        }).then(() => {
-            db.query('INSERT INTO campaign_user VALUES (?, ?);', [campaignId, userId]).then(() => {
-                resolve({ message: "success" });
-            }).catch(err => {
-                if (err.code == 'ER_DUP_ENTRY') {
-                    reject({ code: 400, message: "You have already joined this campaign." });
-                } else {
-                    reject({ code: err.code, message: err.message });
-                }
-            });
+        }).catch(err => {
+            if (err.code == 'ER_DUP_ENTRY') {
+                reject({ code: 400, message: "You have already joined this campaign." });
+            } else {
+                reject({ code: err.code, message: err.message });
+            }
         });
     });
 }
