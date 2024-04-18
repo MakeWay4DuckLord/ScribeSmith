@@ -101,13 +101,13 @@ function joinUserToCampaign(userId, campaignId) {
                 resolve({ message: "success" });
             }).catch(err => {
                 if (err.code == 'ER_DUP_ENTRY') {
-                    reject({code: 400, message: "You have already joined this campaign."});
+                    reject({ code: 400, message: "You have already joined this campaign." });
                 } else {
-                    reject({code: err.code, message: err.message});
+                    reject({ code: err.code, message: err.message });
                 }
             });
         });
-    }) ;
+    });
 }
 
 function createCampaign(campaign) {
@@ -119,9 +119,9 @@ function createCampaign(campaign) {
                 });
             }).catch(err => {
                 if (err.code == 'ER_DUP_ENTRY') {
-                    reject({code: 400, message: "Join code already in use. Please try again."});
+                    reject({ code: 400, message: "Join code already in use. Please try again." });
                 } else {
-                    reject({code: err.code, message: err.message});
+                    reject({ code: err.code, message: err.message });
                 }
             });
     });
@@ -139,27 +139,36 @@ function updateCampaign(campaign, userId) {
                 return campaign;
             }
         }).then((campaign) => {
-            console.log("CAMPAIGN!!!", campaign)
-            return db.query(`UPDATE campaign
-            SET cpn_description=?, cpn_banner=?
-            WHERE cpn_id=?;`, [campaign.description, campaign.banner, campaign.id]).then(() => {
-                return campaign;
-            })
+            console.log("editing time, banner is", campaign.banner);
+            if (campaign.banner != null) {
+                console.log("we have a banner");
+                return db.query(`UPDATE campaign
+                SET cpn_description=?, cpn_banner=?
+                WHERE cpn_id=?;`, [campaign.description, campaign.banner, campaign.id]).then(() => {
+                    return campaign;
+                });
+            } else {
+                console.log("bannerless");
+                return db.query(`UPDATE campaign
+                SET cpn_description=? WHERE cpn_id=?;`, [campaign.description, campaign.id]).then(() => {
+                    return campaign;
+                });
+            }
         }).then((campaign) => {
-            return db.query('DELETE FROM campaign_tag WHERE cpt_cpn_id=?;', [campaign.id]).then(({results}) => {
+            return db.query('DELETE FROM campaign_tag WHERE cpt_cpn_id=?;', [campaign.id]).then(({ results }) => {
                 return campaign;
             });
         }).then((campaign) => {
             if (campaign.tags.length > 0) {
                 // need to promise.all to make sure all tags are in the tags table
                 const tagPromises = [];
-    
+
                 // for each tag
                 campaign.tags.forEach(tag => {
                     // this array will resolve to an array of TAG IDs
                     tagPromises.push(getOrInsertTagId(tag));
                 });
-    
+
                 return Promise.all(tagPromises).then(tagIds => {
                     console.log("tag promises resolved, tag ids", tagIds);
                     return addCampaignTags(campaign, tagIds).then(() => {
@@ -173,7 +182,7 @@ function updateCampaign(campaign, userId) {
             console.log("deleting users from", campaign);
             if (campaign.userIdsToRemove && campaign.userIdsToRemove.length > 0) {
                 console.log("querying!");
-                return db.query('DELETE FROM campaign_user WHERE cpu_usr_id IN (?);', [campaign.userIdsToRemove]).then(({results}) => {
+                return db.query('DELETE FROM campaign_user WHERE cpu_usr_id IN (?);', [campaign.userIdsToRemove]).then(({ results }) => {
                     console.log("query complete");
                     return campaign;
                 }).catch(err => {
@@ -191,13 +200,6 @@ function updateCampaign(campaign, userId) {
 }
 
 function deleteCampaign(campaignId, userId) {
-    // CHECK AUTHENTICATION
-    // delete all note-tag joins
-    // delete all note-user joins
-    // delete all notes
-    // delete all campaign-user joins
-    // delete all campaign-tag joins
-    // delete campaign
     return new Promise((resolve, reject) => {
         db.query('SELECT * FROM campaign WHERE cpn_id=?;', [campaignId]).then((result) => {
             if (result.results.length == 0) {
@@ -247,7 +249,7 @@ function deleteCampaign(campaignId, userId) {
             resolve(campaignId);
         })
     });
-    
+
 }
 
 module.exports = {
