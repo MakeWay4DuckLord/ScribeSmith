@@ -1,27 +1,40 @@
+/*
+a lot of this is commented out because adding MUI components broke it
+kept here for reference while styling using the sx prop
+*/
+
 .noteBrowser {
-    display: grid;
-    grid-template-columns: 50% 50%;
+    display: flex;
     overflow-y: hidden;
     height: 90%;
 }
 
-.noteBrowser .tagList {
+/* .noteBrowser .tagList {
     display: flex;
     align-items: center;
+} */
+
+
+.noteBrowser .note-container {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.noteBrowser aside {
+/* .noteBrowser aside {
     overflow-y: scroll;
     padding: 20px;
-}
+} */
 
-.noteBrowser h1 {
+/* .noteBrowser #noteBrowserTitle {
     font-size: 35px;
     text-align: center;
     margin: 0 0 20px 0;
-}
+} */
 
-.noteBrowser search {
+/* .noteBrowser #browserSearch {
     display: flex;
     background-color: white;
     border-radius: 5px;
@@ -30,28 +43,29 @@
     padding: 5px;
     margin-bottom: 10px;
     color: black;
-}
+} */
 
-.noteBrowser #search-bar {
+/* .noteBrowser #search-bar {
     color: black;
-}
+} */
 
-.noteBrowser input:focus + search {
+/* .noteBrowser input:focus + search {
     outline: black 1px solid;
-}
+} */
 
-.noteBrowser input {
+/* .noteBrowser input {
     width: 100%;
     font-size: 15px;
     padding: 5px
-}
+} */
 
-.noteBrowser input:focus {
+/* .noteBrowser input:focus {
     outline: none;
-}
+} */
 
-.noteBrowser .searchIcon {
+/* .noteBrowser .searchIcon {
     font-size: 30px;
     z-index: 1;
     color: black;
-}
+} */
+

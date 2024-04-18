@@ -4,13 +4,6 @@ import { Editor } from '@tinymce/tinymce-react';
 
 const SKINS_PATH = '/src/components/TextEditor/scribesmith-dark/skins/';
 
-/** TODO
- * - tags
- * - dynamic content
- * - saving notes
- * - sorting out file uploads
- */
-
 export default function TextEditor({content, readOnly, editorCallback}) {
 
     const editorRef = useRef(null);
@@ -30,7 +23,7 @@ export default function TextEditor({content, readOnly, editorCallback}) {
                 }}
                 initialValue={content}
                 init={{
-                    height: 200,
+                    height: 350,
                     menubar: false,
                     plugins: [
                         'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
