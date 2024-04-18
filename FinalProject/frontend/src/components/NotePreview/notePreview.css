@@ -34,6 +34,7 @@
 
 .notePreviewComponent .tagContainer {
     display: flex;
+    overflow-x: scroll;
 }
 
 .notePreviewComponent .icon {
