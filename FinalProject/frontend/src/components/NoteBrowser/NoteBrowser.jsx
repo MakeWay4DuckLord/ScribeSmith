@@ -122,6 +122,8 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
             color: 'white', fontFamily: 'Inter,system-ui,Avenir,Helvetica,Arial,sans-serif',
             alignContent: 'center',
             padding: '20px',
+            overflowY: 'scroll'
+
         }}>
             <h1>{title}</h1>
             <Box sx={{
@@ -139,15 +141,18 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
                         fontSize: '15px',
                         borderRadius: '10px',
                     }}
+                    fullWidth='true'
                 />
 
             </Box>
-            <Container class='tagList' sx={{
+            <Box sx={{
+                display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
-                maxHeight: '100px',
+                alignItems: 'baseline',
+                maxWidth: drawerWidth,
                 overflowY: 'scroll',
-
+                minHeight: '50px',
+                maxHeight: '75px'
             }}>
                 {campaignTags.map(tag => (
                     //this style thing is not ideal, i bet React could do something better
@@ -160,8 +165,8 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
                         <Tag content={tag} />
                     </div>
                 ))}
-                {/* <FaCirclePlus className='addTagIcon' /> */}
-            </Container>
+                {/* <FaCirclePlus className='addTagIcon' fontSize={'large'} onClick={() => setViewTags(true)}/> */}
+            </Box>
             <div className='note-container'>
                 {filteredNotes.map(note => (
                     <div onClick={() => { updateNote(note) }} key={note.id}>
@@ -194,6 +199,8 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
                             px: 2,
                             py: 4,
                             height: 'calc(100% - 60px)',
+                            maxWidth: drawerWidth,
+                            overflow: 'hidden',
                         }
                     }}
                     children={drawerContents} />
@@ -208,6 +215,8 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
                             // marginTop: '60px',
                             height: 'calc(100% - 60px)',
                             zIndex: 98, //just below header
+                            maxWidth: drawerWidth,
+                            overflow: 'hidden',
                         }
                     }}
                     children={drawerContents}
@@ -253,6 +262,9 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
                     </CardActions>
                 </Card>
             </Backdrop>
+
+            
+
         </div>
     );
 }

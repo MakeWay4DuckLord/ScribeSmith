@@ -9,8 +9,8 @@ import {
     List, ListItemButton, ListItem, ListItemAvatar, ListItemText, ListItemIcon, Avatar,
     Checkbox, TextField, Divider, Typography,
     SpeedDial, SpeedDialAction, SpeedDialIcon,
+    Dialog, DialogContent, DialogTitle, DialogContentText
 } from '@mui/material';
-import { FaTrash } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../client/APIClient";
@@ -18,6 +18,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import SaveIcon from '@mui/icons-material/Save';
 import SellIcon from '@mui/icons-material/Sell';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import { FaTrash, FaUndo } from "react-icons/fa";
 
 import './note.css'
 
@@ -44,8 +45,13 @@ export default function Note({ note, saveCallback, newNoteCallback }) {
     const [shareOpen, setShareOpen] = useState(false);
 
     const [tagsOpen, setTagsOpen] = useState(false);
-    const [newTag, setNewTag] = useState("");
+    const [newTag, setNewTag] = useState(null);
     const [tags, setTags] = useState([]);
+
+
+    const [tempTagsToDelete, setTempTagsToDelete] = useState([]);
+    const [isNewTagOpen, setIsNewTagOpen] = useState(false);
+
 
     const [renaming, setRenaming] = useState(false);
 
@@ -55,27 +61,30 @@ export default function Note({ note, saveCallback, newNoteCallback }) {
     const [icon, setIcon] = useState(null);
 
     const addTag = () => {
-        if (tags.includes(newTag)) {
-            return;
-        }
         setTags([...tags, newTag]);
         setNewTag("");
     }
-
-    const toggleTag = (tag) => () => {
-        const currentIndex = tags.indexOf(tag);
-        const newTags = [...tags];
-
-        if (currentIndex === -1) {
-            newTags.push(tag);
-        } else {
-            newTags.splice(currentIndex, 1);
+    
+    const addNewTag = () => {
+        setIsNewTagOpen(false);
+        if (tags.includes(newTag)) {
+            return;
         }
+        if(newTag !== "") {
+            const updatedTags = [...tags, newTag];
+            setTags(updatedTags);
+        }
+    }
 
-        setTags(newTags);
-        // note.sharedWith = newChecked);
-        // user.shared = !user.shared;
-    };
+    const handleDeleteTagClick = (tagContent) => {
+        let updatedToDeleteTags = []
+        if(tempTagsToDelete.includes(tagContent)) { //tag wil be deleted
+            updatedToDeleteTags = tempTagsToDelete.filter(tag => tag !== tagContent);
+        } else { //undo button is pressed
+            updatedToDeleteTags = [...tempTagsToDelete, tagContent];
+        }
+        setTempTagsToDelete(updatedToDeleteTags);
+    }
 
     //TODO populate sharedWith from the note
 
@@ -223,27 +232,77 @@ export default function Note({ note, saveCallback, newNoteCallback }) {
                     <Button variant="contained" disabled={!isOwner} onClick={() => { setShareOpen(true) }}>Share</Button>
                     <Button variant="contained" disabled={!isOwner} onClick={save}>Save</Button> */}
                 {/* </CardActions> */}
-            <SpeedDial
-                ariaLabel="Note SpeedDial"
-                // sx={{ position: 'absolute', bottom: 16, right: 16 }}
-                icon={<SpeedDialIcon />}
-                hidden={!isOwner}
-                direction="left"
-            >
-                {actions.map((action) => (
-                    <SpeedDialAction
-                        key={action.name}
-                        icon={action.icon}
-                        tooltipTitle={action.name}
-                        onClick={action.handler}
-                    />
-                ))}
-            </SpeedDial>
+                <SpeedDial
+                    ariaLabel="Note SpeedDial"
+                    // sx={{ position: 'absolute', bottom: 16, right: 16 }}
+                    icon={<SpeedDialIcon />}
+                    hidden={!isOwner}
+                    direction="left"
+                >
+                    {actions.map((action) => (
+                        <SpeedDialAction
+                            key={action.name}
+                            icon={action.icon}
+                            tooltipTitle={action.name}
+                            onClick={action.handler}
+                        />
+                    ))}
+                </SpeedDial>
             </Card>
 
 
+            {/* <Button className="tagButton" onClick={handleClickTagOpen}>Edit Campaign Tags</Button> */}
+            <Dialog
+                onClose={() => {        
+                    setTagsOpen(false);
+                    //delete all of the tags that the user selected
+                    
+                    const updatedTags = tags.filter(tag => !tempTagsToDelete.includes(tag));
+                    setTags(updatedTags);}}
+                open={tagsOpen}
+                PaperProps={{
+                    style: {
+                        backgroundColor: '#c0b5cb',
+                        textAlign: "center"
+                    },
+                    scroll: "paper"
+                }}>
+                <DialogTitle>
+                    {"Edit Campaign Tags"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
 
-            <Backdrop open={tagsOpen} sx={{ color: 'white', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+                        {tags.map((tag, index) => (
+                            <div className="tagContainer">
+                                <Tag content={tag} key={index} />
+                                {tempTagsToDelete.includes(tag) ?
+                                    <FaUndo className="icon" onClick={() => handleDeleteTagClick(tag)} />
+                                    :
+                                    <FaTrash className="icon" onClick={() => handleDeleteTagClick(tag)} />
+                                }
+                            </div>
+                        ))}
+                        <button
+                            className="addNewTag"
+                            type="button"
+                            onClick={() => setIsNewTagOpen(isNewTagOpen ? false : true)}>
+                            Add New Tag
+                        </button>
+                        {isNewTagOpen ?
+                            <div className="newTag">
+                                <TextField id="standard-basic" label="Tag Name" variant="standard" onChange={(event) => {setNewTag(event.target.value)}} />
+                                <button type="button" onClick={addNewTag}>Add</button>
+                            </div>
+                            :
+                            <></>
+                        }
+
+                    </DialogContentText>
+                </DialogContent>
+            </Dialog>
+
+            {/* <Backdrop open={tagsOpen} sx={{ color: 'white', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
                 <Card sx={{
                     bgcolor: 'background.light',
                     color: 'white',
@@ -251,7 +310,6 @@ export default function Note({ note, saveCallback, newNoteCallback }) {
                     p: 4
                 }}>
                     <CardContent className='tags'>
-                        {/* <div name="tags" className="tagContainer"> */}
                         <List dense>
                             {tags.map(tag => {
                                 const labelId = `checkbox-list-label-${tag}`;
@@ -278,7 +336,7 @@ export default function Note({ note, saveCallback, newNoteCallback }) {
                         <Button onClick={() => setTagsOpen(false)} variant="outlined">Cancel</Button>
                     </CardActions>
                 </Card>
-            </Backdrop>
+            </Backdrop> */}
 
             <Backdrop sx={{ color: 'white', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={shareOpen}>
                 <Card sx={{
