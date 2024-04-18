@@ -41,13 +41,13 @@ router.post('/users/logout', (req, res) => {
 //Add a user
 router.post('/users', (req, res) => {
     let user = req.body;
-    if(!user.email || !user.firstName || !user.lastName || !user.password) {
-        res.status(404).json({error: "Please fill out all fields"});
+    if (!user.email || !user.firstName || !user.lastName || !user.password) {
+        res.status(404).json({ error: "Please fill out all fields" });
         return;
     }
 
     UserDAO.createUser(user).then(newUser => {
-        res.json({message: "Successfully created user."});
+        res.json({ message: "Successfully created user." });
     }).catch(err => {
         console.log(err);
         res.status(err.code).json({ error: err.message });
@@ -81,8 +81,8 @@ router.put('/users/:userId', TokenMiddleware, upload, (req, res) => {
 
 
     UserDAO.getUserById(userId).then(user => {
-        if(!user) {
-            res.status(409).json({"error": "User does not exist"});
+        if (!user) {
+            res.status(409).json({ "error": "User does not exist" });
             return;
         }
 
@@ -145,9 +145,9 @@ router.get('/users/:userId/icon', TokenMiddleware, (req, res) => {
 
     UserDAO.getUserById(userId).then(user => {
         if (user) {
-            if(!user.icon) {
-                res.json({message: "No icon for this user"});
-            } else { 
+            if (!user.icon) {
+                res.json({ message: "No icon for this user" });
+            } else {
                 const filePath = path.join(__dirname, '..', '..', user.icon);
                 fs.readFile(filePath, 'utf-8', (err) => {
                     if (err) {
@@ -194,22 +194,21 @@ router.put('/users/:userId/campaigns', TokenMiddleware, (req, res) => {
         CampaignDAO.joinUserToCampaign(userId, campaign.id).then((result) => {
             res.status(200).json(result);
         }).catch(err => {
+            console.log("error code", err.code, "error message", err.message);
             res.status(err.code).json({ error: err.message });
+            return;
         });
     });
-    
-    //check if a user is already in a campaign
-    // console.log(campaign["userIds"]);
-    // if (campaign["userIds"].includes(userId)) {
-    //     res.status(400).json({ "error": "You have already joined this campaign." });
+
+
+    // CampaignDAO.joinUserToCampaign(userId, campaign.id).then((result) => {
+    //     res.status(200).json(result);
+    // }).catch(err => {
+    //     console.log("error code", err.code, "error message", err.message);
+    //     res.status(err.code).json({ error: err.message });
     //     return;
-    // }
+    // });
 
-    // add userid to campaign list of userIds
-    //(campaigns[campaign.id]).userIds.push(userId);
-
-    // return success or failure response
-    
 });
 
 // TODO
@@ -264,7 +263,10 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
 
     CampaignDAO.getCampaignById(campaignId).then(campaign => {
         if (campaign) {
-            const filePath = path.join(__dirname, '..', '..', campaign.banner);
+            if (!campaign.banner) {
+                res.json({ message: "No banner for this user" });
+            } else {
+                const filePath = path.join(__dirname, '..', '..', campaign.banner);
                 fs.readFile(filePath, 'utf-8', (err) => {
                     if (err) {
                         // File doesn't exist or is not accessible
@@ -274,6 +276,8 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
                         res.sendFile(filePath);
                     }
                 });
+            }
+
         } else {
             res.status(404).json({ "error": "Campaign not found" });
         }
@@ -297,7 +301,7 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
 //     // }
 //     // campaign.userIds.splice(index, 1);
 
-    
+
 //     UserDAO.removeUserFromCampaign(req.params.userId, req.params.campaignId).then(() => {
 //         res.status(200).json({ "message": "success" });
 //     });
@@ -306,78 +310,29 @@ router.get('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
 
 // update cpn description, tags, image
 router.put('/campaigns/:campaignId/settings', TokenMiddleware, upload, (req, res) => {
-    console.log("campaign settings put received", req.body);
-    // DUMMY DATA!
-    // const fakeCampaign = {
-    //     "id": req.params.campaignId,
-    //     "userIdsToRemove": [3],
-    //     "name" : "new name",
-    //     "banner": "buh",
-    //     "description": "This is some dummy data that needs to be removed from backend",
-    //     //"joinCode": "1ABC3",
-    //     "tags": ["session1", "session2", "session3"]
-    // }
+    const campaignBanner = req.file && req.file.path ? req.file.path : null;
+
     const campaign = {
         id: req.params.campaignId,
-        userIdsToRemove: req.body.userIdsToRemove,
+        userIdsToRemove: JSON.parse(req.body.userIdsToRemove),
         // name: req.body.name,
-        banner: req.body.banner,
+        banner: campaignBanner,
         description: req.body.description,
         // joinCode: req.body.joinCode,
-        tags: req.body.tags
+        tags: JSON.parse(req.body.tags)
     }
-    CampaignDAO.updateCampaign(campaign, req.user.userId).then(() => {
-        res.json({"message": "success"});
-    });
+
+    CampaignDAO.updateCampaign(campaign, req.user.userId)
+        .then(() => {
+            res.json({ "message": "success" });
+        })
+        .catch(err => {
+            // Handle the error here
+            console.error("Error updating campaign:", err);
+            res.status(err.code).json({ error: err.message });
+        });
 });
 
-// //update campaign description
-// router.patch('/campaigns/:campaignId/description', TokenMiddleware, (req, res) => {
-//     const campaignId = parseInt(req.params.campaignId);
-//     const campaign = campaigns[campaignId];
-//     if (!campaign) {
-//         res.status(404).json({ "error": "Campaign not found" });
-//         return;
-//     }
-//     if (req.body.description == undefined || req.body.description == "") {
-//         res.status(400).json({ "error": "Invalid description" });
-//         return;
-//     }
-//     campaign.description = req.body.description;
-//     res.status(200).json({ "message": "success" });
-// });
-
-// //update campaign tags
-// router.patch('/campaigns/:campaignId/tags', TokenMiddleware, (req, res) => {
-//     const campaignId = parseInt(req.params.campaignId);
-//     const campaign = campaigns[campaignId];
-//     if (!campaign) {
-//         res.status(404).json({ "error": "Campaign not found" });
-//         return;
-//     }
-//     if (req.body.tags == undefined || !Array.isArray(req.body.tags)) {
-//         res.status(400).json({ "error": "Invalid tags list" });
-//         return;
-//     }
-//     campaign.tags = req.body.tags;
-//     res.status(200).json({ "message": "success" });
-// });
-
-// //update banner image
-// router.patch('/campaigns/:campaignId/banner', TokenMiddleware, (req, res) => {
-//     const campaignId = parseInt(req.params.campaignId);
-//     const campaign = campaigns[campaignId];
-//     if (!campaign) {
-//         res.status(404).json({ "error": "Campaign not found" });
-//         return;
-//     }
-//     if (req.body.banner == undefined || req.body.banner == "") {
-//         res.status(400).json({ "error": "Invalid banner image link" });
-//         return;
-//     }
-//     campaign.banner = req.body.banner;
-//     res.status(200).json({ "message": "success" });
-// });
 
 // //get VIEWABLE notes by campaign
 // router.get('/campaigns/:campaignId/notes', TokenMiddleware, (req, res) => {
@@ -415,7 +370,7 @@ router.delete('/campaigns/:campaignId', TokenMiddleware, (req, res) => {
     const userId = req.user.userId;
     const campaignId = req.params.campaignId;
     CampaignDAO.deleteCampaign(campaignId, userId).then(() => {
-        res.json({message: "success?"});
+        res.json({ message: "success?" });
     });
 });
 
@@ -432,7 +387,7 @@ router.get('/campaigns/:campaignId/notes/users/:userId', TokenMiddleware, (req, 
     const authorId = req.params.userId;
 
     console.log("getting", userId, authorId, campaignId);
-    
+
     NoteDAO.getViewableNotesByAuthorByCampaign(userId, authorId, campaignId).then(notes => {
         console.log("got", notes);
         res.json(notes);
@@ -452,7 +407,7 @@ router.post('/campaigns/:campaignId/notes', TokenMiddleware, (req, res) => {
     const note = req.body;
     note.ownerId = req.user.userId;
     note.campaignId = req.params.campaignId;
-    
+
     NoteDAO.createNote(note).then(newNote => {
         console.log(newNote);
         res.json(newNote);

@@ -7,7 +7,7 @@ export const campaignSettingsAction = async ({request}) => {
     try {
         console.log(campaignId);
         await api.updateCampaign(campaignId, data);
-        //return redirect('/');
+        return redirect('/');
     } catch(err) {
         return {error: err };
     }

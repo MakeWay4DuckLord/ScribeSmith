@@ -88,10 +88,26 @@ function getCampaignByJoinCode(joinCode) {
 function joinUserToCampaign(userId, campaignId) {
     // DO WE NEED TO STOP DMS FROM JOINING THEIR OWN CAMPAIGNS???
     // not doing that rn because difficult... but like.. TODO
-    return db.query('INSERT INTO campaign_user VALUES (?, ?);', [campaignId, userId]).then(() => {
-        return { message: "success" };
-    }
-    );
+    return new Promise((resolve, reject) => {
+
+        db.query('SELECT * FROM campaign WHERE cpn_id=?;', [campaignId]).then((result) => {
+            if (result.results.length == 0) {
+                reject({ code: 404, message: "Campaign not found." });
+            } else if (result.results[0].cpn_owner_id == userId) {
+                reject({ code: 400, message: "You are the owner of this campaign." });
+            }
+        }).then(() => {
+            db.query('INSERT INTO campaign_user VALUES (?, ?);', [campaignId, userId]).then(() => {
+                resolve({ message: "success" });
+            }).catch(err => {
+                if (err.code == 'ER_DUP_ENTRY') {
+                    reject({code: 400, message: "You have already joined this campaign."});
+                } else {
+                    reject({code: err.code, message: err.message});
+                }
+            });
+        });
+    }) ;
 }
 
 function createCampaign(campaign) {
@@ -101,6 +117,12 @@ function createCampaign(campaign) {
                 getCampaignById(results.insertId).then(campaign => {
                     resolve(campaign);
                 });
+            }).catch(err => {
+                if (err.code == 'ER_DUP_ENTRY') {
+                    reject({code: 400, message: "Join code already in use. Please try again."});
+                } else {
+                    reject({code: err.code, message: err.message});
+                }
             });
     });
 }
@@ -109,14 +131,15 @@ function updateCampaign(campaign, userId) {
     return new Promise((resolve, reject) => {
         db.query('SELECT * FROM campaign WHERE cpn_id=?;', [campaign.id]).then((result) => {
             if (result.results.length == 0) {
-                reject({ code: 404, message: "Note not found." });
+                reject({ code: 404, message: "Campaign not found." });
             } else if (result.results[0].cpn_owner_id != userId) {
-                reject({ code: 401, message: "You are not authorized to edit this note." });
+                reject({ code: 401, message: "You are not authorized to edit this campaign." });
             } else {
                 //return new Campaign(results[0])
                 return campaign;
             }
         }).then((campaign) => {
+            console.log("CAMPAIGN!!!", campaign)
             return db.query(`UPDATE campaign
             SET cpn_description=?, cpn_banner=?
             WHERE cpn_id=?;`, [campaign.description, campaign.banner, campaign.id]).then(() => {

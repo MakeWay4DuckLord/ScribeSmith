@@ -61,6 +61,10 @@
         font-size: 15px;
     }
 
+    .campaigns-page a {
+        width: 100%;
+    }
+
     .campaign-container {
         display: flex;
         flex-direction: column;
