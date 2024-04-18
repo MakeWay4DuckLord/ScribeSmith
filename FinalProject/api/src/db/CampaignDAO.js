@@ -105,11 +105,7 @@ function joinUserToCampaign(userId, campaignId) {
                 });
             }
         }).catch(err => {
-            if (err.code == 'ER_DUP_ENTRY') {
-                reject({ code: 400, message: "You have already joined this campaign." });
-            } else {
-                reject({ code: err.code, message: err.message });
-            }
+            reject({ code: err.code, message: err.message });
         });
     });
 }
