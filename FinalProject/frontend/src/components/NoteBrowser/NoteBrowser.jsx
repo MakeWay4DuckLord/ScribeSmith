@@ -22,7 +22,7 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
 
     const [createNoteDialogue, setCreateNoteDialogue] = useState(false);
 
-    const [browserOpen, setBrowserOpen] = useState(false);
+    const [browserOpen, setBrowserOpen] = useState(true);
 
 
     let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
