@@ -30,7 +30,7 @@ export default function TextEditor({content, readOnly, editorCallback}) {
                         'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
                         'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
                     ],
-                    toolbar: '| undo redo | blocks | ' +
+                    toolbar: ' fullscreen | undo redo | blocks | ' +
                         'bold italic forecolor | alignleft aligncenter ' +
                         'alignright alignjustify | bullist numlist outdent indent | ' +
                         'removeformat | image | help',

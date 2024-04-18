@@ -22,15 +22,16 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
 
     const [createNoteDialogue, setCreateNoteDialogue] = useState(false);
 
-    const [browserOpen, setBrowserOpen] = useState(false);
+    const [browserOpen, setBrowserOpen] = useState(true);
 
 
-
-    const drawerWidth = 450;
+    let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+    const drawerWidth = Math.min(vw - 100, 450);
 
     function updateNote(note) {
         // setOpenIndex(filteredNotes.indexOf(note));
         setOpenNote(note);
+        setBrowserOpen(false);
     }
 
     function tagOnClick(tag) {
@@ -119,9 +120,9 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
     const drawerContents = (
         <Box sx={{
             color: 'white', fontFamily: 'Inter,system-ui,Avenir,Helvetica,Arial,sans-serif',
-            alignContent: 'center',
             padding: '20px',
-            overflowY: 'scroll'
+            overflowY: 'scroll',
+            maxHeight: '100%'
 
         }}>
             <h1>{title}</h1>
@@ -195,6 +196,7 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
                     sx={{ display: { xs: 'block', md: 'none' } }}
                     PaperProps={{
                         sx: {
+                            display: 'block',
                             backgroundColor: 'background.main',
                             px: 2,
                             py: 4,
@@ -206,14 +208,17 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
                     children={drawerContents} />
                 <Drawer variant='permanent' sx={{
                     display: { xs: 'none', md: 'block' },
+                    height: 'fit-content'
                 }}
                     PaperProps={{
                         sx: {
+                            display: 'block',
                             backgroundColor: 'background.main',
                             px: 2,
                             py: 4,
-                            // marginTop: '60px',
+                            marginTop: '60px',
                             height: 'calc(100% - 60px)',
+                            // height: 'max-content',
                             zIndex: 98, //just below header
                             width: drawerWidth,
                             overflow: 'hidden',
@@ -239,7 +244,7 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
                 }}>
                     <CardContent>
                         <Typography>Enter a title for your new note:</Typography>
-                        <TextField id="new-note-title-field" placeholder="New Note"> </TextField>
+                        <TextField id="new-note-title-field" placeholder="New Note" sx={{color:'white'}}> </TextField>
                     </CardContent>
                     <CardActions>
                         <Button variant="contained" onClick={() => {

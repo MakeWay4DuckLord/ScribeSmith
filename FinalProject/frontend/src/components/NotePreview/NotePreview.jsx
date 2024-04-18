@@ -22,7 +22,7 @@ export default function NotePreview({noteId, ownerId, title, content, tags}) {
                 <h2>{title}</h2>
             </header>
             
-            <p dangerouslySetInnerHTML={{ __html: content }}></p>
+            <div className="notePreviewContent" dangerouslySetInnerHTML={{ __html: content }}></div>
             <div className="tagContainer">
                 {tags.map((tag, index) => (
                     <Tag key={index} content={tag}/>
