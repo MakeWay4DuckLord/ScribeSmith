@@ -20,7 +20,6 @@ export default function NotePreview({noteId, ownerId, title, content, tags}) {
             <header>
                 <Avatar className="icon" alt="User icon"  src={icon} />
                 <h2>{title}</h2>
-                <time>1hr ago</time>
             </header>
             
             <p dangerouslySetInnerHTML={{ __html: content }}></p>

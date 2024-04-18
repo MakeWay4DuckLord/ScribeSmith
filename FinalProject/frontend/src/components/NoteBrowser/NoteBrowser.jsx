@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom';
 import { SpeedDial, SpeedDialIcon, SpeedDialAction, Button, Box, IconButton, Container, Card, CardActions, CardContent, Backdrop, Typography, TextField, Drawer } from '@mui/material';
 
 import { GiBookshelf } from "react-icons/gi";
+import SearchIcon from '@mui/icons-material/Search';
 
 export default function NoteBrowser({ title, notes, campaignTags, saveCallback }) {
     const [openIndex, setOpenIndex] = useState(-1);
@@ -22,6 +23,8 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
     const [createNoteDialogue, setCreateNoteDialogue] = useState(false);
 
     const [browserOpen, setBrowserOpen] = useState(false);
+
+
 
     const drawerWidth = 450;
 
@@ -58,7 +61,7 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
     const DisplayNote = () => {
         if (openNote) {
             return (
-                <Note note={openNote} saveCallback={saveCallback} newNoteCallback={() => setCreateNoteDialogue(true)}/>
+                <Note note={openNote} saveCallback={saveCallback} newNoteCallback={() => setCreateNoteDialogue(true)} />
             )
         } else if (title == "My Notes") {
             return (
@@ -115,41 +118,50 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
     }, [notes, selectedTags, searchedTags, campaignTags]);
 
     const drawerContents = (
-        <Box sx={{color:'white', fontFamily: 'Inter,system-ui,Avenir,Helvetica,Arial,sans-serif',
-            alignContent: 'center'
+        <Box sx={{
+            color: 'white', fontFamily: 'Inter,system-ui,Avenir,Helvetica,Arial,sans-serif',
+            alignContent: 'center',
+            padding: '20px',
         }}>
-            {/* TODO styling in here */}
-            {/* <Typography variant="h3" sx={{margin: '0 0 20px 0', textAlign: 'center', fontSize: '35px'}}>{title}</Typography> */}
             <h1>{title}</h1>
             <Box sx={{
-                color:'white',
+                color: 'white',
                 w: 0.8,
-                alignContent: 'center',
-                padding: '5px',
                 marginBottom: '10px',
-                }}>
-                <TextField variant="filled" color='secondary' id="search-bar" placeholder='Search...' onChange={updateSearch} 
-                sx={{
-                    w: 1, 
-                    bgcolor: 'white',
-                    color: 'black',
-                    p:'5px',
+            }}>
+
+                {/* <SearchIcon fontSize='large'/> */}
+                <TextField color='primary' id="search-bar" placeholder='Search...' onChange={updateSearch}
+                    sx={{
+                        w: 1,
+                        bgcolor: 'white',
+                        color: 'black',
+                        fontSize: '15px',
+                        borderRadius: '10px',
                     }}
-                     />
-                <IoIosSearch className='searchIcon'style='width: '/>
+                />
+
             </Box>
-            <Box class='tagList' sx={{flexDirection: 'column', alignItems:'center'}}>
+            <Container class='tagList' sx={{
+                flexDirection: 'column',
+                alignItems: 'center',
+                maxHeight: '100px',
+                overflowY: 'scroll',
+
+            }}>
                 {campaignTags.map(tag => (
                     //this style thing is not ideal, i bet React could do something better
                     <div onClick={() => { tagOnClick(tag) }} key={campaignTags.indexOf(tag)} style={{
-                        backgroundColor: selectedTags.includes(tag) ? 'lightblue' : '', //placeholder, lightblue is kinda weird
+                        backgroundColor: selectedTags.includes(tag) ? 'lightblue' : '',
                         borderRadius: 5,
+                        padding: 5,
+                        width: 'fit-content'
                     }}>
                         <Tag content={tag} />
                     </div>
                 ))}
-                <FaCirclePlus className='addTagIcon' />
-            </Box>
+                {/* <FaCirclePlus className='addTagIcon' /> */}
+            </Container>
             <div className='note-container'>
                 {filteredNotes.map(note => (
                     <div onClick={() => { updateNote(note) }} key={note.id}>
@@ -181,6 +193,7 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
                             backgroundColor: 'background.main',
                             px: 2,
                             py: 4,
+                            height: 'calc(100% - 60px)',
                         }
                     }}
                     children={drawerContents} />
@@ -192,7 +205,7 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
                             backgroundColor: 'background.main',
                             px: 2,
                             py: 4,
-                            marginTop: '60px',
+                            // marginTop: '60px',
                             height: 'calc(100% - 60px)',
                             zIndex: 98, //just below header
                         }
@@ -207,19 +220,6 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
                     Open Note Browser
                 </Button>
                 <DisplayNote />
-                {/* <SpeedDial
-                    ariaLabel="SpeedDial basic example"
-                    sx={{ position: 'absolute', bottom: 16, right: 16 }}
-                    icon={<SpeedDialIcon />}
-                >
-                    {actions.map((action) => (
-                        <SpeedDialAction
-                            key={action.name}
-                            icon={action.icon}
-                            tooltipTitle={action.name}
-                        />
-                    ))}
-                </SpeedDial> */}
             </Box>
 
             <Backdrop open={createNoteDialogue} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
@@ -230,14 +230,12 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
                 }}>
                     <CardContent>
                         <Typography>Enter a title for your new note:</Typography>
-                        <TextField id="new-note-title-field" placeholder="New Note" onChange={(event) => setNewNoteTitle(event.target.value)}> </TextField>
+                        <TextField id="new-note-title-field" placeholder="New Note"> </TextField>
                     </CardContent>
                     <CardActions>
                         <Button variant="contained" onClick={() => {
                             let newTitle = document.querySelector("#new-note-title-field").value;
-                            // setTitle(newTitle);
-                            // setTags([]);
-                            // setSharedWith([]);
+
 
                             api.createNote(campaignId, newTitle, "", [], []).then(currentNote => {
                                 setOpenNote(currentNote)

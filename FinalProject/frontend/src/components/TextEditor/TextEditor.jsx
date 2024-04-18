@@ -23,7 +23,7 @@ export default function TextEditor({content, readOnly, editorCallback}) {
                 }}
                 initialValue={content}
                 init={{
-                    height: 200,
+                    height: 350,
                     menubar: false,
                     plugins: [
                         'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
