@@ -62,13 +62,13 @@ export default function Note({ note, saveCallback, newNoteCallback }) {
         setTags([...tags, newTag]);
         setNewTag("");
     }
-    
+
     const addNewTag = () => {
         setIsNewTagOpen(false);
         if (tags.includes(newTag)) {
             return;
         }
-        if(newTag !== "") {
+        if (newTag !== "") {
             const updatedTags = [...tags, newTag];
             setTags(updatedTags);
         }
@@ -76,7 +76,7 @@ export default function Note({ note, saveCallback, newNoteCallback }) {
 
     const handleDeleteTagClick = (tagContent) => {
         let updatedToDeleteTags = []
-        if(tempTagsToDelete.includes(tagContent)) { //tag wil be deleted
+        if (tempTagsToDelete.includes(tagContent)) { //tag wil be deleted
             updatedToDeleteTags = tempTagsToDelete.filter(tag => tag !== tagContent);
         } else { //undo button is pressed
             updatedToDeleteTags = [...tempTagsToDelete, tagContent];
@@ -162,29 +162,32 @@ export default function Note({ note, saveCallback, newNoteCallback }) {
 
                 if (note.userId == currentUser.userId) {
                     setIsOwner(true);
-                    editor.getBody().setAttribute('contenteditable', true);
+                    if (editor) {
+                        editor.getBody().setAttribute('contenteditable', true);
+                    }
                 } else {
-                    editor.getBody().setAttribute('contenteditable', false);
+                    if (editor) {
+                        editor.getBody().setAttribute('contenteditable', false);
+                    }
                     setIsOwner(false);
                 }
-
-                if (isOwner) {
-                    let newUsers = [];
-                    api.getCampaign(campaignId).then(cpn => {
-                        let userIds = [cpn.ownerId, ...cpn.userIds];
-                        for (let i = 0; i < userIds.length; i++) {
-                            if (userIds[i]) {
-                                api.getUser(userIds[i]).then(user => {
-                                    newUsers[i] = user;
-                                })
-                            }
-
-                        }
-                        setUsers(newUsers);
-                    });
-                }
+                api.getCampaign(campaignId).then(cpn => {
+                    if (cpn && !cpn.userIds.includes(null) && cpn.ownerId) {
+                        console.log('campaign', cpn);
+                        const userIds = [cpn.ownerId, ...cpn.userIds].filter(userId => userId != currentUser.userId);
+                        Promise.all(
+                            userIds.map(userId => userId && api.getUser(userId))
+                        ).then(newUsers => {
+                            console.log(newUsers)
+                            setUsers(newUsers);
+                        }).catch(err => {
+                            console.log('ERROR IN NOTE')
+                        })
+                    }
+                })
             }
         }).catch((error) => {
+            console.log(error);
             if (error.status == "401") {
                 navigate("/login");
             }
@@ -250,12 +253,13 @@ export default function Note({ note, saveCallback, newNoteCallback }) {
 
             {/* <Button className="tagButton" onClick={handleClickTagOpen}>Edit Campaign Tags</Button> */}
             <Dialog
-                onClose={() => {        
+                onClose={() => {
                     setTagsOpen(false);
                     //delete all of the tags that the user selected
-                    
+
                     const updatedTags = tags.filter(tag => !tempTagsToDelete.includes(tag));
-                    setTags(updatedTags);}}
+                    setTags(updatedTags);
+                }}
                 open={tagsOpen}
                 PaperProps={{
                     style: {
@@ -288,7 +292,7 @@ export default function Note({ note, saveCallback, newNoteCallback }) {
                         </button>
                         {isNewTagOpen ?
                             <div className="newTag">
-                                <TextField id="standard-basic" label="Tag Name" variant="standard" onChange={(event) => {setNewTag(event.target.value)}} />
+                                <TextField id="standard-basic" label="Tag Name" variant="standard" onChange={(event) => { setNewTag(event.target.value) }} />
                                 <button type="button" onClick={addNewTag}>Add</button>
                             </div>
                             :
