@@ -55,8 +55,6 @@ export default function Note({ note, saveCallback, newNoteCallback }) {
 
     const [renaming, setRenaming] = useState(false);
 
-    // const[createNoteDialogue, setCreateNoteDialogue] = useState(false);
-    const [SaveChangesDialogue, setSaveChangesDialogue] = useState(false);
 
     const [icon, setIcon] = useState(null);
 
@@ -155,14 +153,13 @@ export default function Note({ note, saveCallback, newNoteCallback }) {
         api.getCurrentUser().then(currentUser => {
             if (note && note.id != -1) {
                 if (openNote != note && editor && editor.isDirty()) {
-                    console.log("ope, whoopsie doopsie. you just lost all the change");
-                    setSaveChangesDialogue(true);
+                    //idea here is you could do something to prevent losing changes,
+                    //but i don't think that editor.isDirty() is actually reliable with the way we are using TinyMCE
+                    //regardless, if this comment is still here, this feature was out of scope.
                 }
-                // if(note != openNote) {
-                // if(note.id == openNote.id) {
+
                 updateNote(note);
-                // }
-                // }
+
                 if (note.userId == currentUser.userId) {
                     setIsOwner(true);
                     editor.getBody().setAttribute('contenteditable', true);

@@ -101,9 +101,8 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
         if (notes.length !== 0) {
             //filter for notes that have all of the selected tags            
             setFilteredNotes(notes.filter(note => [...selectedTags, ...searchedTags].filter(tag => !note.tags.includes(tag)).length == 0));
-            if (title == "Shared Notes" && !openNote) {
-                setOpenNote(filteredNotes[0]);
-            }
+
+
 
             if (openNote && !notes.includes(openNote)) {
                 for (let i = 0; i < notes.length; i++) {
@@ -147,12 +146,13 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
             </Box>
             <Box sx={{
                 display: 'flex',
-                flexDirection: 'column',
+                flexDirection: 'row',
                 alignItems: 'baseline',
                 maxWidth: drawerWidth,
-                overflowY: 'scroll',
+                overflowX: 'scroll',
                 minHeight: '50px',
-                maxHeight: '75px'
+                maxHeight: '75px',
+                py: 2,
             }}>
                 {campaignTags.map(tag => (
                     //this style thing is not ideal, i bet React could do something better
@@ -215,7 +215,7 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
                             // marginTop: '60px',
                             height: 'calc(100% - 60px)',
                             zIndex: 98, //just below header
-                            maxWidth: drawerWidth,
+                            width: drawerWidth,
                             overflow: 'hidden',
                         }
                     }}
