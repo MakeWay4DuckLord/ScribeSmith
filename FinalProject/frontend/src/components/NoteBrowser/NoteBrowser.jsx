@@ -22,15 +22,16 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
 
     const [createNoteDialogue, setCreateNoteDialogue] = useState(false);
 
-    const [browserOpen, setBrowserOpen] = useState(false);
+    const [browserOpen, setBrowserOpen] = useState(true);
 
 
-
-    const drawerWidth = 450;
+    let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+    const drawerWidth = Math.min(vw - 100, 450);
 
     function updateNote(note) {
         // setOpenIndex(filteredNotes.indexOf(note));
         setOpenNote(note);
+        setBrowserOpen(false);
     }
 
     function tagOnClick(tag) {
