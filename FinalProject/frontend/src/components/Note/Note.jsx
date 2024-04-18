@@ -269,11 +269,10 @@ export default function Note({ note, saveCallback, newNoteCallback }) {
                     scroll: "paper"
                 }}>
                 <DialogTitle>
-                    {"Edit Campaign Tags"}
+                    {"Edit Tags"}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-
                         {tags.map((tag, index) => (
                             <div className="tagContainer">
                                 <Tag content={tag} key={index} />
@@ -388,7 +387,7 @@ export default function Note({ note, saveCallback, newNoteCallback }) {
                 }}>
                     <CardContent>
                         <Typography>Enter a New Title</Typography>
-                        <TextField id="newTitle" className="text-field" placeholder={newTitle} onChange={(event) => setNewTitle(event.target.value)}> </TextField>
+                        <TextField id="newTitle" className="text-field" placeholder={newTitle} onChange={(event) => setNewTitle(event.target.value)} sx={{color: 'white'}}> </TextField>
                     </CardContent>
                     <CardActions>
                         <Button variant="contained" onClick={() => {
