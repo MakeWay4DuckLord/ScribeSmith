@@ -80,7 +80,7 @@ export default function UserSettings() {
                             <label htmlFor="firstName">First Name</label>
                                 <input type="text" name="firstName" placeholder="First Name" defaultValue={firstName} maxLength={50} required/>
 
-                                <label htmlFor="lastName">First Name</label>
+                                <label htmlFor="lastName">Last Name</label>
                                 <input type="text" name="lastName" placeholder="Last Name" defaultValue={lastName} maxLength={50} required/>
                         </div>
                         
