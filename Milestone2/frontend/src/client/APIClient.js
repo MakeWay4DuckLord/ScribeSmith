@@ -2,6 +2,7 @@ const API_BASE = '/api';
 function checkResponse(res) {
     if (!res.ok) {
         return res.json().then(error => {
+            console.log("ERROR");
             throw error.error;
         })
     }
@@ -68,6 +69,7 @@ const signUp = (firstName, lastName, email, password) => {
 }
 
 const getCurrentUser = () => {
+
     return fetch(API_BASE + '/users/current')
         .then(checkResponse)
         .then(res => {
@@ -128,7 +130,12 @@ const getUserIcon = (userId) => {
     return fetch(API_BASE + `/users/${userId}/icon`)
         .then(checkResponse)
         .then(res => {
-            return res.blob();
+            if(null) { 
+                return null
+            } else {
+                return res.blob();
+            }
+            
         }).then(blob => {
             const imageURL = URL.createObjectURL(blob);
             return imageURL;
@@ -148,8 +155,19 @@ const updateUser = (userId, formData) => {
         .catch(handleError);
 }
 
+const getCampaignSharedNotes = (campaignId) => {
+    return fetch(API_BASE + `/campaigns/${campaignId}/notes/shared`)
+        .then(checkResponse)
+        .then(res => {
+            return res.json();
+        })
+        .then(notes => {
+            return notes;
+        })
+        .catch(handleError);
+}
+
 const getCampaignNotesByUser = (campaignId, userId) => {
-    // /campaigns/:campaignId/notes/users/:userId
     return fetch(API_BASE + `/campaigns/${campaignId}/notes/users/${userId}`)
         .then(checkResponse)
         .then(res => {
@@ -231,6 +249,18 @@ const updateNote = (noteId, campaignId, title, content, tags, sharedWith) => {
         .catch(handleError);
 }
 
+const updateCampaign = (campaignId, formData) => {
+    return fetch(API_BASE + `/campaigns/${campaignId}/settings`, {
+        method: 'PUT',
+        body: formData
+        })
+        .then(checkResponse)
+        .then(res => {
+            return res.json();
+        })
+        .catch(handleError);
+}
+
 export default {
     login,
     signUp,
@@ -242,9 +272,11 @@ export default {
     createCampaign,
     getCampaign,
     getUser,
+    getCampaignSharedNotes,
     getCampaignNotesByUser,
     joinCampaign,
     getCampaignBanner,
     createNote,
-    updateNote
+    updateNote,
+    updateCampaign
 }

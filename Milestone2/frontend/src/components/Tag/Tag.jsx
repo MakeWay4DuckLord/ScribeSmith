@@ -3,9 +3,15 @@ import './tag.css';
 
 export default function Tag({content}) {
     return (
-       <div className="tag-component">
-            <FaHashtag className="icon"/>
-            <p>{content}</p>
-       </div> 
+        <>
+        {(content === null) ? 
+            <></> 
+            :
+            <div className="tag-component">
+                <FaHashtag className="icon"/>
+                <p>{content}</p>
+            </div> 
+        }
+       </>
     );
 }

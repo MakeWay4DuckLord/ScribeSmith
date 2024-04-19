@@ -44,21 +44,56 @@ function createUser(user) {
             } else {
     
                 const hashPw = hashedPassword.toString('hex');
-    
+                
+                db.query('SELECT * FROM user WHERE usr_email = ?', [user.email]).then((result) => {
+
+                    if(result.results.length > 0) {
+                        reject({code: 409, message: "Email has already been registered"});
+                    }
+                }).catch((err) => {
+                    reject({ code: 500, message: err });
+                });
+                
                 return db.query('INSERT INTO user (usr_email, usr_first_name, usr_last_name, usr_password, usr_salt) VALUES (?, ?, ?, ?, ?)',
-                    [user.email, user.firstName, user.lastName, hashPw, salt]).then(({ results }) => {
-                        resolve(getUserById(results.insertId));
-                    });
+                    [user.email, user.firstName, user.lastName, hashPw, salt]).then((results) => {
+                        if(err) {
+                            reject({ code: 500, message: "Internal server error" });
+                        }
+                        
+                        getUserById(results.insertId).then(user => {
+                            resolve(user);
+                        })
+                }).catch((err) => {
+                    reject({ code: 500, message: "Internal server error" });
+                });
             }
         });
     });
     
 }
 
+function updateUser(user) {
+    return db.query(`UPDATE user
+    SET usr_first_name=?, usr_last_name=?, usr_icon=?
+    WHERE usr_id=?;`, [user.first_name, user.last_name, user.icon, user.userId]).then(({results}) => {
+        //console.log("RESULTS", results);
+        return user;
+    });
+}
+
+// SHOULD THIS ALSO DELETE NOTES??? for now it doesnt
+function removeUserFromCampaign(userId, campaignId) {
+    return db.query('DELETE FROM campaign_user WHERE cpu_cpn_id=? AND cpu_usr_id=?;', [campaignId, userId]).then(({results}) => {
+        return results; // ?????
+    })
+}
+
 function getUserById(userId) {
-    return db.query('SELECT * FROM user WHERE usr_id=?', [userId]).then(({ results }) => {
+    return db.query('SELECT * FROM user WHERE usr_id=?;', [userId]).then(({ results }) => {
         if (results[0]) {
             return new User(results[0]);
+        } else {
+            return null;
         }
     });
 }
@@ -76,6 +111,7 @@ function getFilteredUser(user) {
 module.exports = {
     getUserByCredentials,
     createUser,
-    // createNewUser,
+    updateUser,
+    removeUserFromCampaign,
     getUserById
 };

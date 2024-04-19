@@ -1,0 +1,8 @@
+/* idk why I had to do it this way instead of classing them, Material UI was not cooperating */
+.note-component #newTag {
+    color: white;
+}
+.note-component #newTitle {
+    color: white;
+}
+ 

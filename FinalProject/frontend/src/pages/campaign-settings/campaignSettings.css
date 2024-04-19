@@ -1,0 +1,174 @@
+
+.campaign-settings {
+    display: flex;
+    flex-direction: column;
+    margin: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #494251;
+    border-radius: 5px;
+    padding: 30px;
+    
+}
+
+.campaign-settings main {
+    width: 50%;
+}
+
+.campaign-settings input {
+    background-color: #38323e;
+    color: white;
+    width: 100%;
+}
+
+.campaign-settings textarea {
+    background-color: #38323e;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+}
+
+.campaign-settings form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.campaign-settings label {
+    align-self: flex-start;
+    margin-top: 15px;
+}
+
+.campaign-settings input[type="submit"] {
+    margin-top: 15px;
+    background-color: rgb(155, 111, 203);
+}
+
+.campaign-settings .title {
+    color: rgb(255, 216, 97);
+    margin: 0;
+}
+
+.settings-box h1 {
+    margin: 10px;
+}
+
+.campaign-settings .players-container {
+    width: 100%;
+}
+
+.campaign-settings .player {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    
+}
+
+.campaign-settings .tagButton {
+    margin-top: 10px;
+    background-color: #201a25;
+    color: white;
+    border: white 1px solid;
+}
+
+.campaign-settings .tags {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0 .newTag {
+    display: flex;
+    align-items: center;
+}
+
+div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0 .addNewTag {
+    background-color: #201a25;
+    border-radius: 5px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin: 15px;
+    padding: 10px;
+}
+
+div.MuiDialog-root.MuiModal-root.css-126xj0f .newTag button {
+    background-color: #38323e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.MuiDialog-root.MuiModal-root.css-126xj0f .tagContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.campaign-settings .deleteButton {
+    background-color: #bd3939;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    border-style: none;
+    width: 100%;
+    margin-top: 20px;
+}
+
+div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0  .cancel, div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0 .confirmDelete {
+    border-radius: 5px;
+    padding: 10px;
+    border-style: none;
+    margin: 20px 10px;
+}
+
+div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0  .cancel {
+    background-color: #626262;
+}
+
+div.MuiDialog-container.MuiDialog-scrollPaper.css-ekeie0 .confirmDelete {
+    background-color: #bd3939;
+    color: white;
+}
+
+
+@media (max-width: 770px) {
+    .campaign-settings h1 {
+        font-size: 40px;
+        text-align: center;
+    }
+
+    .campaign-settings main {
+        width: 100%;
+    }
+    
+}
+
+@media (max-width: 450px) {
+
+    .campaign-settings {
+        height: initial;
+        margin-top: 15px;
+    }
+
+    .settings-box {
+        display: block;
+        background-color: inherit;
+        padding: 0;
+    }
+
+    .campaign-settings title {
+        font-size: 30px;
+        position: inherit;
+        margin-bottom: 15px;
+    }
+}

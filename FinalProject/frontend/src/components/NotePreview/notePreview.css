@@ -1,0 +1,63 @@
+.notePreviewComponent {
+    margin-top: 20px;
+    background-color: #494251;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.notePreviewComponent:hover {
+    background-color: #19181c; 
+}
+.notePreviewComponent h2 {
+    color: rgb(255, 216, 97);
+}
+
+.notePreviewComponent header {
+    display: flex;
+    align-items: center;
+}
+
+.notePreviewComponent img {
+    border-radius: 50%;
+    background-color: white;
+    margin-right: 10px;
+}
+
+.notePreviewComponent time {
+    margin-left: auto;
+    color: rgb(145, 255, 222);
+}
+
+/* .notePreviewComponent p {
+    margin: 15px 0 15px 0;
+} */
+
+.notePreviewComponent .tagContainer {
+    display: flex;
+    overflow-x: scroll;
+}
+
+.notePreviewComponent .icon {
+    margin-right: 10px;
+}
+
+.notePreviewComponent .tagContainer .tag-component {
+    max-height: 12px;
+    /* don't like hard coding size, but it looked bad, TODO make better */
+}
+
+.notePreviewComponent .notePreviewContent {
+    margin: 0 0 15px 0;
+    position: relative;
+    height: 50px;
+    /* width: 80%; */
+    overflow: hidden;
+    white-space: nowrap;
+    /* text-overflow: ellipsis; */
+}
+
+.notePreviewComponent .notePreviewContent * {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis; 
+}
