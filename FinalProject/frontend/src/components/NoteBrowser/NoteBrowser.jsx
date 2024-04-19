@@ -122,14 +122,14 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
             color: 'white', fontFamily: 'Inter,system-ui,Avenir,Helvetica,Arial,sans-serif',
             padding: '20px',
             overflowY: 'scroll',
-            maxHeight: '100%'
+            maxHeight: 'calc(100% - 40px)'
 
         }}>
             <h1>{title}</h1>
             <Box sx={{
                 color: 'white',
                 w: 0.8,
-                marginBottom: '10px',
+                // marginBottom: '10px',
             }}>
 
                 {/* <SearchIcon fontSize='large'/> */}
@@ -198,11 +198,8 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
                         sx: {
                             display: 'block',
                             backgroundColor: 'background.main',
-                            px: 2,
-                            py: 4,
-                            height: 'calc(100% - 60px)',
                             maxWidth: drawerWidth,
-                            overflow: 'hidden',
+                            overflow: 'hidden'
                         }
                     }}
                     children={drawerContents} />
@@ -214,14 +211,11 @@ export default function NoteBrowser({ title, notes, campaignTags, saveCallback }
                         sx: {
                             display: 'block',
                             backgroundColor: 'background.main',
-                            px: 2,
-                            py: 4,
                             marginTop: '60px',
                             height: 'calc(100% - 60px)',
-                            // height: 'max-content',
                             zIndex: 98, //just below header
                             width: drawerWidth,
-                            overflow: 'hidden',
+                            overflow: 'hidden'
                         }
                     }}
                     children={drawerContents}
