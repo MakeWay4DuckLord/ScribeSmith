@@ -18,7 +18,7 @@ export default function SignUp() {
                         <input type="text" name="firstName" placeholder="First Name" required/>
                     </div>
 
-                    <label htmlFor="lastName">lastName Name</label>
+                    <label htmlFor="lastName">Last Name</label>
                     <div className="input-container"> 
                         <FaUser className="icon" />
                         <input type="text" name="lastName" placeholder="Last Name" required/>
